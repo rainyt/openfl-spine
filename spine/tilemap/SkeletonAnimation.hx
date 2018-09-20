@@ -37,8 +37,8 @@ import spine.AnimationStateData;
 class SkeletonAnimation extends SkeletonSprite {
 	public var state:AnimationState;
 
-	public function new (skeletonData:SkeletonData, stateData:AnimationStateData = null, renderMeshes:Bool = false) {
-		super(skeletonData, renderMeshes);
+	public function new (skeletonData:SkeletonData, stateData:AnimationStateData = null) {
+		super(skeletonData);
 		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData):stateData);
 	}
 

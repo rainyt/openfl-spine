@@ -37,22 +37,3 @@ class BitmapDataTextureLoader implements TextureLoader {
 		// page.rendererObject.dispose();
 	}
 }
-
-class SkeletonDataFileHandle implements spine.support.files.FileHandle {
-
-	public var path:String = "";
-
-	private var _data:String;
-
-	public function new(path:String,data:String = null){
-		this.path = path;
-		_data = data;
-		if(_data == null)
-			_data = openfl.Assets.getText(path);
-	}
-
-	public function getContent():String{
-		return _data;
-	}
-
-}

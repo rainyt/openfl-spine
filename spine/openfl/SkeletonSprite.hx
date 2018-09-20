@@ -31,16 +31,14 @@
 package spine.openfl;
 
 import openfl.display.TriangleCulling;
-import openfl.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.geom.ColorTransform;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.Vector;
+import openfl.display.BitmapData;
+import openfl.display.Sprite;
+#if zygame
+import zygame.display.DisplayObjectContainer;
+#end
+import openfl.geom.Matrix;
+import openfl.geom.Point;
+import openfl.Vector;
 import spine.attachments.MeshAttachment;
 
 import spine.Bone;
@@ -50,55 +48,34 @@ import spine.Slot;
 import spine.support.graphics.TextureAtlas;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.Color;
+import openfl.events.Event;
 
-class SkeletonSprite extends Sprite {
-	static var tempPoint:Point = new Point();
-	static var tempMatrix:Matrix = new Matrix();
+/**
+ * Sprite渲染器
+ */
+class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end {
 
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
-	var lastTime:Int = 0;
 
-	public var renderMeshes(default, set):Bool;
+	//坐标数组
+	private var _tempVerticesArray:Array<Float>;
+	//矩形三角形
+	private var _quadTriangles:Array<Int>;
+	//颜色数组（未实现）
+	private var _colors:Array<Int>;
+	//是否正在播放
+	private var _isPlay:Bool = true;
 
-	var _tempVerticesArray:Array<Float>;
-	var _quadTriangles:Array<Int>;
-	var _colors:Array<Int>;
-
-	// private var _map:Map<AtlasRegion,TileContainer>;
-
-
-
-	public function new(skeletonData:SkeletonData, renderMeshes:Bool = false) {
+	/**
+	 * 创建一个Spine对象
+	 * @param skeletonData 骨骼数据 
+	 */
+	public function new(skeletonData:SkeletonData) {
 		super();
-
 		
-		Bone.yDown = true;
-
 		skeleton = new Skeleton(skeletonData);
 		skeleton.updateWorldTransform();
-
-		// _map = new Map<AtlasRegion,TileContainer>();
-
-
-		renderMeshes = true;
-
-		var drawOrder:Array<Slot> = skeleton.drawOrder;
-		for (slot in drawOrder)
-		{
-			if (slot.attachment == null)
-			{
-				continue;
-			}
-
-			if (Std.is(slot.attachment, MeshAttachment))
-			{
-				renderMeshes = true;
-				break;
-			}
-		}
-
-		this.renderMeshes = renderMeshes;
 
 		_tempVerticesArray = new Array<Float>();
 		_quadTriangles = new Array<Int>();
@@ -109,63 +86,94 @@ class SkeletonSprite extends Sprite {
 		_quadTriangles[4] = 3;
 		_quadTriangles[5] = 0;
 		_colors = new Array<Int>();
-
-		// addEventListener(Event.ENTER_FRAME, enterFrame);
+		#if zygame
+		this.setFrameEvent(true);
+		#else
+		this.addEventListener(Event.ENTER_FRAME, enterFrame);
+		#end
 	}
-	
+
+	#if zygame
+	override public function onFrame():Void{
+		advanceTime(1/60);
+	}
+	#else
+	/**
+	 * 渲染事件
+	 * @param e 
+	 */
+	private function enterFrame(e:Event):Void
+	{
+		advanceTime(1/60);
+	}
+	#end
+
+	/**
+	 * 丢弃
+	 */
 	public function destroy():Void {
-		// removeEventListener(Event.ENTER_FRAME, enterFrame);
-		// removeChildren();
-		// graphics.clear();
+		#if zygame
+		this.setFrameEvent(false);
+		#else
+		removeEventListener(Event.ENTER_FRAME, enterFrame);
+		#end
+		removeChildren();
+		graphics.clear();
 	}
 	
-	public function start():Void {
-		// if (!hasEventListener(Event.ENTER_FRAME)) {
-		// 	addEventListener(Event.ENTER_FRAME, enterFrame);
-		// }
+	/**
+	 * 播放
+	 */
+	public function play():Void {
+		#if !zygame
+		if (!hasEventListener(Event.ENTER_FRAME)) {
+			addEventListener(Event.ENTER_FRAME, enterFrame);
+		}
+		#end
+		_isPlay = true;
 	}
 
+	/**
+	 * 停止
+	 */
 	public function stop():Void {
-		// if (hasEventListener(Event.ENTER_FRAME)) {
-		// 	removeEventListener(Event.ENTER_FRAME, enterFrame);
-		// }
+		#if !zygame
+		if (hasEventListener(Event.ENTER_FRAME)) {
+			removeEventListener(Event.ENTER_FRAME, enterFrame);
+		}
+		#end
+		_isPlay = false;
 	}
 
-	public function update():Void {
-		var time:Int = Std.int(haxe.Timer.stamp() * 1000);
-		advanceTime((time - lastTime) / 1000);
-		lastTime = time;
-	}
-
+	/**
+	 * 激活渲染
+	 * @param delta 
+	 */
 	public function advanceTime (delta:Float):Void {
+		if(_isPlay == false)
+			return;
 		skeleton.update(delta * timeScale);
 		renderTriangles();
 	}
 
-	function renderTriangles():Void
+	/**
+	 * 渲染实现
+	 */
+	private function renderTriangles():Void
 	{
-		var allVertices:Vector<Float> = new Vector<Float>();
-		var allTriangles:Vector<Int> = new Vector<Int>();
-		var allUvs:Vector<Float> = new Vector<Float>();
-
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
 		var n:Int = drawOrder.length;
-		var worldVertices:Vector<Float>;
 		var triangles:Array<Int> = null;
 		var uvs:Array<Float> = null;
 		var verticesLength:Int = 0;
-		var numVertices:Int;
 		var atlasRegion:AtlasRegion;
-		var bitmapData:BitmapData = null;
 		var slot:Slot;
 		var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
 		var color:Int;
 		var blend:Int;
+		var bitmapData:BitmapData = null;
 
-		// graphics.clear();
-		// this.removeTiles();
 		this.graphics.clear();
-
 		for (i in 0 ... n)
 		{
 			//获取骨骼
@@ -178,6 +186,7 @@ class SkeletonSprite extends Sprite {
 			//如果骨骼的渲染物件存在
 			if(slot.attachment != null)
 			{
+				// trace("存在骨骼");
 				if (Std.is(slot.attachment, RegionAttachment))
 				{
 					//如果是矩形
@@ -207,17 +216,11 @@ class SkeletonSprite extends Sprite {
 					a = region.getColor().a;
 				}
 
-
-				allVertices = allVertices.concat(ofArrayFloat(_tempVerticesArray));
-				allTriangles = allTriangles.concat(ofArrayInt(triangles));
-				allUvs = allUvs.concat(ofArrayFloat(uvs));
-
-
 				//矩形绘制
 				if(atlasRegion != null)
 				{
-					// this.graphics.beginFill(0xff0000,1);
-					this.graphics.beginBitmapFill(cast atlasRegion.page.rendererObject,null,true,true);
+					bitmapData = cast atlasRegion.page.rendererObject;
+					this.graphics.beginBitmapFill(bitmapData,null,true,true);
 					this.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray),ofArrayInt(triangles),ofArrayFloat(uvs),TriangleCulling.NONE);
 					this.graphics.endFill();
 				}
@@ -225,14 +228,14 @@ class SkeletonSprite extends Sprite {
 				
 			}
 		}
-		// trace("allVertices="+allVertices.length,allVertices);
-		// trace("allTriangles="+allTriangles.length);
-		// trace("allUvs="+allUvs.length);
-		// this.graphics.drawTriangles(allVertices,allTriangles,allUvs,TriangleCulling.NONE);
-		// this.graphics.endFill();
 	}
 
-	function ofArrayInt(data:Array<Int>):Vector<Int>
+	/**
+	 * 渲染数组转换
+	 * @param data 
+	 * @return Vector<Int>
+	 */
+	private function ofArrayInt(data:Array<Int>):Vector<Int>
 	{
 		var v:Vector<Int> = new Vector<Int>();
 		for(i in 0...data.length)
@@ -240,7 +243,12 @@ class SkeletonSprite extends Sprite {
 		return v;
 	}
 
-	function ofArrayFloat(data:Array<Float>):Vector<Float>
+	/**
+	 * 渲染数组转换
+	 * @param data 
+	 * @return Vector<Float>
+	 */
+	private function ofArrayFloat(data:Array<Float>):Vector<Float>
 	{
 		var v:Vector<Float> = new Vector<Float>();
 		for(i in 0...data.length)
@@ -248,10 +256,4 @@ class SkeletonSprite extends Sprite {
 		return v;
 	}
 
-	function set_renderMeshes(value:Bool):Bool
-	{
-		// removeChildren();
-		// graphics.clear();
-		return renderMeshes = value;
-	}
 }

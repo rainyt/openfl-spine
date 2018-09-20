@@ -30,19 +30,11 @@
 
 package spine.tilemap;
 
-import openfl.display.TriangleCulling;
-import openfl.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.geom.ColorTransform;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.Vector;
+import openfl.display.BitmapData;
+import openfl.geom.Matrix;
+import openfl.geom.Point;
+import openfl.Vector;
 import spine.attachments.MeshAttachment;
-
 import spine.Bone;
 import spine.Skeleton;
 import spine.SkeletonData;
@@ -52,94 +44,67 @@ import spine.attachments.RegionAttachment;
 import spine.support.graphics.Color;
 import openfl.display.TileContainer;
 import openfl.display.Tile;
+import openfl.events.Event;
 
+/**
+ * Tilemap渲染器
+ */
 class SkeletonSprite extends TileContainer {
-	static var tempPoint:Point = new Point();
-	static var tempMatrix:Matrix = new Matrix();
 
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
-	var lastTime:Int = 0;
 
-	public var renderMeshes(default, set):Bool;
+	private var _isPlay:Bool = true;
 
-	var _tempVerticesArray:Array<Float>;
-	var _quadTriangles:Array<Int>;
-	var _colors:Array<Int>;
-
+	/**
+	 * 渲染骨骼对应关系
+	 */
 	private var _map:Map<AtlasRegion,TileContainer>;
 
-
-
-	public function new(skeletonData:SkeletonData, renderMeshes:Bool = false) {
+	public function new(skeletonData:SkeletonData) {
 		super();
-
-		
-		Bone.yDown = true;
 
 		skeleton = new Skeleton(skeletonData);
 		skeleton.updateWorldTransform();
 
 		_map = new Map<AtlasRegion,TileContainer>();
 
+		#if zygame
+		openfl.Lib.current.addEventListener(Event.ENTER_FRAME, enterFrame);
+		#else
+		openfl.Lib.current.addEventListener(Event.ENTER_FRAME, enterFrame);
+		#end
+	}
 
-		renderMeshes = true;
-
-		var drawOrder:Array<Slot> = skeleton.drawOrder;
-		for (slot in drawOrder)
-		{
-			if (slot.attachment == null)
-			{
-				continue;
-			}
-
-			if (Std.is(slot.attachment, MeshAttachment))
-			{
-				renderMeshes = true;
-				break;
-			}
-		}
-
-		this.renderMeshes = renderMeshes;
-
-		_tempVerticesArray = new Array<Float>();
-		_quadTriangles = new Array<Int>();
-		_quadTriangles[0] = 0;
-		_quadTriangles[1] = 1;
-		_quadTriangles[2] = 2;
-		_quadTriangles[3] = 2;
-		_quadTriangles[4] = 3;
-		_quadTriangles[5] = 0;
-		_colors = new Array<Int>();
-
-		// addEventListener(Event.ENTER_FRAME, enterFrame);
+	/**
+	 * 渲染事件
+	 * @param e 
+	 */
+	private function enterFrame(e:Event):Void
+	{
+		advanceTime(1/60);
 	}
 	
 	public function destroy():Void {
-		// removeEventListener(Event.ENTER_FRAME, enterFrame);
-		// removeChildren();
-		// graphics.clear();
+		#if zygame
+		openfl.Lib.current.removeEventListener(Event.ENTER_FRAME, enterFrame);
+		#else
+		openfl.Lib.current.removeEventListener(Event.ENTER_FRAME, enterFrame);
+		#end
+		this.removeTiles();
 	}
 	
-	public function start():Void {
-		// if (!hasEventListener(Event.ENTER_FRAME)) {
-		// 	addEventListener(Event.ENTER_FRAME, enterFrame);
-		// }
+	public function play():Void {
+		_isPlay = true;
 	}
 
 	public function stop():Void {
-		// if (hasEventListener(Event.ENTER_FRAME)) {
-		// 	removeEventListener(Event.ENTER_FRAME, enterFrame);
-		// }
-	}
-
-	public function update():Void {
-		var time:Int = Std.int(haxe.Timer.stamp() * 1000);
-		advanceTime((time - lastTime) / 1000);
-		lastTime = time;
+		_isPlay = false;
 	}
 
 	public function advanceTime (delta:Float):Void {
+		if(!_isPlay)
+			return;
 		skeleton.update(delta * timeScale);
 		renderTriangles();
 	}
@@ -148,11 +113,8 @@ class SkeletonSprite extends TileContainer {
 	{
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
 		var n:Int = drawOrder.length;
-		var worldVertices:Vector<Float>;
 		var triangles:Array<Int> = null;
 		var uvs:Array<Float> = null;
-		var verticesLength:Int = 0;
-		var numVertices:Int;
 		var atlasRegion:AtlasRegion;
 		var bitmapData:BitmapData = null;
 		var slot:Slot;
@@ -160,7 +122,6 @@ class SkeletonSprite extends TileContainer {
 		var color:Int;
 		var blend:Int;
 
-		// graphics.clear();
 		this.removeTiles();
 
 		for (i in 0 ... n)
@@ -179,10 +140,6 @@ class SkeletonSprite extends TileContainer {
 				{
 					//如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
-					verticesLength = 8;
-					region.computeWorldVertices(slot.bone, _tempVerticesArray, 0, 0);
-					uvs = region.getUVs();
-					triangles = _quadTriangles;
 					atlasRegion = cast region.getRegion();
 					r = region.getColor().r;
 					g = region.getColor().g;
@@ -249,26 +206,5 @@ class SkeletonSprite extends TileContainer {
 		}
 	}
 
-	function ofArrayInt(data:Array<Int>):Vector<Int>
-	{
-		var v:Vector<Int> = new Vector<Int>();
-		for(i in 0...data.length)
-			v.set(i,data[i]);
-		return v;
-	}
 
-	function ofArrayFloat(data:Array<Float>):Vector<Float>
-	{
-		var v:Vector<Float> = new Vector<Float>();
-		for(i in 0...data.length)
-			v.set(i,data[i]);
-		return v;
-	}
-
-	function set_renderMeshes(value:Bool):Bool
-	{
-		// removeChildren();
-		// graphics.clear();
-		return renderMeshes = value;
-	}
 }
