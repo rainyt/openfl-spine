@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="ZYGameEngineHaxe" package="com.sample.zygameenginehaxe" version="1.0.0" company="Company Name" />
+	<app main="maplive.core.Maplive" path="Export" file="ZYGameEngineHaxe" />
+	
+	<template path="templates"/>
+
+	<source path="Source" />
+
+	<assets path="Assets" rename="assets"/>
+	
+	<haxelib name="openfl"/>
+
+	<!-- 编译APIDoc需要使用 -->
+	<!-- <haxelib name="KengSDK"/>
+	<haxelib name="qqplaycore"/>
+	<haxelib name="wechatcore"/> -->
+	<!-- <window allow-high-dpi="true" /> -->
+
+	<haxedef name="gl_stats"/>
+
+	<!-- <haxelib name="qqplaycore"/> -->
+	<set name="VIEW_MODE" value="1"/>
+
+	<config:android permission="android.permission.INTERNET" />
+	<config:android permission="android.permission.ACCESS_NETWORK_STATE" />
+	<config:android permission="android.permission.ACCESS_WIFI_STATE" />
+
+</project>
