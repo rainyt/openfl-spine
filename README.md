@@ -6,7 +6,7 @@ Tilemap渲染器：拥有极其快速渲染速度，但不支持网格。
 Sprite渲染器：拥有网格功能，但速度一般。
 
 # 使用方法
-目前没有配置haxelib，可以直接将spine包带到你的源代码项目中。
+<haxelib name="openfl-spine"/>
 
 # Sprite渲染器
         var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader("assets/");
