@@ -53,6 +53,8 @@ class SkeletonSprite extends TileContainer {
 
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
+	//坐标数组
+	private var _tempVerticesArray:Array<Float>;
 
 	private var _isPlay:Bool = true;
 
@@ -199,7 +201,17 @@ class SkeletonSprite extends TileContainer {
 				}
 				else if(Std.is(slot.attachment, MeshAttachment)){
 					//如果是网格
+					// var region:MeshAttachment = cast slot.attachment;
+					// region.computeWorldVertices(slot,0,region.getWorldVerticesLength(), _tempVerticesArray,0,2);
+					// uvs = region.getUVs();
+					// triangles = region.getTriangles();
+					// atlasRegion = cast region.getRegion();
+					// r = region.getColor().r;
+					// g = region.getColor().g;
+					// b = region.getColor().b;
+					// a = region.getColor().a;
 
+					// var tile:Tile = new Tile();
 				}
 				
 			}

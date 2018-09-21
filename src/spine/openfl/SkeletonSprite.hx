@@ -1,33 +1,3 @@
-/******************************************************************************
- * Spine Runtimes Software License
- * Version 2.1
- *
- * Copyright (c) 2013, Esoteric Software
- * All rights reserved.
- *
- * You are granted a perpetual, non-exclusive, non-sublicensable and
- * non-transferable license to install, execute and perform the Spine Runtimes
- * Software (the "Software") solely for internal use. Without the written
- * permission of Esoteric Software (typically granted by licensing Spine), you
- * may not (a) modify, translate, adapt or otherwise create derivative works,
- * improvements of the Software or develop new applications using the Software
- * or (b) remove, delete, alter or obscure any trademarks or any copyright,
- * trademark, patent or other intellectual property or proprietary rights
- * notices on or in the Software, including any copy thereof. Redistributions
- * in binary or source form must include this license and terms.
- *
- * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL ESOTERIC SOFTARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *****************************************************************************/
-
 package spine.openfl;
 
 import openfl.display.TriangleCulling;
@@ -51,12 +21,13 @@ import spine.support.graphics.Color;
 import openfl.events.Event;
 
 /**
- * Sprite渲染器
+ * Sprite渲染器，单个Sprite会进行单次渲染
  */
 class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end {
 
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
+
 
 	//坐标数组
 	private var _tempVerticesArray:Array<Float>;
@@ -173,7 +144,14 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var blend:Int;
 		var bitmapData:BitmapData = null;
 
+		var allVerticesArray:Vector<Float> = new Vector<Float>();
+		var allTriangles:Vector<Int> = new Vector<Int>();
+		var allUvs:Vector<Float> = new Vector<Float>();
+
 		this.graphics.clear();
+
+		var t:Int = 0;
+
 		for (i in 0 ... n)
 		{
 			//获取骨骼
@@ -182,7 +160,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			triangles = null;
 			uvs = null;
 			atlasRegion = null;
-			bitmapData = null;
+			_tempVerticesArray.splice(0,_tempVerticesArray.length);
 			//如果骨骼的渲染物件存在
 			if(slot.attachment != null)
 			{
@@ -219,15 +197,32 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				//矩形绘制
 				if(atlasRegion != null)
 				{
-					bitmapData = cast atlasRegion.page.rendererObject;
-					this.graphics.beginBitmapFill(bitmapData,null,true,true);
-					this.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray),ofArrayInt(triangles),ofArrayFloat(uvs),TriangleCulling.NONE);
-					this.graphics.endFill();
-				}
+					if(bitmapData != atlasRegion.page.rendererObject)
+					{
+						bitmapData = cast atlasRegion.page.rendererObject;
+						this.graphics.beginBitmapFill(bitmapData,null,true,true);
+					}
 
+					//顶点重新计算
+					var v:Vector<Int> = ofArrayInt(triangles);
+					for(vi in 0...v.length)
+					{
+						v[vi] += t;
+					}
+					t += Std.int(_tempVerticesArray.length/2);
+
+					allVerticesArray = allVerticesArray.concat(ofArrayFloat(_tempVerticesArray));
+					allTriangles = allTriangles.concat(v);
+					allUvs = allUvs.concat(ofArrayFloat(uvs));
+				}
 				
 			}
 		}
+		
+		//实现一次性绘制
+		this.graphics.drawTriangles(allVerticesArray,allTriangles,allUvs,TriangleCulling.NONE);
+		this.graphics.endFill();
+		
 	}
 
 	/**

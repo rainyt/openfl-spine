@@ -1,0 +1,22 @@
+-main ApplicationMain 
+--macro openfl._internal.utils.ExtraParams.include()
+-cp /Users/grtf/haxelib/openfl/8,2,0/src
+-D openfl=8.2.0
+--macro lime.Lib.extraParams()
+-cp /Users/grtf/haxelib/lime/6,4,0
+-D lime=6.4.0
+-cp Source
+-D gl_stats
+-D tools=6.4.0
+-D howlerjs
+-D no-compilation
+-D lime-opengl
+-D openfl-html5
+-D lime-html5
+-D html5
+-D web
+--remap flash:openfl
+-js Export/html5/bin/ZYGameEngineHaxe.js
+-cp Export/html5/haxe
+-D html5
+-debug
