@@ -3,12 +3,12 @@
 
 # 该Spine提供了两个渲染器
 Tilemap渲染器：拥有极其快速渲染速度，但不支持网格。
-Sprite渲染器：拥有网格功能，但速度一般。
+Sprite渲染器：拥有网格功能，单个精灵拥有批渲染功能。
 
 # 使用方法
 <haxelib name="openfl-spine"/>
 
-# Sprite渲染器
+# Sprite渲染器（已提高了性能，内置批量渲染处理）
         var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader("assets/");
 		    var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
         var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
