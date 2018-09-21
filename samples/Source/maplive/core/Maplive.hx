@@ -41,7 +41,7 @@ class Maplive extends Sprite{
 
     public function showTilemapSkeletonJson():Void
     {
-        var loader:spine.tilemap.BitmapDataTextureLoader = new spine.tilemap.BitmapDataTextureLoader("assets/");
+        var loader:spine.tilemap.BitmapDataTextureLoader = new spine.tilemap.BitmapDataTextureLoader(openfl.Assets.getBitmapData("assets/spineboy-pro.png"));
 		var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
         var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
         json.setScale(0.6);
@@ -61,7 +61,7 @@ class Maplive extends Sprite{
 
     public function showSpirteSkeletonJson():Void
     {
-        var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader("assets/");
+        var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader(openfl.Assets.getBitmapData("assets/spineboy-pro.png"));
 		var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
         var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
         json.setScale(0.6);

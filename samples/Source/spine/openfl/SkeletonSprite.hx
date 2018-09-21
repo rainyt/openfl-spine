@@ -6,12 +6,9 @@ import openfl.display.Sprite;
 #if zygame
 import zygame.display.DisplayObjectContainer;
 #end
-import openfl.geom.Matrix;
-import openfl.geom.Point;
 import openfl.Vector;
 import spine.attachments.MeshAttachment;
 
-import spine.Bone;
 import spine.Skeleton;
 import spine.SkeletonData;
 import spine.Slot;

@@ -24,7 +24,7 @@ import haxe.macro.Expr;
 		
 		var config = {
 			
-			build: "7",
+			build: "9",
 			company: "Company Name",
 			file: "ZYGameEngineHaxe",
 			fps: 60,

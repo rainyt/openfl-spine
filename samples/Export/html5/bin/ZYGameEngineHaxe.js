@@ -1057,7 +1057,7 @@ $hxClasses["ApplicationMain"] = ApplicationMain;
 ApplicationMain.__name__ = ["ApplicationMain"];
 ApplicationMain.main = function() {
 	var projectName = "ZYGameEngineHaxe";
-	var config = { build : "7", company : "Company Name", file : "ZYGameEngineHaxe", fps : 60, name : "ZYGameEngineHaxe", orientation : "", packageName : "com.sample.zygameenginehaxe", version : "1.0.0", windows : [{ allowHighDPI : false, alwaysOnTop : false, antialiasing : 0, background : 16777215, borderless : false, colorDepth : 16, depthBuffer : false, display : 0, fullscreen : false, hardware : true, height : 0, hidden : false, maximized : false, minimized : false, parameters : { }, resizable : true, stencilBuffer : true, title : "ZYGameEngineHaxe", vsync : false, width : 0, x : null, y : null}]};
+	var config = { build : "9", company : "Company Name", file : "ZYGameEngineHaxe", fps : 60, name : "ZYGameEngineHaxe", orientation : "", packageName : "com.sample.zygameenginehaxe", version : "1.0.0", windows : [{ allowHighDPI : false, alwaysOnTop : false, antialiasing : 0, background : 16777215, borderless : false, colorDepth : 16, depthBuffer : false, display : 0, fullscreen : false, hardware : true, height : 0, hidden : false, maximized : false, minimized : false, parameters : { }, resizable : true, stencilBuffer : true, title : "ZYGameEngineHaxe", vsync : false, width : 0, x : null, y : null}]};
 	lime_system_System.__registerEntryPoint(projectName,ApplicationMain.create,config);
 };
 ApplicationMain.create = function(config) {
@@ -4289,7 +4289,7 @@ maplive_core_Maplive.prototype = $extend(openfl_display_Sprite.prototype,{
 		this.addChild(fps);
 	}
 	,showTilemapSkeletonJson: function() {
-		var loader = new spine_tilemap_BitmapDataTextureLoader("assets/");
+		var loader = new spine_tilemap_BitmapDataTextureLoader(openfl_utils_Assets.getBitmapData("assets/spineboy-pro.png"));
 		var atlas = new spine_support_graphics_TextureAtlas(openfl_utils_Assets.getText("assets/spineboy-pro.atlas"),loader);
 		var json = new spine_SkeletonJson(new spine_attachments_AtlasAttachmentLoader(atlas));
 		json.scale = 0.6;
@@ -5513,7 +5513,7 @@ maplive_core_Maplive.prototype = $extend(openfl_display_Sprite.prototype,{
 		}
 	}
 	,showSpirteSkeletonJson: function() {
-		var loader = new spine_openfl_BitmapDataTextureLoader("assets/");
+		var loader = new spine_openfl_BitmapDataTextureLoader(openfl_utils_Assets.getBitmapData("assets/spineboy-pro.png"));
 		var atlas = new spine_support_graphics_TextureAtlas(openfl_utils_Assets.getText("assets/spineboy-pro.atlas"),loader);
 		var json = new spine_SkeletonJson(new spine_attachments_AtlasAttachmentLoader(atlas));
 		json.scale = 0.6;
@@ -34487,7 +34487,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 154981;
+	this.version = 127350;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = ["lime","utils","AssetCache"];
@@ -94768,6 +94768,9 @@ spine_support_files_FileHandle.prototype = {
 var spine_SkeletonDataFileHandle = function(path,data) {
 	this.path = "";
 	this.path = path;
+	if(this.path == null) {
+		this.path = "";
+	}
 	this._data = data;
 	if(this._data == null) {
 		this._data = openfl_utils_Assets.getText(path);
@@ -99679,19 +99682,19 @@ spine_support_graphics_TextureLoader.prototype = {
 	,unloadPage: null
 	,__class__: spine_support_graphics_TextureLoader
 };
-var spine_openfl_BitmapDataTextureLoader = function(prefix) {
-	this.prefix = prefix;
+var spine_openfl_BitmapDataTextureLoader = function(bitmapData) {
+	this._bitmapData = bitmapData;
 };
 $hxClasses["spine.openfl.BitmapDataTextureLoader"] = spine_openfl_BitmapDataTextureLoader;
 spine_openfl_BitmapDataTextureLoader.__name__ = ["spine","openfl","BitmapDataTextureLoader"];
 spine_openfl_BitmapDataTextureLoader.__interfaces__ = [spine_support_graphics_TextureLoader];
 spine_openfl_BitmapDataTextureLoader.prototype = {
-	prefix: null
+	_bitmapData: null
 	,_ids: null
 	,loadPage: function(page,path) {
-		var bitmapData = openfl_utils_Assets.getBitmapData(this.prefix + path);
+		var bitmapData = this._bitmapData;
 		if(bitmapData == null) {
-			throw new js__$Boot_HaxeError(new spine_support_error_IllegalArgumentException("BitmapData not found with name: " + this.prefix + path));
+			throw new js__$Boot_HaxeError(new spine_support_error_IllegalArgumentException("BitmapData not found with name: " + path));
 		}
 		this._ids = new haxe_ds_ObjectMap();
 		page.rendererObject = bitmapData;
@@ -99701,6 +99704,7 @@ spine_openfl_BitmapDataTextureLoader.prototype = {
 	,loadRegion: function(region) {
 	}
 	,unloadPage: function(page) {
+		page.rendererObject.dispose();
 	}
 	,__class__: spine_openfl_BitmapDataTextureLoader
 };
@@ -101823,20 +101827,20 @@ spine_support_utils__$StringBuilder_StringBuilder_$Impl_$.$length = function(thi
 spine_support_utils__$StringBuilder_StringBuilder_$Impl_$.append = function(this1,str) {
 	this1.b += str == null ? "null" : "" + str;
 };
-var spine_tilemap_BitmapDataTextureLoader = function(prefix) {
-	this.prefix = prefix;
+var spine_tilemap_BitmapDataTextureLoader = function(bitmapData) {
+	this._bitmapData = bitmapData;
 };
 $hxClasses["spine.tilemap.BitmapDataTextureLoader"] = spine_tilemap_BitmapDataTextureLoader;
 spine_tilemap_BitmapDataTextureLoader.__name__ = ["spine","tilemap","BitmapDataTextureLoader"];
 spine_tilemap_BitmapDataTextureLoader.__interfaces__ = [spine_support_graphics_TextureLoader];
 spine_tilemap_BitmapDataTextureLoader.prototype = {
-	prefix: null
+	_bitmapData: null
 	,_tileset: null
 	,_ids: null
 	,loadPage: function(page,path) {
-		var bitmapData = openfl_utils_Assets.getBitmapData(this.prefix + path);
+		var bitmapData = this._bitmapData;
 		if(bitmapData == null) {
-			throw new js__$Boot_HaxeError(new spine_support_error_IllegalArgumentException("BitmapData not found with name: " + this.prefix + path));
+			throw new js__$Boot_HaxeError(new spine_support_error_IllegalArgumentException("BitmapData not found with name: " + path));
 		}
 		this._tileset = new openfl_display_Tileset(bitmapData);
 		this._ids = new haxe_ds_ObjectMap();
@@ -101849,7 +101853,6 @@ spine_tilemap_BitmapDataTextureLoader.prototype = {
 		var regionHeight = region.rotate ? region.width : region.height;
 		var id = this._tileset.addRect(new openfl_geom_Rectangle(region.x,region.y,regionWidth,regionHeight));
 		this._ids.set(region,id);
-		haxe_Log.trace("追加尺寸：",{ fileName : "BitmapDataTextureLoader.hx", lineNumber : 37, className : "spine.tilemap.BitmapDataTextureLoader", methodName : "loadRegion", customParams : [id,region.x,region.y,region.width,region.height]});
 	}
 	,getID: function(region) {
 		return this._ids.h[region.__id__];
@@ -101858,6 +101861,7 @@ spine_tilemap_BitmapDataTextureLoader.prototype = {
 		return this._tileset;
 	}
 	,unloadPage: function(page) {
+		this._tileset.get_bitmapData().dispose();
 	}
 	,__class__: spine_tilemap_BitmapDataTextureLoader
 };

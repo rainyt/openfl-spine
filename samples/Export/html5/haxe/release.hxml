@@ -16,6 +16,8 @@
 -D html5
 -D web
 --remap flash:openfl
+--connect
+6003
 -js Export/html5/bin/ZYGameEngineHaxe.js
 -cp Export/html5/haxe
 -D html5
