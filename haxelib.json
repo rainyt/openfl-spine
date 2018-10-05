@@ -9,5 +9,6 @@
   "contributors": ["rainyt"],
   "dependencies": {
 
-  }
+  },
+  "classPath": "src"
 }
