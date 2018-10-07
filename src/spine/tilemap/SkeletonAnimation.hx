@@ -35,10 +35,19 @@ import spine.AnimationState;
 import spine.AnimationStateData;
 
 class SkeletonAnimation extends SkeletonSprite {
+
+	#if zygame
+	/**
+	 * 资源索引
+	 */
+	public var assetsId:String = null;
+	#end
+
 	public var state:AnimationState;
 
 	public function new (skeletonData:SkeletonData, stateData:AnimationStateData = null) {
 		super(skeletonData);
+		skeleton.setFlipY(true);
 		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData):stateData);
 		advanceTime(0);
 	}
@@ -48,5 +57,16 @@ class SkeletonAnimation extends SkeletonSprite {
 		state.apply(skeleton);
 		skeleton.updateWorldTransform();
 		super.advanceTime(time);
+	}
+
+	/**
+	 * 播放
+	 */
+	override public function play(action:String = null,loop:Bool = true):Void {
+		if(action != null && action != "")
+		{
+			this.state.setAnimationByName(0,action,loop);
+		}
+		super.play(action);
 	}
 }

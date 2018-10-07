@@ -46,7 +46,7 @@ import spine.BoneData.TransformMode_enum;
  * constraint or application code modifies the world transform after it was computed from the local transform. */
 class Bone implements Updatable {
 
-    static public var yDown:Bool = true;
+    // static public var yDown:Bool = true;
     
     public var data:BoneData;
     public var skeleton:Skeleton;
@@ -126,7 +126,7 @@ class Bone implements Updatable {
                 la = -la;
                 lb = -lb;
             }
-            if (skeleton.flipY != yDown) {
+            if (skeleton.flipY) {
                 y = -y;
                 lc = -lc;
                 ld = -ld;
@@ -247,7 +247,7 @@ class Bone implements Updatable {
             a = -a;
             b = -b;
         }
-        if (skeleton.flipY != yDown) {
+        if (skeleton.flipY) {
             c = -c;
             d = -d;
         }

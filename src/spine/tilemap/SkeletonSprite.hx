@@ -31,9 +31,6 @@
 package spine.tilemap;
 
 import openfl.display.BitmapData;
-import openfl.geom.Matrix;
-import openfl.geom.Point;
-import openfl.Vector;
 import spine.attachments.MeshAttachment;
 import spine.Bone;
 import spine.Skeleton;
@@ -45,6 +42,8 @@ import spine.support.graphics.Color;
 import openfl.display.TileContainer;
 import openfl.display.Tile;
 import openfl.events.Event;
+import spine.BlendMode;
+import spine.support.graphics.Color;
 
 /**
  * Tilemap渲染器
@@ -57,6 +56,8 @@ class SkeletonSprite extends TileContainer {
 	private var _tempVerticesArray:Array<Float>;
 
 	private var _isPlay:Bool = true;
+
+	private var _actionName:String = "";
 
 	/**
 	 * 渲染骨骼对应关系
@@ -95,9 +96,35 @@ class SkeletonSprite extends TileContainer {
 		#end
 		this.removeTiles();
 	}
+
+	/**
+	 * 是否正在播放
+	 */
+	public var isPlay(get,set):Bool;
+	private function get_isPlay():Bool
+	{
+		return _isPlay;
+	}
+	private function set_isPlay(bool:Bool):Bool
+	{
+		_isPlay = bool;
+		return bool;
+	}
+
+	/**
+	 * 获取当前播放的动作
+	 */
+	public var actionName(get,never):String;
+	private function get_actionName():String
+	{
+		return _actionName;
+	}
+
 	
-	public function play():Void {
+	public function play(action:String = null,loop:Bool = true):Void {
 		_isPlay = true;
+		if(action != null)
+			_actionName = action;
 	}
 
 	public function stop():Void {
@@ -111,7 +138,7 @@ class SkeletonSprite extends TileContainer {
 		renderTriangles();
 	}
 
-	function renderTriangles():Void
+	private function renderTriangles():Void
 	{
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
 		var n:Int = drawOrder.length;
@@ -120,9 +147,10 @@ class SkeletonSprite extends TileContainer {
 		var atlasRegion:AtlasRegion;
 		var bitmapData:BitmapData = null;
 		var slot:Slot;
-		var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
-		var color:Int;
-		var blend:Int;
+		var skeletonColor:Color;
+		var soltColor:Color;
+		var regionColor:Color;
+		// var blend:Int;
 
 		this.removeTiles();
 
@@ -142,11 +170,12 @@ class SkeletonSprite extends TileContainer {
 				{
 					//如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
+					regionColor = region.getColor();
 					atlasRegion = cast region.getRegion();
-					r = region.getColor().r;
-					g = region.getColor().g;
-					b = region.getColor().b;
-					a = region.getColor().a;
+					// r = region.getColor().r;
+					// g = region.getColor().g;
+					// b = region.getColor().b;
+					// a = region.getColor().a;
 
 					//矩形绘制
 					if(atlasRegion != null)
@@ -165,13 +194,13 @@ class SkeletonSprite extends TileContainer {
 							tile.id = atlasRegion.page.rendererObject.getID(atlasRegion);
 						}
 
-						var regionWidth:Float = atlasRegion.rotate ? atlasRegion.height : atlasRegion.width;
+						// var regionWidth:Float = atlasRegion.rotate ? atlasRegion.height : atlasRegion.width;
 						var regionHeight:Float = atlasRegion.rotate ? atlasRegion.width : atlasRegion.height;
 
 						tile.rotation = -region.getRotation();
 						tile.scaleX = region.getScaleX() * (region.getWidth() / atlasRegion.width);
 						tile.scaleY = region.getScaleY() * (region.getHeight() / atlasRegion.height);
-
+						
 						
 						var radians:Float = -region.getRotation() * Math.PI / 180;
 						var cos:Float = Math.cos(radians);
@@ -196,6 +225,28 @@ class SkeletonSprite extends TileContainer {
 						wrapper.scaleX = bone.getWorldScaleX() * flipX;
 						wrapper.scaleY = bone.getWorldScaleY() * flipY;
 						this.addTile(wrapper);
+						
+						//色值处理
+						soltColor = slot.getColor();
+						skeletonColor = skeleton.getColor();
+						colorTransform.redMultiplier = skeletonColor.r * soltColor.r * regionColor.r;
+						colorTransform.greenMultiplier = skeletonColor.g * soltColor.g * regionColor.g;
+						colorTransform.blueMultiplier = skeletonColor.b * soltColor.b * regionColor.b;
+						colorTransform.alphaMultiplier = skeletonColor.a * soltColor.a * regionColor.a;	
+
+						#if (openfl > "8.4.0")
+						switch(slot.data.blendMode)
+						{
+							case BlendMode.additive:
+								wrapper.blendMode = openfl.display.BlendMode.ADD;
+							case BlendMode.multiply:
+								wrapper.blendMode = openfl.display.BlendMode.MULTIPLY;
+							case BlendMode.screen:
+								wrapper.blendMode = openfl.display.BlendMode.SCREEN;
+							case BlendMode.normal:
+								wrapper.blendMode = openfl.display.BlendMode.NORMAL;
+						}
+						#end
 					}
 
 				}

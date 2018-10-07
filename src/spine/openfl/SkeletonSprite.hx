@@ -16,6 +16,10 @@ import spine.support.graphics.TextureAtlas;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.Color;
 import openfl.events.Event;
+import spine.openfl.SkeletonBatchs;
+import spine.utils.VectorUtils;
+import openfl.display.DisplayObject;
+import openfl.display.Shape;
 
 /**
  * Sprite渲染器，单个Sprite会进行单次渲染
@@ -25,15 +29,28 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
 
+	public var batchs:SkeletonBatchs;
+
 
 	//坐标数组
 	private var _tempVerticesArray:Array<Float>;
+	// private var _tempTriangles:Vector<Int>;
 	//矩形三角形
 	private var _quadTriangles:Array<Int>;
 	//颜色数组（未实现）
 	private var _colors:Array<Int>;
 	//是否正在播放
 	private var _isPlay:Bool = true;
+	private var _actionName:String = "";
+	//顶点缓存
+	private var _trianglesVector:Map<AtlasRegion,Vector<Int>>;
+
+	private var allVerticesArray:Vector<Float> = new Vector<Float>();
+	private var allTriangles:Vector<Int> = new Vector<Int>();
+	private var allUvs:Vector<Float> = new Vector<Float>();
+	private var _buffdataPoint:Int = 0;
+
+	private var _shape:Shape;
 
 	/**
 	 * 创建一个Spine对象
@@ -59,6 +76,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		#else
 		this.addEventListener(Event.ENTER_FRAME, enterFrame);
 		#end
+
+
+		_shape = new Shape();
+		this.addChild(_shape);
+
+		_trianglesVector = new Map<AtlasRegion,Vector<Int>>();
 	}
 
 	#if zygame
@@ -72,7 +95,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	private function enterFrame(e:Event):Void
 	{
-		advanceTime(1/60);
+		if(batchs == null)
+			advanceTime(1/60);
 	}
 	#end
 
@@ -92,13 +116,38 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 播放
 	 */
-	public function play():Void {
+	public function play(action:String = null,loop:Bool = true):Void {
 		#if !zygame
 		if (!hasEventListener(Event.ENTER_FRAME)) {
 			addEventListener(Event.ENTER_FRAME, enterFrame);
 		}
 		#end
 		_isPlay = true;
+		if(action != null)
+			_actionName = action;
+	}
+
+	/**
+	 * 是否正在播放
+	 */
+	public var isPlay(get,set):Bool;
+	private function get_isPlay():Bool
+	{
+		return _isPlay;
+	}
+	private function set_isPlay(bool:Bool):Bool
+	{
+		_isPlay = bool;
+		return bool;
+	}
+
+	/**
+	 * 获取当前播放的动作
+	 */
+	public var actionName(get,never):String;
+	private function get_actionName():String
+	{
+		return _actionName;
 	}
 
 	/**
@@ -129,6 +178,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	private function renderTriangles():Void
 	{
+		_buffdataPoint = 0;
+		var uindex:Int = 0;
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
 		var n:Int = drawOrder.length;
 		var triangles:Array<Int> = null;
@@ -136,16 +187,13 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var verticesLength:Int = 0;
 		var atlasRegion:AtlasRegion;
 		var slot:Slot;
-		var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
-		var color:Int;
-		var blend:Int;
+		// var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
 		var bitmapData:BitmapData = null;
+		
+		var v:Vector<Int> = null;
 
-		var allVerticesArray:Vector<Float> = new Vector<Float>();
-		var allTriangles:Vector<Int> = new Vector<Int>();
-		var allUvs:Vector<Float> = new Vector<Float>();
-
-		this.graphics.clear();
+		_shape.graphics.clear();
+		allTriangles.splice(0,allTriangles.length);
 
 		var t:Int = 0;
 
@@ -157,11 +205,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			triangles = null;
 			uvs = null;
 			atlasRegion = null;
-			_tempVerticesArray.splice(0,_tempVerticesArray.length);
 			//如果骨骼的渲染物件存在
 			if(slot.attachment != null)
 			{
-				// trace("存在骨骼");
 				if (Std.is(slot.attachment, RegionAttachment))
 				{
 					//如果是矩形
@@ -171,10 +217,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = _quadTriangles;
 					atlasRegion = cast region.getRegion();
-					r = region.getColor().r;
-					g = region.getColor().g;
-					b = region.getColor().b;
-					a = region.getColor().a;
 
 				}
 				else if(Std.is(slot.attachment, MeshAttachment)){
@@ -185,40 +227,53 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = region.getTriangles();
 					atlasRegion = cast region.getRegion();
-					r = region.getColor().r;
-					g = region.getColor().g;
-					b = region.getColor().b;
-					a = region.getColor().a;
 				}
 
 				//矩形绘制
 				if(atlasRegion != null)
 				{
-					if(bitmapData != atlasRegion.page.rendererObject)
+					if(batchs != null)
 					{
-						bitmapData = cast atlasRegion.page.rendererObject;
-						this.graphics.beginBitmapFill(bitmapData,null,true,true);
+						//上传到批量渲染
+						batchs.uploadBuffData(this,ofArrayFloat(_tempVerticesArray),ofArrayInt(triangles),ofArrayFloat(uvs));
 					}
-
-					//顶点重新计算
-					var v:Vector<Int> = ofArrayInt(triangles);
-					for(vi in 0...v.length)
+					else
 					{
-						v[vi] += t;
-					}
-					t += Std.int(_tempVerticesArray.length/2);
+						if(bitmapData != atlasRegion.page.rendererObject)
+						{
+							bitmapData = cast atlasRegion.page.rendererObject;
+							_shape.graphics.beginBitmapFill(bitmapData,null,true,true);
+						}
+						//顶点重新计算
+						v = ofArrayInt(triangles);
+						for(vi in 0...v.length)
+						{
+							v[vi] += t;
+							//追加顶点
+							allTriangles[_buffdataPoint] = v[vi];
+							_buffdataPoint++;
+						}
 
-					allVerticesArray = allVerticesArray.concat(ofArrayFloat(_tempVerticesArray));
-					allTriangles = allTriangles.concat(v);
-					allUvs = allUvs.concat(ofArrayFloat(uvs));
+						for(ui in 0...uvs.length)
+						{
+							//追加坐标
+							allVerticesArray[uindex] = _tempVerticesArray[ui];
+							//追加UV
+							allUvs[uindex] = uvs[ui];
+							uindex++;
+						}
+						t += Std.int(uvs.length/2);
+					}
 				}
 				
 			}
 		}
 		
-		//实现一次性绘制
-		this.graphics.drawTriangles(allVerticesArray,allTriangles,allUvs,TriangleCulling.NONE);
-		this.graphics.endFill();
+		if(batchs == null)
+		{
+			_shape.graphics.drawTriangles(allVerticesArray,allTriangles,allUvs,TriangleCulling.NONE);
+			_shape.graphics.endFill();
+		}
 		
 	}
 
@@ -246,6 +301,31 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		for(i in 0...data.length)
 			v.set(i,data[i]);
 		return v;
+	}	
+
+	/**
+	 * 重构触摸事件，无法触发触摸的问题
+	 * @param x 
+	 * @param y 
+	 * @param shapeFlag 
+	 * @param stack 
+	 * @param interactiveOnly 
+	 * @param hitObject 
+	 * @return Bool
+	 */
+	override private function __hitTest (x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool 
+	{
+		var bool:Bool = super.__hitTest(x,y,shapeFlag,stack,interactiveOnly,hitObject);
+		if(bool == true){
+			return true;
+		}
+		if(this.mouseEnabled == false || this.visible == false)
+			return false;
+		if(this.getBounds(stage).contains(x,y)){
+			stack.push(this);
+			return true;
+		}
+		return false;
 	}
 
 }
