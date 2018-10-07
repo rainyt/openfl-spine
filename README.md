@@ -1,6 +1,9 @@
 # OpenFLSpine
 初次版本
 
+# Spine-hx
+该库的Spine是使用了spine-hx，帮上不少的忙，openfl-spine仅实现了渲染器。spine-hx来源：https://github.com/jeremyfa/spine-hx
+
 # 该Spine提供了两个渲染器
 Tilemap渲染器：拥有极其快速渲染速度，但不支持网格。
 Sprite渲染器：拥有网格功能，单个精灵拥有批渲染功能。
