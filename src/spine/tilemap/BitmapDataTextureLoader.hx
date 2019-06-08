@@ -23,7 +23,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 	public function loadPage (page:AtlasPage, path:String):Void {
 		var bitmapData:BitmapData = this._bitmapData.get(StringUtils.getName(path));
 		if (bitmapData == null)
-			throw new IllegalArgumentException("BitmapData not found with name: " + path);
+			throw ("BitmapData not found with name: " + path);
 		_tileset = new Tileset(bitmapData);
 		_ids = new Map<AtlasRegion,Int>();
 		page.rendererObject = this;

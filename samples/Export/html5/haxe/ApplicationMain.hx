@@ -39,7 +39,7 @@ import haxe.macro.Expr;
 		
 		ManifestResources.init (config);
 		
-		app.meta["build"] = "14";
+		app.meta["build"] = "16";
 		app.meta["company"] = "Company Name";
 		app.meta["file"] = "ZYGameEngineHaxe";
 		app.meta["name"] = "ZYGameEngineHaxe";

@@ -12,36 +12,34 @@ Sprite渲染器：拥有网格功能，单个精灵拥有批渲染功能。
 <haxelib name="openfl-spine"/>
 
 # Sprite渲染器（已提高了性能，内置批量渲染处理）
-        var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader("assets/");
-		    var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
-        var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
-        json.setScale(0.6);
-        
-        var skeletonData:SkeletonData = json.readSkeletonData(new spine.SkeletonDataFileHandle("assets/spineboy-pro.json"));
-        for(i in 0...10)
-        {
-            var skeleton:spine.openfl.SkeletonAnimation = new spine.openfl.SkeletonAnimation(skeletonData);
-            skeleton.x = Math.random()*stage.stageWidth;
-            skeleton.y = 500;
-            this.addChild(skeleton);
-            skeleton.state.setAnimationByName(0,"walk",true);
-        }
-        
+该对象拥有批渲染高性能渲染，能够得到1draw的渲染。但是会有以下几个限制：
+- 必须使用单张资源纹理渲染。
+- 单张纹理资源大小不超过2048*2048。
+- 使用批渲染渲染时，暂时不支持透明度，改色等功能；但是支持网格功能。
+
+创建示例：
+```haxe
+        var jsonData:String = Assets.getText("assets/spineboy-pro.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/spineboy-pro.atlas",["assets/spineboy-pro.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            //Sprite格式
+            var openflSprite = textureAtals.buildSpriteSkeleton("spineboy-pro",jsonData);
+            this.addChild(openflSprite);
+            openflSprite.y = 500;
+            openflSprite.x = 500;
+            openflSprite.play("walk");
+            openflSprite.scaleX = 0.6;
+            openflSprite.scaleY = 0.6;
+            openflSprite.isNative = true;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
+```
+上面提及到必须使用单张图片纹理渲染，但也可以通过isNative属性开启支持多纹理、透明度、改色等功能，但将会牺牲一定层度的性能：
+```haxe
+//功能能够通过isNative属性开启，多张纹理图的渲染，必须开启这个属性，否则渲染会有异常。
+spine.isNative = true;
+```
+      
 # Tilemap渲染器
 Tilemap需要一个tilemap进行装载，这意味着一样的图集的Spine只需要1drawcall。
-        
-	var loader:spine.tilemap.BitmapDataTextureLoader = new spine.tilemap.BitmapDataTextureLoader("assets/");
-		var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
-        var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
-        json.setScale(0.6);
-        var tilea:openfl.display.Tilemap  = new openfl.display.Tilemap(Std.int(stage.stageWidth),Std.int(stage.stageHeight),loader.getTileset());
-        this.addChild(tilea);
-        var skeletonData:SkeletonData = json.readSkeletonData(new spine.SkeletonDataFileHandle("assets/spineboy-pro.json"));
-        for(i in 0...10)
-        {
-            var skeleton:spine.tilemap.SkeletonAnimation = new spine.tilemap.SkeletonAnimation(skeletonData);
-            skeleton.x = Math.random()*stage.stageWidth;
-            skeleton.y = 500;
-            tilea.addTile(skeleton);
-            skeleton.state.setAnimationByName(0,"walk",true);
-        }
