@@ -1,5 +1,6 @@
 package spine.support.extensions;
 
+@:keep
 class SpineExtensions {
 
     /** Just to make java-style comparison work in haxe. */

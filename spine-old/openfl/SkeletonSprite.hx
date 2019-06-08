@@ -116,7 +116,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 丢弃
 	 */
-	#if zygame override #end public function destroy():Void {
+	override public function destroy():Void {
 		#if zygame
 		this.setFrameEvent(false);
 		#else

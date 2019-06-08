@@ -1,5 +1,6 @@
 package spine.support.extensions;
 
+@:keep
 class StringExtensions {
 
     /** Just to make java-style string comparison work in haxe. */

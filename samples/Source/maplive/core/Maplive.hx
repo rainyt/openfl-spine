@@ -1,16 +1,15 @@
 package maplive.core;
 
 
-// import spine.openfl.BitmapDataTextureLoader;
-// import spine.openfl.SkeletonAnimation;
-// import spine.tilemap.BitmapDataTextureLoader;
-// import spine.tilemap.SkeletonAnimation;
-import spine.support.graphics.TextureAtlas;
+import openfl.display.Tilemap;
 import spine.SkeletonData;
 import spine.SkeletonJson;
 import spine.attachments.AtlasAttachmentLoader;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import openfl.display.BitmapData;
+import openfl.utils.Assets;
+import zygame.utils.load.SpineTextureAtalsLoader;
 
 /**
  * 地图编辑器工具
@@ -20,61 +19,43 @@ class Maplive extends Sprite{
     public function new(){
         super();
         this.addEventListener(Event.ADDED_TO_STAGE,onInit);
-        // super(this.stage.stageWidth,this.stage.stageHeight,true);
     }
 
     public function onInit(e:Event):Void
     {
         stage.color = 0x002630;
 
-        //Sprite渲染
-        this.showSpirteSkeletonJson();
+        var jsonData:String = Assets.getText("assets/spineboy-pro.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/spineboy-pro.atlas",["assets/spineboy-pro.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            //Sprite格式
+            var openflSprite = textureAtals.buildSpriteSkeleton("spineboy-pro",jsonData);
+            this.addChild(openflSprite);
+            openflSprite.y = 500;
+            openflSprite.x = 500;
+            openflSprite.play("walk");
+            openflSprite.scaleX = 0.6;
+            openflSprite.scaleY = 0.6;
+            openflSprite.isNative = true;
 
-        //Tilemap渲染
-        // this.showTilemapSkeletonJson();
+            //tilemap格式
+            // var tilemap:Tilemap = new Tilemap(stage.stageWidth,stage.stageHeight,textureAtals.loader.getTileset());
+            // var tilemapSprite = textureAtals.buildTilemapSkeleton("spineboy-pro",jsonData);
+            // this.addChild(tilemap);
+            // tilemap.addTile(tilemapSprite);
+            // tilemapSprite.y = 500;
+            // tilemapSprite.x = 200;
+            // tilemapSprite.play("walk");
+            // tilemapSprite.scaleX = 0.6;
+            // tilemapSprite.scaleY = 0.6;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
 
         var fps:openfl.display.FPS = new openfl.display.FPS();
         fps.textColor = 0xffffff;
         this.addChild(fps);
 
-    }
-
-    public function showTilemapSkeletonJson():Void
-    {
-        var loader:spine.tilemap.BitmapDataTextureLoader = new spine.tilemap.BitmapDataTextureLoader(openfl.Assets.getBitmapData("assets/spineboy-pro.png"));
-		var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
-        var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
-        json.setScale(0.6);
-        
-        var tilea:openfl.display.Tilemap  = new openfl.display.Tilemap(Std.int(stage.stageWidth),Std.int(stage.stageHeight),loader.getTileset());
-        this.addChild(tilea);
-        var skeletonData:SkeletonData = json.readSkeletonData(new spine.SkeletonDataFileHandle("assets/spineboy-pro.json"));
-        for(i in 0...10)
-        {
-            var skeleton:spine.tilemap.SkeletonAnimation = new spine.tilemap.SkeletonAnimation(skeletonData);
-            skeleton.x = Math.random()*stage.stageWidth;
-            skeleton.y = 500;
-            tilea.addTile(skeleton);
-            skeleton.state.setAnimationByName(0,"walk",true);
-        }
-    }
-
-    public function showSpirteSkeletonJson():Void
-    {
-        var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader(openfl.Assets.getBitmapData("assets/spineboy-pro.png"));
-		var atlas:TextureAtlas = new TextureAtlas(openfl.Assets.getText("assets/spineboy-pro.atlas"),loader);
-        var json:SkeletonJson = new SkeletonJson(new AtlasAttachmentLoader(atlas));
-        json.setScale(0.6);
-        
-        var skeletonData:SkeletonData = json.readSkeletonData(new spine.SkeletonDataFileHandle("assets/spineboy-pro.json"));
-        for(i in 0...10)
-        {
-            var skeleton:spine.openfl.SkeletonAnimation = new spine.openfl.SkeletonAnimation(skeletonData);
-            skeleton.x = Math.random()*stage.stageWidth;
-            skeleton.y = 500;
-            this.addChild(skeleton);
-            skeleton.state.setAnimationByName(0,"walk",true);
-        }
     }
 
 }

@@ -93,6 +93,7 @@ class AnimationStateData {
     }
 }
 
+@:keep
 private class Key {
     public var a1:Animation; public var a2:Animation = null;
 

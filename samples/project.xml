@@ -11,6 +11,7 @@
 	<assets path="Assets" rename="assets"/>
 	
 	<haxelib name="openfl"/>
+	<source path="../src" />
 
 	<!-- 编译APIDoc需要使用 -->
 	<!-- <haxelib name="KengSDK"/>

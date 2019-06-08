@@ -28,7 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-package spine.openfl;
+package spine.tilemap;
 
 import spine.SkeletonData;
 import spine.AnimationState;
@@ -42,7 +42,7 @@ class SkeletonAnimation extends SkeletonSprite {
 	 */
 	public var assetsId:String = null;
 	#end
-	
+
 	public var state:AnimationState;
 
 	public function new (skeletonData:SkeletonData, stateData:AnimationStateData = null) {
@@ -50,21 +50,6 @@ class SkeletonAnimation extends SkeletonSprite {
 		skeleton.setFlipY(true);
 		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData):stateData);
 		advanceTime(0);
-		setSkeletonData(skeletonData);
-	}
-
-	/**
-	 * 设置新的骨架数据，实现骨骼换肤可使用这个。
-	 * @param skeletonData 
-	 */
-	public function setSkeletonData(skeletonData:SkeletonData):Void
-	{
-		if(skeleton.getData() == skeletonData)
-			return;
-		skeleton = new Skeleton(skeletonData);
-		skeleton.setFlipY(true);
-		state.getData().skeletonData = skeletonData;
-		skeleton.updateWorldTransform();
 	}
 
 	override public function advanceTime (time:Float):Void {
@@ -78,24 +63,8 @@ class SkeletonAnimation extends SkeletonSprite {
 	 * 播放
 	 */
 	override public function play(action:String = null,loop:Bool = true):Void {
-		isPlay = true;
-		if(action == this.actionName)
-			return;
-		if(action != null && action != ""){
-			this.state.setAnimationByName(0,action,loop);
-		}
-		super.play(action);
-	}
-
-	/**
-	 * 强制播放切换
-	 * @param action 
-	 * @param loop 
-	 */
-	public function playForce(action:String,loop:Bool = true):Void
-	{
-		isPlay = true;
-		if(action != null && action != ""){
+		if(action != null && action != "")
+		{
 			this.state.setAnimationByName(0,action,loop);
 		}
 		super.play(action);

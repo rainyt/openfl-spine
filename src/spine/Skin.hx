@@ -115,6 +115,7 @@ class Skin {
     }
 }
 
+@:keep
 class Key {
     public var slotIndex:Int = 0;
     public var name:String;

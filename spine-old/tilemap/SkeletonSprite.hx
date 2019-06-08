@@ -166,7 +166,7 @@ class SkeletonSprite extends TileContainer {
 			//如果骨骼的渲染物件存在
 			if(slot.attachment != null)
 			{
-				if (Std.is(slot.attachment, RegionAttachment) || Std.is(slot.attachment, MeshAttachment))
+				if (Std.is(slot.attachment, RegionAttachment))
 				{
 					//如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
