@@ -63,7 +63,7 @@ import sys.FileSystem;
 		
 		#else
 		
-		data = '{"name":null,"assets":"aoy4:pathy25:assets%2Fspineboy-pro.pngy4:sizei1967241y4:typey5:IMAGEy2:idR1y7:preloadtgoR0y26:assets%2Fspineboy-pro.jsonR2i181796R3y4:TEXTR5R7R6tgoR0y27:assets%2Fspineboy-pro.atlasR2i4436R3R8R5R9R6tgh","rootPath":null,"version":2,"libraryArgs":[],"libraryType":null}';
+		data = '{"name":null,"assets":"aoy4:pathy23:assets%2FsxkCenter.jsony4:sizei142712y4:typey4:TEXTy2:idR1y7:preloadtgoR0y25:assets%2Fspineboy-pro.pngR2i1967241R3y5:IMAGER5R7R6tgoR0y24:assets%2FsxkCenter.atlasR2i3689R3R4R5R9R6tgoR0y26:assets%2Fspineboy-pro.jsonR2i181796R3R4R5R10R6tgoR0y27:assets%2Fspineboy-pro.atlasR2i4436R3R4R5R11R6tgoR0y22:assets%2FsxkCenter.pngR2i66183R3R8R5R12R6tgh","rootPath":null,"version":2,"libraryArgs":[],"libraryType":null}';
 		manifest = AssetManifest.parse (data, rootPath);
 		library = AssetLibrary.fromManifest (manifest);
 		Assets.registerLibrary ("default", library);
@@ -91,17 +91,23 @@ null
 #if !display
 #if flash
 
+@:keep @:bind #if display private #end class __ASSET__assets_sxkcenter_json extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_spineboy_pro_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_sxkcenter_atlas extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_spineboy_pro_json extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_spineboy_pro_atlas extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_sxkcenter_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__manifest_default_json extends null { }
 
 
 #elseif (desktop || cpp)
 
+@:keep @:file("Assets/sxkCenter.json") #if display private #end class __ASSET__assets_sxkcenter_json extends haxe.io.Bytes {}
 @:keep @:image("Assets/spineboy-pro.png") #if display private #end class __ASSET__assets_spineboy_pro_png extends lime.graphics.Image {}
+@:keep @:file("Assets/sxkCenter.atlas") #if display private #end class __ASSET__assets_sxkcenter_atlas extends haxe.io.Bytes {}
 @:keep @:file("Assets/spineboy-pro.json") #if display private #end class __ASSET__assets_spineboy_pro_json extends haxe.io.Bytes {}
 @:keep @:file("Assets/spineboy-pro.atlas") #if display private #end class __ASSET__assets_spineboy_pro_atlas extends haxe.io.Bytes {}
+@:keep @:image("Assets/sxkCenter.png") #if display private #end class __ASSET__assets_sxkcenter_png extends lime.graphics.Image {}
 @:keep @:file("") #if display private #end class __ASSET__manifest_default_json extends haxe.io.Bytes {}
 
 

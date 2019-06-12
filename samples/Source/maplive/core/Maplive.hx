@@ -28,7 +28,7 @@ class Maplive extends Sprite{
         var jsonData:String = Assets.getText("assets/spineboy-pro.json");
         var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/spineboy-pro.atlas",["assets/spineboy-pro.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
-            //Sprite格式
+            // Sprite格式
             var openflSprite = textureAtals.buildSpriteSkeleton("spineboy-pro",jsonData);
             this.addChild(openflSprite);
             openflSprite.y = 500;
@@ -37,17 +37,24 @@ class Maplive extends Sprite{
             openflSprite.scaleX = 0.6;
             openflSprite.scaleY = 0.6;
             openflSprite.isNative = true;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
 
-            //tilemap格式
-            // var tilemap:Tilemap = new Tilemap(stage.stageWidth,stage.stageHeight,textureAtals.loader.getTileset());
-            // var tilemapSprite = textureAtals.buildTilemapSkeleton("spineboy-pro",jsonData);
-            // this.addChild(tilemap);
-            // tilemap.addTile(tilemapSprite);
-            // tilemapSprite.y = 500;
-            // tilemapSprite.x = 200;
-            // tilemapSprite.play("walk");
-            // tilemapSprite.scaleX = 0.6;
-            // tilemapSprite.scaleY = 0.6;
+
+        var jsonData:String = Assets.getText("assets/sxkCenter.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/sxkCenter.atlas",["assets/sxkCenter.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            // tilemap格式
+            var tilemap:Tilemap = new Tilemap(stage.stageWidth,stage.stageHeight,textureAtals.loader.getTileset());
+            var tilemapSprite = textureAtals.buildTilemapSkeleton("sxkCenter",jsonData);
+            this.addChild(tilemap);
+            tilemap.addTile(tilemapSprite);
+            tilemapSprite.y = 500;
+            tilemapSprite.x = 200;
+            tilemapSprite.play("run");
+            tilemapSprite.scaleX = 0.6;
+            tilemapSprite.scaleY = 0.6;
         },function(error:String):Void{
             trace("加载失败：",error);
         });

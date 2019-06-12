@@ -166,7 +166,7 @@ class SkeletonSprite extends TileContainer {
 			//如果骨骼的渲染物件存在
 			if(slot.attachment != null)
 			{
-				if (Std.is(slot.attachment, RegionAttachment) || Std.is(slot.attachment, MeshAttachment))
+				if (Std.is(slot.attachment, RegionAttachment))
 				{
 					//如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
@@ -185,6 +185,7 @@ class SkeletonSprite extends TileContainer {
 						var tile:Tile = null;
 						if(wrapper == null){
 							wrapper = new TileContainer();
+							// trace("atlasRegion.page.rendererObject=",atlasRegion.page.rendererObject);
 							tile = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
 							wrapper.addTile(tile);
 							_map.set(atlasRegion,wrapper);
@@ -219,11 +220,18 @@ class SkeletonSprite extends TileContainer {
 						var flipX:Int = skeleton.flipX ? -1 : 1;
 						var flipY:Int = skeleton.flipY ? -1 : 1;
 
+						// wrapper.x = bone.getWorldX();
+						// wrapper.y = bone.getWorldY();
+						// wrapper.rotation = bone.getWorldRotationX() * flipX * flipY;
+						// wrapper.scaleX = bone.getWorldScaleX() * flipX;
+						// wrapper.scaleY = bone.getWorldScaleY() * flipY;
+						// this.addTile(wrapper);
+
 						wrapper.x = bone.getWorldX();
 						wrapper.y = bone.getWorldY();
-						wrapper.rotation = bone.getWorldRotationX() * flipX * flipY;
-						wrapper.scaleX = bone.getWorldScaleX() * flipX;
-						wrapper.scaleY = bone.getWorldScaleY() * flipY;
+						wrapper.rotation = bone.getWorldRotationX();
+						wrapper.scaleX = bone.getWorldScaleX();
+						wrapper.scaleY = bone.getWorldScaleY();
 						this.addTile(wrapper);
 						
 						//色值处理
@@ -251,18 +259,8 @@ class SkeletonSprite extends TileContainer {
 
 				}
 				else if(Std.is(slot.attachment, MeshAttachment)){
-					//如果是网格
-					// var region:MeshAttachment = cast slot.attachment;
-					// region.computeWorldVertices(slot,0,region.getWorldVerticesLength(), _tempVerticesArray,0,2);
-					// uvs = region.getUVs();
-					// triangles = region.getTriangles();
-					// atlasRegion = cast region.getRegion();
-					// r = region.getColor().r;
-					// g = region.getColor().g;
-					// b = region.getColor().b;
-					// a = region.getColor().a;
 
-					// var tile:Tile = new Tile();
+					throw "tilemap not support MeshAttachment!";
 				}
 				
 			}
