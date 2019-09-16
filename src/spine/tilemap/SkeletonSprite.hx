@@ -217,9 +217,14 @@ class SkeletonSprite extends TileContainer {
 						tile.y = -region.getY() + shiftX * sin + shiftY * cos;
 
 						var bone:Bone = slot.bone;
+						#if (spine <= "3.6.0")
 						var flipX:Int = skeleton.flipX ? -1 : 1;
 						var flipY:Int = skeleton.flipY ? -1 : 1;
-
+						#else 
+						var flipX:Float = skeleton.getScaleX();
+						var flipY:Float = skeleton.getScaleY();
+						#end
+						
 						// wrapper.x = bone.getWorldX();
 						// wrapper.y = bone.getWorldY();
 						// wrapper.rotation = bone.getWorldRotationX() * flipX * flipY;

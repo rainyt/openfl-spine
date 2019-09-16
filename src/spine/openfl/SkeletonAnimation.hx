@@ -47,7 +47,11 @@ class SkeletonAnimation extends SkeletonSprite {
 
 	public function new (skeletonData:SkeletonData, stateData:AnimationStateData = null) {
 		super(skeletonData);
+		#if (spine <= "3.6.0")
 		skeleton.setFlipY(true);
+		#else
+		skeleton.setScaleY(-1);
+		#end
 		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData):stateData);
 		advanceTime(0);
 		setSkeletonData(skeletonData);
@@ -62,7 +66,11 @@ class SkeletonAnimation extends SkeletonSprite {
 		if(skeleton.getData() == skeletonData)
 			return;
 		skeleton = new Skeleton(skeletonData);
+		#if (spine <= "3.6.0")
 		skeleton.setFlipY(true);
+		#else
+		skeleton.setScaleY(-1);
+		#end
 		state.getData().skeletonData = skeletonData;
 		skeleton.updateWorldTransform();
 	}
