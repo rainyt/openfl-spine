@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import lime.utils.ObjectPool;
 import openfl.geom.Matrix;
 import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
@@ -25,35 +26,95 @@ import openfl.display.Sprite;
  * Sprite渲染器，单个Sprite会进行单次渲染
  */
 class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end {
+
+	/**
+	 * 骨架对象
+	 */
 	public var skeleton:Skeleton;
+
+	/**
+	 * 时间轴缩放
+	 */
 	public var timeScale:Float = 1;
 
+	/**
+	 * 批渲染对象
+	 */
 	public var batchs:SkeletonBatchs;
 
-	// 坐标数组
+	/**
+	 * 坐标数组
+	 */
 	private var _tempVerticesArray:Array<Float>;
-	// private var _tempTriangles:Vector<Int>;
-	// 矩形三角形
+	/**
+	 * 矩形三角形
+	 */
 	private var _quadTriangles:Array<Int>;
-	// 颜色数组（未实现）
+	/**
+	 * 颜色数组（未实现）
+	 */
 	private var _colors:Array<Int>;
-	// 是否正在播放
+	/**
+	 * 是否正在播放
+	 */
 	private var _isPlay:Bool = true;
+	/**
+	 * 当前播放的动作名
+	 */
 	private var _actionName:String = "";
-	// 顶点缓存
+	/**
+	 * 顶点缓存
+	 */
 	private var _trianglesVector:Map<AtlasRegion, Vector<Int>>;
 
+	/**
+	 * 精灵表垃圾池
+	 */
+	private var _spritePool:ObjectPool<Sprite>;
+
+	/**
+	 * 所有顶点数据
+	 */
 	private var allVerticesArray:Vector<Float> = new Vector<Float>();
+	
+	/**
+	 * 所有三角形数据
+	 */
 	private var allTriangles:Vector<Int> = new Vector<Int>();
+
+	/**
+	 * 所有UV数据
+	 */
 	private var allUvs:Vector<Float> = new Vector<Float>();
+
+	/**
+	 * 顶点数据索引
+	 */
 	private var _buffdataPoint:Int = 0;
 
+	/**
+	 * 渲染的精灵对象
+	 */
 	private var _shape:Sprite;
 
 	/**
 	 * 是否为本地渲染，如果为true时，将支持透明度渲染，但渲染数会增加。
 	 */
-	public var isNative:Bool = false;
+	public var isNative(get,set):Bool;
+	private var _isNative:Bool = false;
+	private function set_isNative(value:Bool):Bool
+	{	
+		_isNative=  value;
+		if(_isNative && _spritePool == null)
+			_spritePool = new ObjectPool(()->{
+				return new Sprite();
+			});
+		return _isNative;
+	}
+	private function get_isNative():Bool
+	{	
+		return _isNative;
+	}
 
 	/**
 	 * 创建一个Spine对象
@@ -76,7 +137,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_colors = new Array<Int>();
 
 		#if !zygame
-		this.addEventListener(Event.ENTER_FRAME, enterFrame);
+		this.addEventListener(Event.ADDED_TO_STAGE,onAddToStage);
+		this.addEventListener(Event.REMOVED_FROM_STAGE,onRemoveToStage);
 		#end
 
 		_shape = new Sprite();
@@ -88,18 +150,24 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	#if zygame
-	override public function onInit():Void {
-		super.onInit();
-		this.setFrameEvent(true);
-	}
-	#end
-
-	#if zygame
+	/**
+	 * 帧事件
+	 */
 	override public function onFrame():Void {
 		advanceTime(1 / 60);
 	}
+	/**
+     * 当从舞台移除时
+     */
+    override public function onRemoveToStage():Void
+    {
+		setFrameEvent(false);
+    }
+	override public function onAddToStage():Void
+    {
+		setFrameEvent(true);
+    }
 	#else
-
 	/**
 	 * 渲染事件
 	 * @param e
@@ -108,6 +176,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		if (batchs == null)
 			advanceTime(1 / 60);
 	}
+	/**
+     * 当从舞台移除时
+     */
+    public function onRemoveToStage(_):Void
+    {
+		this.removeEventListener(Event.ENTER_FRAME, enterFrame);
+    }
+	public function onAddToStage(_):Void
+    {
+		this.addEventListener(Event.ENTER_FRAME, enterFrame);
+    }
 	#end
 
 	/**
@@ -119,6 +198,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		#else
 		removeEventListener(Event.ENTER_FRAME, enterFrame);
 		#end
+		if(_spritePool != null)
+			_spritePool.clear();
+		_spritePool = null;
 		removeChildren();
 		graphics.clear();
 	}
@@ -197,7 +279,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var slot:Slot;
 		// var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
 
-		_shape.removeChildren();
+		var max:Int = _shape.numChildren - 1;
+		while (max >= 0)
+		{
+			var spr:Sprite = cast _shape.getChildAt(max);
+			_shape.removeChild(spr);
+			_spritePool.remove(spr);
+			_spritePool.add(spr);
+			max --;
+		}
 		allTriangles.splice(0, allTriangles.length);
 
 		var t:Int = 0;
@@ -231,7 +321,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 				// 矩形绘制
 				if (atlasRegion != null) {
-					var spr:Sprite = new Sprite();
+					var spr:Sprite = _spritePool.get();
 					var curBitmap:BitmapData = cast atlasRegion.page.rendererObject;
 					spr.graphics.clear();
 					spr.graphics.beginBitmapFill(curBitmap, null, true, true);

@@ -24,7 +24,6 @@ class Maplive extends Sprite{
     public function onInit(e:Event):Void
     {
         stage.color = 0x002630;
-
         var jsonData:String = Assets.getText("assets/bonus.json");
         var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/bonus.atlas",["assets/bonus.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
