@@ -35,6 +35,8 @@ class BitmapDataTextureLoader implements TextureLoader {
 			region.packedHeight = region.originalHeight;
 			region.packedWidth = region.originalWidth;
 		}
+		if(region.offsetX == 0 && region.offsetY == 0)
+			return;
 		if(region.width < region.originalWidth)
 			region.packedWidth = region.width;
 		if(region.height < region.originalHeight)
