@@ -64,7 +64,6 @@ class BitmapDataTextureLoader implements TextureLoader {
 				region.packedHeight = region.width;
 			}
 		}
-		trace(region);
 	}
 
 	public function unloadPage (page:AtlasPage):Void {
