@@ -25,18 +25,50 @@ class Maplive extends Sprite{
     {
         stage.color = 0x002630;
 
-        var jsonData:String = Assets.getText("assets/sesame_shiba.json");
-        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/sesame_shiba.atlas",["assets/sesame_shiba.png"]);
+        var jsonData:String = Assets.getText("assets/off/red_shiba.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/off/red_shiba.atlas",["assets/off/red_shiba.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // Sprite格式
-            var openflSprite = textureAtals.buildSpriteSkeleton("sesame_shiba",jsonData);
+            var openflSprite = textureAtals.buildSpriteSkeleton("red_shiba",jsonData);
             this.addChild(openflSprite);
             openflSprite.y = 500;
             openflSprite.x = 500;
             openflSprite.play("animation");
             openflSprite.scaleX = 0.6;
             openflSprite.scaleY = 0.6;
-            openflSprite.isNative = true;
+            openflSprite.isNative = false;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
+
+        var jsonData:String = Assets.getText("assets/red_shiba.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/red_shiba.atlas",["assets/red_shiba.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            // Sprite格式
+            var openflSprite = textureAtals.buildSpriteSkeleton("red_shiba",jsonData);
+            this.addChild(openflSprite);
+            openflSprite.y = 300;
+            openflSprite.x = 500;
+            openflSprite.play("animation");
+            openflSprite.scaleX = 0.6;
+            openflSprite.scaleY = 0.6;
+            openflSprite.isNative = false;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
+
+        var jsonData:String = Assets.getText("assets/sesame_shiba.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/sesame_shiba.atlas",["assets/sesame_shiba.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            // Sprite格式
+            var openflSprite = textureAtals.buildSpriteSkeleton("sesame_shiba",jsonData);
+            this.addChild(openflSprite);
+            openflSprite.y = 300;
+            openflSprite.x = 300;
+            openflSprite.play("animation");
+            openflSprite.scaleX = 0.6;
+            openflSprite.scaleY = 0.6;
+            openflSprite.isNative = false;
         },function(error:String):Void{
             trace("加载失败：",error);
         });

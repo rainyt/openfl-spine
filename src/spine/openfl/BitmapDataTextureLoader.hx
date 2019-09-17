@@ -24,23 +24,32 @@ class BitmapDataTextureLoader implements TextureLoader {
 	}
 
 	public function loadRegion (region:AtlasRegion):Void {
+		if(region.offsetX == 0 && region.offsetY == 0)
+			return;
 		if(region.rotate)
 		{
 			var v1:Int = region.width;
 			region.width = region.height;
 			region.height = v1;
+
 			v1 = region.originalHeight;
 			region.originalHeight = region.originalWidth;
 			region.originalWidth = v1;
+
 			region.packedHeight = region.originalHeight;
 			region.packedWidth = region.originalWidth;
+			region.rotate = true;
 		}
-		if(region.offsetX == 0 && region.offsetY == 0)
-			return;
+
 		if(region.width < region.originalWidth)
+		{
 			region.packedWidth = region.width;
+		}
 		if(region.height < region.originalHeight)
+		{
 			region.packedHeight = region.height;
+		}
+		trace(region);
 	}
 
 	public function unloadPage (page:AtlasPage):Void {
