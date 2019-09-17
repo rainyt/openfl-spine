@@ -9,7 +9,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.display.BitmapData;
 import openfl.utils.Assets;
-import zygame.utils.load.SpineTextureAtalsLoader;
+import zygame.utils.load.SpineTextureAtlasLoader;
 
 /**
  * 地图编辑器工具
@@ -25,8 +25,41 @@ class Maplive extends Sprite{
     {
         stage.color = 0x002630;
 
+        var jsonData:String = Assets.getText("assets/bonus.json");
+        var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/bonus.atlas",["assets/bonus.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            // Sprite格式
+            var openflSprite = textureAtals.buildSpriteSkeleton("bonus",jsonData);
+            this.addChild(openflSprite);
+            openflSprite.y = 300;
+            openflSprite.x = 700;
+            openflSprite.play("animation");
+            openflSprite.scaleX = 0.6;
+            openflSprite.scaleY = 0.6;
+            openflSprite.isNative = true;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
+
+        var jsonData:String = Assets.getText("assets/wild.json");
+        var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/wild.atlas",["assets/wild.png"]);
+        spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
+            // Sprite格式
+            var openflSprite = textureAtals.buildSpriteSkeleton("wild",jsonData);
+            this.addChild(openflSprite);
+            openflSprite.y = 500;
+            openflSprite.x = 700;
+            openflSprite.play("animation");
+            openflSprite.scaleX = 0.6;
+            openflSprite.scaleY = 0.6;
+            openflSprite.isNative = true;
+        },function(error:String):Void{
+            trace("加载失败：",error);
+        });
+
+        // return;
         var jsonData:String = Assets.getText("assets/off/red_shiba.json");
-        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/off/red_shiba.atlas",["assets/off/red_shiba.png"]);
+        var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/off/red_shiba.atlas",["assets/off/red_shiba.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // Sprite格式
             var openflSprite = textureAtals.buildSpriteSkeleton("red_shiba",jsonData);
@@ -42,7 +75,7 @@ class Maplive extends Sprite{
         });
 
         var jsonData:String = Assets.getText("assets/red_shiba.json");
-        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/red_shiba.atlas",["assets/red_shiba.png"]);
+        var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/red_shiba.atlas",["assets/red_shiba.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // Sprite格式
             var openflSprite = textureAtals.buildSpriteSkeleton("red_shiba",jsonData);
@@ -52,13 +85,15 @@ class Maplive extends Sprite{
             openflSprite.play("animation");
             openflSprite.scaleX = 0.6;
             openflSprite.scaleY = 0.6;
-            openflSprite.isNative = true;
+            openflSprite.isNative = false;
         },function(error:String):Void{
             trace("加载失败：",error);
         });
 
+        
+
         var jsonData:String = Assets.getText("assets/sesame_shiba.json");
-        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/sesame_shiba.atlas",["assets/sesame_shiba.png"]);
+        var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/sesame_shiba.atlas",["assets/sesame_shiba.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // Sprite格式
             var openflSprite = textureAtals.buildSpriteSkeleton("sesame_shiba",jsonData);
@@ -75,7 +110,7 @@ class Maplive extends Sprite{
 
 
         var jsonData:String = Assets.getText("assets/sxkCenter.json");
-        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/sxkCenter.atlas",["assets/sxkCenter.png"]);
+        var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/sxkCenter.atlas",["assets/sxkCenter.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // tilemap格式
             var tilemap:Tilemap = new Tilemap(stage.stageWidth,stage.stageHeight,textureAtals.loader.getTileset());

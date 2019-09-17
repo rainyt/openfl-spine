@@ -13,7 +13,7 @@ import zygame.utils.StringUtils;
 /**
  * SpineTextureAtalsLoader加载器
  */
-class SpineTextureAtalsLoader {
+class SpineTextureAtlasLoader {
 
     private var _texPath:Array<String>;
     private var _texs:Map<String,BitmapData>;
