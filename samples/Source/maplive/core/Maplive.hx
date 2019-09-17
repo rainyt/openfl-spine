@@ -52,7 +52,7 @@ class Maplive extends Sprite{
             openflSprite.play("animation");
             openflSprite.scaleX = 0.6;
             openflSprite.scaleY = 0.6;
-            openflSprite.isNative = false;
+            openflSprite.isNative = true;
         },function(error:String):Void{
             trace("加载失败：",error);
         });
