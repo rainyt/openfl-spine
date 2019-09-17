@@ -39,10 +39,10 @@ class BitmapDataTextureLoader implements TextureLoader {
 			v1 = region.packedHeight;
 			region.packedHeight = region.packedWidth;
 			region.packedWidth = v1;
-			region.rotate = true;
+
 		}
 
-		if(region.originalWidth == region.packedWidth && region.originalHeight == region.packedHeight)
+		if(region.originalWidth == region.packedWidth && region.originalHeight == region.packedHeight || (region.width < region.packedWidth && region.height < region.packedHeight))
 		{
 			if(region.width < region.originalWidth)
 			{
@@ -55,6 +55,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		}
 		else
 		{
+			trace(region);
 			if(region.height < region.originalWidth)
 			{
 				region.packedWidth = region.height;
