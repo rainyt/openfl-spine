@@ -55,7 +55,6 @@ class BitmapDataTextureLoader implements TextureLoader {
 		}
 		else
 		{
-			trace(region);
 			if(region.height < region.originalWidth)
 			{
 				region.packedWidth = region.height;
