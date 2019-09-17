@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
-  "version": "1.4.0",
+  "version": "1.4.3",
   "releasenote": "",
   "contributors": ["rainy"],
   "classPath": "src",

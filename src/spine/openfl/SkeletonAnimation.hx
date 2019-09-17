@@ -47,7 +47,7 @@ class SkeletonAnimation extends SkeletonSprite {
 
 	public function new (skeletonData:SkeletonData, stateData:AnimationStateData = null) {
 		super(skeletonData);
-		#if (spine <= "3.6.0")
+		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
 		skeleton.setScaleY(-1);
@@ -66,7 +66,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		if(skeleton.getData() == skeletonData)
 			return;
 		skeleton = new Skeleton(skeletonData);
-		#if (spine <= "3.6.0")
+		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
 		skeleton.setScaleY(-1);

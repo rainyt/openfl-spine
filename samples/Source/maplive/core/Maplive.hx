@@ -25,15 +25,15 @@ class Maplive extends Sprite{
     {
         stage.color = 0x002630;
 
-        var jsonData:String = Assets.getText("assets/spineboy-pro.json");
-        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/spineboy-pro.atlas",["assets/spineboy-pro.png"]);
+        var jsonData:String = Assets.getText("assets/sesame_shiba.json");
+        var spineTextureAtals:SpineTextureAtalsLoader = new SpineTextureAtalsLoader("assets/sesame_shiba.atlas",["assets/sesame_shiba.png"]);
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // Sprite格式
-            var openflSprite = textureAtals.buildSpriteSkeleton("spineboy-pro",jsonData);
+            var openflSprite = textureAtals.buildSpriteSkeleton("sesame_shiba",jsonData);
             this.addChild(openflSprite);
             openflSprite.y = 500;
             openflSprite.x = 500;
-            openflSprite.play("walk");
+            openflSprite.play("animation");
             openflSprite.scaleX = 0.6;
             openflSprite.scaleY = 0.6;
             openflSprite.isNative = true;
