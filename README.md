@@ -1,15 +1,22 @@
-# OpenFLSpine
-初次版本
+# openfl-spine
+可在OpenFL引擎中渲染Spine动画的使用库，可通过Sprite、Tilemap实现渲染处理。OpenFL来源：https://github.com/openfl/openfl
 
-# Spine-hx
+# spine-hx
 该库的Spine是使用了spine-hx，帮上不少的忙，openfl-spine仅实现了渲染器。spine-hx来源：https://github.com/jeremyfa/spine-hx
 
 # 该Spine提供了两个渲染器
 Tilemap渲染器：拥有极其快速渲染速度，但不支持网格。
-Sprite渲染器：拥有网格功能，单个精灵拥有批渲染功能。
+Sprite渲染器：拥有网格功能，单个精灵拥有批渲染功能，含有扩展功能，但是会消耗性能。
 
 # 使用方法
+通过命令行安装
+```shell
+haxelib install openfl-spine
+```
+在project.xml中配置
+```xml
 <haxelib name="openfl-spine"/>
+```
 
 # Sprite渲染器（已提高了性能，内置批量渲染处理）
 该对象拥有批渲染高性能渲染，能够得到1draw的渲染。但是会有以下几个限制：
