@@ -26,7 +26,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *****************************************************************************/
+*****************************************************************************/
 
 package spine.tilemap;
 
@@ -49,10 +49,10 @@ import spine.support.graphics.Color;
  * Tilemap渲染器
  */
 class SkeletonSprite extends TileContainer {
-
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
-	//坐标数组
+
+	// 坐标数组
 	private var _tempVerticesArray:Array<Float>;
 
 	private var _isPlay:Bool = true;
@@ -62,7 +62,7 @@ class SkeletonSprite extends TileContainer {
 	/**
 	 * 渲染骨骼对应关系
 	 */
-	private var _map:Map<AtlasRegion,TileContainer>;
+	private var _map:Map<AtlasRegion, TileContainer>;
 
 	public function new(skeletonData:SkeletonData) {
 		super();
@@ -70,7 +70,7 @@ class SkeletonSprite extends TileContainer {
 		skeleton = new Skeleton(skeletonData);
 		skeleton.updateWorldTransform();
 
-		_map = new Map<AtlasRegion,TileContainer>();
+		_map = new Map<AtlasRegion, TileContainer>();
 
 		#if zygame
 		openfl.Lib.current.addEventListener(Event.ENTER_FRAME, enterFrame);
@@ -81,13 +81,12 @@ class SkeletonSprite extends TileContainer {
 
 	/**
 	 * 渲染事件
-	 * @param e 
+	 * @param e
 	 */
-	private function enterFrame(e:Event):Void
-	{
-		advanceTime(1/60);
+	private function enterFrame(e:Event):Void {
+		advanceTime(1 / 60);
 	}
-	
+
 	public function destroy():Void {
 		#if zygame
 		openfl.Lib.current.removeEventListener(Event.ENTER_FRAME, enterFrame);
@@ -100,13 +99,13 @@ class SkeletonSprite extends TileContainer {
 	/**
 	 * 是否正在播放
 	 */
-	public var isPlay(get,set):Bool;
-	private function get_isPlay():Bool
-	{
+	public var isPlay(get, set):Bool;
+
+	private function get_isPlay():Bool {
 		return _isPlay;
 	}
-	private function set_isPlay(bool:Bool):Bool
-	{
+
+	private function set_isPlay(bool:Bool):Bool {
 		_isPlay = bool;
 		return bool;
 	}
@@ -114,16 +113,15 @@ class SkeletonSprite extends TileContainer {
 	/**
 	 * 获取当前播放的动作
 	 */
-	public var actionName(get,never):String;
-	private function get_actionName():String
-	{
+	public var actionName(get, never):String;
+
+	private function get_actionName():String {
 		return _actionName;
 	}
 
-	
-	public function play(action:String = null,loop:Bool = true):Void {
+	public function play(action:String = null, loop:Bool = true):Void {
 		_isPlay = true;
-		if(action != null)
+		if (action != null)
 			_actionName = action;
 	}
 
@@ -131,15 +129,14 @@ class SkeletonSprite extends TileContainer {
 		_isPlay = false;
 	}
 
-	public function advanceTime (delta:Float):Void {
-		if(!_isPlay)
+	public function advanceTime(delta:Float):Void {
+		if (!_isPlay)
 			return;
 		skeleton.update(delta * timeScale);
 		renderTriangles();
 	}
 
-	private function renderTriangles():Void
-	{
+	private function renderTriangles():Void {
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
 		var n:Int = drawOrder.length;
 		var triangles:Array<Int> = null;
@@ -154,21 +151,18 @@ class SkeletonSprite extends TileContainer {
 
 		this.removeTiles();
 
-		for (i in 0 ... n)
-		{
-			//获取骨骼
+		for (i in 0...n) {
+			// 获取骨骼
 			slot = drawOrder[i];
-			//初始化参数
+			// 初始化参数
 			triangles = null;
 			uvs = null;
 			atlasRegion = null;
 			bitmapData = null;
-			//如果骨骼的渲染物件存在
-			if(slot.attachment != null)
-			{
-				if (Std.is(slot.attachment, RegionAttachment))
-				{
-					//如果是矩形
+			// 如果骨骼的渲染物件存在
+			if (slot.attachment != null) {
+				if (Std.is(slot.attachment, RegionAttachment)) {
+					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
 					regionColor = region.getColor();
 					atlasRegion = cast region.getRegion();
@@ -177,20 +171,17 @@ class SkeletonSprite extends TileContainer {
 					// b = region.getColor().b;
 					// a = region.getColor().a;
 
-					//矩形绘制
-					if(atlasRegion != null)
-					{
-
+					// 矩形绘制
+					if (atlasRegion != null) {
 						var wrapper:TileContainer = _map.get(atlasRegion);
 						var tile:Tile = null;
-						if(wrapper == null){
+						if (wrapper == null) {
 							wrapper = new TileContainer();
 							// trace("atlasRegion.page.rendererObject=",atlasRegion.page.rendererObject);
 							tile = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
 							wrapper.addTile(tile);
-							_map.set(atlasRegion,wrapper);
-						}
-						else{
+							_map.set(atlasRegion, wrapper);
+						} else {
 							tile = wrapper.getTileAt(0);
 							tile.id = atlasRegion.page.rendererObject.getID(atlasRegion);
 						}
@@ -201,8 +192,7 @@ class SkeletonSprite extends TileContainer {
 						tile.rotation = -region.getRotation();
 						tile.scaleX = region.getScaleX() * (region.getWidth() / atlasRegion.width);
 						tile.scaleY = region.getScaleY() * (region.getHeight() / atlasRegion.height);
-						
-						
+
 						var radians:Float = -region.getRotation() * Math.PI / 180;
 						var cos:Float = Math.cos(radians);
 						var sin:Float = Math.sin(radians);
@@ -220,11 +210,11 @@ class SkeletonSprite extends TileContainer {
 						#if (spine_hx <= "3.6.0")
 						var flipX:Int = skeleton.flipX ? -1 : 1;
 						var flipY:Int = skeleton.flipY ? -1 : 1;
-						#else 
+						#else
 						var flipX:Float = skeleton.getScaleX();
 						var flipY:Float = skeleton.getScaleY();
 						#end
-						
+
 						// wrapper.x = bone.getWorldX();
 						// wrapper.y = bone.getWorldY();
 						// wrapper.rotation = bone.getWorldRotationX() * flipX * flipY;
@@ -238,18 +228,19 @@ class SkeletonSprite extends TileContainer {
 						wrapper.scaleX = bone.getWorldScaleX();
 						wrapper.scaleY = bone.getWorldScaleY();
 						this.addTile(wrapper);
-						
-						//色值处理
+
+						// 色值处理
 						// soltColor = slot.getColor();
 						// skeletonColor = skeleton.getColor();
 						// colorTransform.redMultiplier = skeletonColor.r * soltColor.r * regionColor.r;
 						// colorTransform.greenMultiplier = skeletonColor.g * soltColor.g * regionColor.g;
 						// colorTransform.blueMultiplier = skeletonColor.b * soltColor.b * regionColor.b;
-						// colorTransform.alphaMultiplier = skeletonColor.a * soltColor.a * regionColor.a;	
-
+						// colorTransform.alphaMultiplier = skeletonColor.a * soltColor.a * regionColor.a;
 						#if (openfl > "8.4.0")
-						switch(slot.data.blendMode)
-						{
+						wrapper.colorTransform.redMultiplier = slot.color.r;
+						wrapper.colorTransform.greenMultiplier = slot.color.g;
+						wrapper.colorTransform.blueMultiplier = slot.color.b;
+						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								wrapper.blendMode = openfl.display.BlendMode.ADD;
 							case BlendMode.multiply:
@@ -261,16 +252,10 @@ class SkeletonSprite extends TileContainer {
 						}
 						#end
 					}
-
-				}
-				else if(Std.is(slot.attachment, MeshAttachment)){
-
+				} else if (Std.is(slot.attachment, MeshAttachment)) {
 					throw "tilemap not support MeshAttachment!";
 				}
-				
 			}
 		}
 	}
-
-
 }
