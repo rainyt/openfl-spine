@@ -1,6 +1,8 @@
 #1.4.9
-- Add colorTransform support with Tilemap render. 
--为本地添加了颜色更改支持。
+- 为Tilemap渲染对象添加了colorTransform的支持
+    - Add colorTransform support with Tilemap render. 
+- 为本地添加了颜色更改支持。
+    - Add colorTransform support with Native render.
 
 # 1.4.8
 - 修正SpineTextureAtlasLoader类名。
