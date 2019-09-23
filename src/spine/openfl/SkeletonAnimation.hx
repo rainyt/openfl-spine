@@ -83,7 +83,9 @@ class SkeletonAnimation extends SkeletonSprite {
 	}
 
 	/**
-	 * 播放
+	 * 播放动画
+	 * @param action 动作名
+	 * @param loop 是否循环
 	 */
 	override public function play(action:String = null,loop:Bool = true):Void {
 		isPlay = true;
@@ -97,8 +99,8 @@ class SkeletonAnimation extends SkeletonSprite {
 
 	/**
 	 * 强制播放切换
-	 * @param action 
-	 * @param loop 
+	 * @param action 动作名
+	 * @param loop 是否循环
 	 */
 	public function playForce(action:String,loop:Bool = true):Void
 	{

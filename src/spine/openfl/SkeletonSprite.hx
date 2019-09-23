@@ -328,6 +328,21 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					spr.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray), ofArrayInt(triangles), ofArrayFloat(uvs), TriangleCulling.NONE);
 					spr.graphics.endFill();
 					spr.alpha = slot.color.a;
+					//Color change
+					spr.transform.colorTransform.redMultiplier = slot.color.r;
+					spr.transform.colorTransform.greenMultiplier = slot.color.g;
+					spr.transform.colorTransform.blueMultiplier = slot.color.b;
+					switch(slot.data.blendMode)
+					{
+						case BlendMode.additive:
+							spr.blendMode = openfl.display.BlendMode.ADD;
+						case BlendMode.multiply:
+							spr.blendMode = openfl.display.BlendMode.MULTIPLY;
+						case BlendMode.screen:
+							spr.blendMode = openfl.display.BlendMode.SCREEN;
+						case BlendMode.normal:
+							spr.blendMode = openfl.display.BlendMode.NORMAL;
+					}
 					_shape.addChild(spr);
 				}
 			}
