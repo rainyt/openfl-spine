@@ -50,3 +50,14 @@ spine.isNative = true;
       
 # Tilemap渲染器
 Tilemap需要一个tilemap进行装载，这意味着一样的图集的Spine只需要1drawcall。
+
+# Spine事件侦听器
+侦听spine的原生事件，请使用：
+```haxe
+var event:AnimationEvent = new AnimationEvent();
+var spine:SkeletonAnimation;
+spine.state.addListener(event);
+event.addEventListener(SpineEvent.COMPLETE,(event:SpineEvent)->{
+    
+});
+```
