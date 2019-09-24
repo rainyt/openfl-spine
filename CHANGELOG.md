@@ -1,3 +1,7 @@
+# 1.5.0
+- 新增SpineEvent事件支持。
+	- Add spine events support.
+
 # 1.4.9
 - 为Tilemap渲染对象添加了colorTransform的支持
     - Add colorTransform support with Tilemap render. 
