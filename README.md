@@ -17,6 +17,10 @@ haxelib install openfl-spine
 ```xml
 <haxelib name="openfl-spine"/>
 ```
+并且在任意类中进行初始：
+```haxe
+SpineManager.init(this.stage);
+```
 
 # Sprite渲染器（已提高了性能，内置批量渲染处理）
 该对象拥有批渲染高性能渲染，能够得到1draw的渲染。但是会有以下几个限制：
