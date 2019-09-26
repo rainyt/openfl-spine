@@ -1,3 +1,7 @@
+# 1.5.1
+- 新增SpineManager管理器优化性能。
+    - Added SpineManager Manager to optimize performance
+
 # 1.5.0
 - 新增SpineEvent事件支持。
 	- Add spine events support.
