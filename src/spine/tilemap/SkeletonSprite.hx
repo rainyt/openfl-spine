@@ -74,34 +74,19 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 
 		_map = new Map<AtlasRegion, TileContainer>();
 
-		#if zygame
-		openfl.Lib.current.addEventListener(Event.ENTER_FRAME, enterFrame);
-		#else
 		SpineManager.addOnFrame(this);
-		#end
 	}
-	
-	#if zygame
+
 	/**
-	 * 渲染事件
-	 * @param e
+	 * 统一Spine更新
 	 */
-	private function enterFrame(e:Event):Void {
-		advanceTime(1 / 60);
-	}
-	#else
 	public function onSpineUpdate():Void
 	{
 		advanceTime(1 / 60);
 	}
-	#end
 
 	public function destroy():Void {
-		#if zygame
-		openfl.Lib.current.removeEventListener(Event.ENTER_FRAME, enterFrame);
-		#else
 		SpineManager.removeOnFrame(this);
-		#end
 		this.removeTiles();
 	}
 

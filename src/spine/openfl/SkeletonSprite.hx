@@ -26,7 +26,7 @@ import zygame.utils.SpineManager;
 /**
  * Sprite渲染器，单个Sprite会进行单次渲染
  */
-class SkeletonSprite extends #if !zygame Sprite implements spine.base.SpineBaseDisplay #else DisplayObjectContainer #end {
+class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
 
 	/**
 	 * 骨架对象
@@ -150,33 +150,28 @@ class SkeletonSprite extends #if !zygame Sprite implements spine.base.SpineBaseD
 		this.mouseChildren = false;
 	}
 
-	#if zygame
 	/**
-	 * 帧事件
+	 * 统一的渲染入口
 	 */
-	override public function onFrame():Void {
-		advanceTime(1 / 60);
+	public function onSpineUpdate():Void
+	{
+		if (batchs == null)
+			advanceTime(1 / 60);
 	}
+
+	#if zygame
 	/**
      * 当从舞台移除时
      */
     override public function onRemoveToStage():Void
     {
-		setFrameEvent(false);
+		SpineManager.removeOnFrame(this);
     }
 	override public function onAddToStage():Void
     {
-		setFrameEvent(true);
+		SpineManager.addOnFrame(this);
     }
 	#else
-	// /**
-	//  * 渲染事件
-	//  * @param e
-	//  */
-	// private function enterFrame(e:Event):Void {
-	// 	if (batchs == null)
-	// 		advanceTime(1 / 60);
-	// }
 	/**
      * 当从舞台移除时
      */
@@ -188,25 +183,13 @@ class SkeletonSprite extends #if !zygame Sprite implements spine.base.SpineBaseD
     {
 		SpineManager.addOnFrame(this);
     }
-
-	public function onSpineUpdate():Void
-	{
-		if (batchs == null)
-			advanceTime(1 / 60);
-	}
-
-
 	#end
 
 	/**
 	 * 丢弃
 	 */
 	#if zygame override #end public function destroy():Void {
-		#if zygame
-		this.setFrameEvent(false);
-		#else
 		SpineManager.removeOnFrame(this);
-		#end
 		if(_spritePool != null)
 			_spritePool.clear();
 		_spritePool = null;
@@ -218,9 +201,7 @@ class SkeletonSprite extends #if !zygame Sprite implements spine.base.SpineBaseD
 	 * 播放
 	 */
 	public function play(action:String = null, loop:Bool = true):Void {
-		#if !zygame
 		SpineManager.addOnFrame(this);
-		#end
 		_isPlay = true;
 		if (action != null)
 			_actionName = action;
@@ -253,9 +234,7 @@ class SkeletonSprite extends #if !zygame Sprite implements spine.base.SpineBaseD
 	 * 停止
 	 */
 	public function stop():Void {
-		#if !zygame
 		SpineManager.removeOnFrame(this);
-		#end
 		_isPlay = false;
 	}
 
