@@ -30,6 +30,8 @@
 
 package spine.tilemap;
 
+import spine.base.SpineBaseDisplay;
+import zygame.utils.SpineManager;
 import openfl.display.BitmapData;
 import spine.attachments.MeshAttachment;
 import spine.Bone;
@@ -48,7 +50,7 @@ import spine.support.graphics.Color;
 /**
  * Tilemap渲染器
  */
-class SkeletonSprite extends TileContainer {
+class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 	public var skeleton:Skeleton;
 	public var timeScale:Float = 1;
 
@@ -75,10 +77,11 @@ class SkeletonSprite extends TileContainer {
 		#if zygame
 		openfl.Lib.current.addEventListener(Event.ENTER_FRAME, enterFrame);
 		#else
-		openfl.Lib.current.addEventListener(Event.ENTER_FRAME, enterFrame);
+		SpineManager.addOnFrame(this);
 		#end
 	}
-
+	
+	#if zygame
 	/**
 	 * 渲染事件
 	 * @param e
@@ -86,12 +89,18 @@ class SkeletonSprite extends TileContainer {
 	private function enterFrame(e:Event):Void {
 		advanceTime(1 / 60);
 	}
+	#else
+	public function onSpineUpdate():Void
+	{
+		advanceTime(1 / 60);
+	}
+	#end
 
 	public function destroy():Void {
 		#if zygame
 		openfl.Lib.current.removeEventListener(Event.ENTER_FRAME, enterFrame);
 		#else
-		openfl.Lib.current.removeEventListener(Event.ENTER_FRAME, enterFrame);
+		SpineManager.removeOnFrame(this);
 		#end
 		this.removeTiles();
 	}
@@ -237,9 +246,12 @@ class SkeletonSprite extends TileContainer {
 						// colorTransform.blueMultiplier = skeletonColor.b * soltColor.b * regionColor.b;
 						// colorTransform.alphaMultiplier = skeletonColor.a * soltColor.a * regionColor.a;
 						#if (openfl > "8.4.0")
-						wrapper.colorTransform.redMultiplier = slot.color.r;
-						wrapper.colorTransform.greenMultiplier = slot.color.g;
-						wrapper.colorTransform.blueMultiplier = slot.color.b;
+						if(wrapper.colorTransform != null)
+						{
+							wrapper.colorTransform.redMultiplier = slot.color.r;
+							wrapper.colorTransform.greenMultiplier = slot.color.g;
+							wrapper.colorTransform.blueMultiplier = slot.color.b;
+						}
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								wrapper.blendMode = openfl.display.BlendMode.ADD;

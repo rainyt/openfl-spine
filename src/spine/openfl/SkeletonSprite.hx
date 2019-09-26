@@ -21,11 +21,12 @@ import spine.openfl.SkeletonBatchs;
 import spine.utils.VectorUtils;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
+import zygame.utils.SpineManager;
 
 /**
  * Sprite渲染器，单个Sprite会进行单次渲染
  */
-class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end {
+class SkeletonSprite extends #if !zygame Sprite implements spine.base.SpineBaseDisplay #else DisplayObjectContainer #end {
 
 	/**
 	 * 骨架对象
@@ -168,25 +169,33 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		setFrameEvent(true);
     }
 	#else
-	/**
-	 * 渲染事件
-	 * @param e
-	 */
-	private function enterFrame(e:Event):Void {
-		if (batchs == null)
-			advanceTime(1 / 60);
-	}
+	// /**
+	//  * 渲染事件
+	//  * @param e
+	//  */
+	// private function enterFrame(e:Event):Void {
+	// 	if (batchs == null)
+	// 		advanceTime(1 / 60);
+	// }
 	/**
      * 当从舞台移除时
      */
     public function onRemoveToStage(_):Void
     {
-		this.removeEventListener(Event.ENTER_FRAME, enterFrame);
+		SpineManager.removeOnFrame(this);
     }
 	public function onAddToStage(_):Void
     {
-		this.addEventListener(Event.ENTER_FRAME, enterFrame);
+		SpineManager.addOnFrame(this);
     }
+
+	public function onSpineUpdate():Void
+	{
+		if (batchs == null)
+			advanceTime(1 / 60);
+	}
+
+
 	#end
 
 	/**
@@ -196,7 +205,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		#if zygame
 		this.setFrameEvent(false);
 		#else
-		removeEventListener(Event.ENTER_FRAME, enterFrame);
+		SpineManager.removeOnFrame(this);
 		#end
 		if(_spritePool != null)
 			_spritePool.clear();
@@ -210,9 +219,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	public function play(action:String = null, loop:Bool = true):Void {
 		#if !zygame
-		if (!hasEventListener(Event.ENTER_FRAME)) {
-			addEventListener(Event.ENTER_FRAME, enterFrame);
-		}
+		SpineManager.addOnFrame(this);
 		#end
 		_isPlay = true;
 		if (action != null)
@@ -247,9 +254,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	public function stop():Void {
 		#if !zygame
-		if (hasEventListener(Event.ENTER_FRAME)) {
-			removeEventListener(Event.ENTER_FRAME, enterFrame);
-		}
+		SpineManager.removeOnFrame(this);
 		#end
 		_isPlay = false;
 	}
