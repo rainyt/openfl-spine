@@ -1,3 +1,7 @@
+# 1.5.3
+- 优化了isNative=false时，透明=0的对象不显示。
+	- When isNative=false is optimized, objects with transparency=0 are not displayed.
+
 # 1.5.1
 - 新增SpineManager管理器优化性能。
     - Added SpineManager Manager to optimize performance
