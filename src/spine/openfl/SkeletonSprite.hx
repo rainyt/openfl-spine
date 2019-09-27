@@ -365,6 +365,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			atlasRegion = null;
 			// 如果骨骼的渲染物件存在
 			if (slot.attachment != null) {
+				//如果不可见的情况下，则隐藏
+				if(slot.color.a == 0)
+					continue;
 				if (Std.is(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
@@ -382,6 +385,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					triangles = region.getTriangles();
 					atlasRegion = cast region.getRegion();
 				}
+
 
 				// 矩形绘制
 				if (atlasRegion != null) {
