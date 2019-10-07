@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import spine.base.SpineBaseDisplay;
 import openfl.display.Sprite;
 import openfl.Vector;
 import openfl.display.DisplayObject;
@@ -8,11 +9,12 @@ import openfl.events.Event;
 import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
 import spine.utils.VectorUtils;
+import zygame.utils.SpineManager;
 
 /**
  * 骨骼批渲染处理
  */
-class SkeletonBatchs extends Sprite {
+class SkeletonBatchs extends Sprite implements SpineBaseDisplay{
 
     public var allVerticesArray:Vector<Float> = new Vector<Float>();
 	public	var allTriangles:Vector<Int> = new Vector<Int>();
@@ -26,10 +28,10 @@ class SkeletonBatchs extends Sprite {
     public function new(bitmapData:BitmapData){
         super();
         _bitmapData = bitmapData;
-        this.addEventListener(Event.ENTER_FRAME,enterFrame);
+        SpineManager.addOnFrame(this);
     }
 
-    private function enterFrame(e:Event):Void
+    public function onSpineUpdate(dt:Float):Void
     {
         this.graphics.clear();
         allVerticesArray.splice(0,allVerticesArray.length);
@@ -40,7 +42,7 @@ class SkeletonBatchs extends Sprite {
         for(i in 0...ren)
         {
             var s:SkeletonSprite = cast this.getChildAt(i);
-            s.advanceTime(1/60);
+            s.advanceTime(dt);
         }
         endFill();
     }

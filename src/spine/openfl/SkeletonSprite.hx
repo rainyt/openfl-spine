@@ -153,10 +153,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 统一的渲染入口
 	 */
-	public function onSpineUpdate():Void
+	public function onSpineUpdate(dt:Float):Void
 	{
 		if (batchs == null)
-			advanceTime(1 / 60);
+			advanceTime(dt);
 	}
 
 	#if zygame

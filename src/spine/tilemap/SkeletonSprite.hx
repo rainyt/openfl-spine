@@ -80,9 +80,9 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 	/**
 	 * 统一Spine更新
 	 */
-	public function onSpineUpdate():Void
+	public function onSpineUpdate(dt:Float):Void
 	{
-		advanceTime(1 / 60);
+		advanceTime(dt);
 	}
 
 	public function destroy():Void {
