@@ -1,3 +1,7 @@
+# 1.5.4
+- 新增按实际时间播放动画的支持，也可以通过`SpineManager.isLockFrameFps=true`来使用FPS播放，该值默认为false。
+    - Added support for playing animations in real time. You can also use FPS playback with `SpineManager.isLockFrameFps=true`, which defaults to false.
+
 # 1.5.3
 - 优化了isNative=false时，透明=0的对象不显示。
 	- When isNative=false is optimized, objects with transparency=0 are not displayed.

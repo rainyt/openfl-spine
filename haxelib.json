@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
-  "version": "1.5.3",
-  "releasenote": "",
+  "version": "1.5.4",
+  "releasenote": "Update fps dt time support.",
   "contributors": ["rainy"],
   "classPath": "src",
   "dependencies": {

@@ -27,8 +27,9 @@ class SpineManager {
 	/**
 	 * 初始化更新器
 	 * @param stage
+     * @param isLockFrameFps 是否根据帧频率来播放动画，默认为false
 	 */
-	public static function init(pstage:Stage):Void {
+	public static function init(pstage:Stage,isLockFrameFps:Bool = false):Void {
 		if (stage != null)
 			return;
 		stage = pstage;

@@ -30,6 +30,7 @@
 
 package spine.tilemap;
 
+import openfl.geom.ColorTransform;
 import spine.base.SpineBaseDisplay;
 import zygame.utils.SpineManager;
 import openfl.display.BitmapData;
@@ -160,10 +161,6 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 					var region:RegionAttachment = cast slot.attachment;
 					regionColor = region.getColor();
 					atlasRegion = cast region.getRegion();
-					// r = region.getColor().r;
-					// g = region.getColor().g;
-					// b = region.getColor().b;
-					// a = region.getColor().a;
 
 					// 矩形绘制
 					if (atlasRegion != null) {
@@ -171,7 +168,6 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						var tile:Tile = null;
 						if (wrapper == null) {
 							wrapper = new TileContainer();
-							// trace("atlasRegion.page.rendererObject=",atlasRegion.page.rendererObject);
 							tile = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
 							wrapper.addTile(tile);
 							_map.set(atlasRegion, wrapper);
@@ -180,7 +176,6 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 							tile.id = atlasRegion.page.rendererObject.getID(atlasRegion);
 						}
 
-						// var regionWidth:Float = atlasRegion.rotate ? atlasRegion.height : atlasRegion.width;
 						var regionHeight:Float = atlasRegion.rotate ? atlasRegion.width : atlasRegion.height;
 
 						tile.rotation = -region.getRotation();
@@ -209,13 +204,6 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						var flipY:Float = skeleton.getScaleY();
 						#end
 
-						// wrapper.x = bone.getWorldX();
-						// wrapper.y = bone.getWorldY();
-						// wrapper.rotation = bone.getWorldRotationX() * flipX * flipY;
-						// wrapper.scaleX = bone.getWorldScaleX() * flipX;
-						// wrapper.scaleY = bone.getWorldScaleY() * flipY;
-						// this.addTile(wrapper);
-
 						wrapper.x = bone.getWorldX();
 						wrapper.y = bone.getWorldY();
 						wrapper.rotation = bone.getWorldRotationX();
@@ -224,19 +212,15 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						this.addTile(wrapper);
 
 						// 色值处理
-						// soltColor = slot.getColor();
-						// skeletonColor = skeleton.getColor();
-						// colorTransform.redMultiplier = skeletonColor.r * soltColor.r * regionColor.r;
-						// colorTransform.greenMultiplier = skeletonColor.g * soltColor.g * regionColor.g;
-						// colorTransform.blueMultiplier = skeletonColor.b * soltColor.b * regionColor.b;
-						// colorTransform.alphaMultiplier = skeletonColor.a * soltColor.a * regionColor.a;
 						#if (openfl > "8.4.0")
-						if(wrapper.colorTransform != null)
+						if(wrapper.colorTransform == null)
 						{
-							wrapper.colorTransform.redMultiplier = slot.color.r;
-							wrapper.colorTransform.greenMultiplier = slot.color.g;
-							wrapper.colorTransform.blueMultiplier = slot.color.b;
+							wrapper.colorTransform = new ColorTransform();
 						}
+						wrapper.alpha = slot.color.a;
+						wrapper.colorTransform.redMultiplier = slot.color.r;
+						wrapper.colorTransform.greenMultiplier = slot.color.g;
+						wrapper.colorTransform.blueMultiplier = slot.color.b;
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								wrapper.blendMode = openfl.display.BlendMode.ADD;
