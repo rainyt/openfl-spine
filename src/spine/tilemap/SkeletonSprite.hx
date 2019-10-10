@@ -65,7 +65,7 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 	/**
 	 * 渲染骨骼对应关系
 	 */
-	private var _map:Map<AtlasRegion, TileContainer>;
+	private var _map:Map<Slot, TileContainer>;
 
 	public function new(skeletonData:SkeletonData) {
 		super();
@@ -73,7 +73,7 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 		skeleton = new Skeleton(skeletonData);
 		skeleton.updateWorldTransform();
 
-		_map = new Map<AtlasRegion, TileContainer>();
+		_map = new Map<Slot, TileContainer>();
 
 		SpineManager.addOnFrame(this);
 	}
@@ -164,13 +164,17 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 
 					// 矩形绘制
 					if (atlasRegion != null) {
-						var wrapper:TileContainer = _map.get(atlasRegion);
+						var wrapper:TileContainer = _map.get(slot);
 						var tile:Tile = null;
 						if (wrapper == null) {
 							wrapper = new TileContainer();
 							tile = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
 							wrapper.addTile(tile);
-							_map.set(atlasRegion, wrapper);
+							// var tile2 = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
+							// tile2.scaleX = 0.1;
+							// tile2.scaleY = 0.1;
+							// wrapper.addTile(tile2);
+							_map.set(slot, wrapper);
 						} else {
 							tile = wrapper.getTileAt(0);
 							tile.id = atlasRegion.page.rendererObject.getID(atlasRegion);
@@ -193,7 +197,7 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						}
 
 						tile.x = region.getX() + shiftX * cos - shiftY * sin;
-						tile.y = -region.getY() + shiftX * sin + shiftY * cos;
+						tile.y = - region.getY() + shiftX * sin + shiftY * cos + atlasRegion.offsetY;
 
 						var bone:Bone = slot.bone;
 						#if (spine_hx <= "3.6.0")
