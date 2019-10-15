@@ -37,6 +37,24 @@ class SpineManager {
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
 	}
 
+	public static function pause():Void {
+		if (stage == null)
+			return;
+
+		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
+	}
+
+	public static function resume():Void {
+		if (stage == null)
+			return;
+
+		if (!isLockFrameFps) {
+			_lastFpsTime = Date.now().getTime();
+		}
+
+		stage.addEventListener(Event.ENTER_FRAME, onFrame);
+	}
+
 	private static function onFrame(event:Event):Void {
 		if (!isLockFrameFps) {
 			_newFpsTime = Date.now().getTime();
