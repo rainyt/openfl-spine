@@ -235,13 +235,13 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 
 						// 色值处理
 						#if (openfl > "8.4.0")
-						wrapper.alpha = slot.color.a;
+						wrapper.alpha = slot.color.a * skeleton.color.a * region.getColor().a;
 						if (wrapper.colorTransform == null) {
 							wrapper.colorTransform = new ColorTransform();
 						}
-						wrapper.colorTransform.greenMultiplier = slot.color.r;
-						wrapper.colorTransform.greenMultiplier = slot.color.g;
-						wrapper.colorTransform.blueMultiplier = slot.color.b;
+						wrapper.colorTransform.greenMultiplier = slot.color.r * skeleton.color.a * region.getColor().a;
+						wrapper.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * region.getColor().g;
+						wrapper.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * region.getColor().b;
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								wrapper.blendMode = openfl.display.BlendMode.ADD;

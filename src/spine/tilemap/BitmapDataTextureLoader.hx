@@ -39,7 +39,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		_widths.set(region,region.width);
 		var id:Int = _tileset.addRect(new Rectangle(region.x,region.y,regionWidth,regionHeight));
 		_ids.set(region,id);
-		trace(region.name,region.width,region.height,region.originalWidth,region.originalWidth,region.packedWidth,region.packedHeight);
+		// trace(region.name,region.width,region.height,region.originalWidth,region.originalWidth,region.packedWidth,region.packedHeight);
 		if(!region.rotate)
 		{
 			region.width = region.packedWidth;
