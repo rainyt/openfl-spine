@@ -1,3 +1,8 @@
+# 1.5.5
+- 修复Tilemap的骨骼渲染问题。
+- 改善颜色更改的性能。
+- 新增对Tilemap的颜色更改支持。
+
 # 1.5.4
 - 新增按实际时间播放动画的支持，也可以通过`SpineManager.isLockFrameFps=true`来使用FPS播放，该值默认为false。
     - Added support for playing animations in real time. You can also use FPS playback with `SpineManager.isLockFrameFps=true`, which defaults to false.

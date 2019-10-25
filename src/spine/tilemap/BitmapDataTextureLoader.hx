@@ -15,6 +15,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 	private var _tileset:Tileset;
 
 	private var _ids:Map<AtlasRegion,Int>;
+	private var _widths:Map<AtlasRegion,Float>;
 
 	public function new(bitmapDatas:Map<String,BitmapData>) {
 		this._bitmapData = bitmapDatas;
@@ -26,6 +27,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 			throw ("BitmapData not found with name: " + path);
 		_tileset = new Tileset(bitmapData);
 		_ids = new Map<AtlasRegion,Int>();
+		_widths = [];
 		page.rendererObject = this;
 		page.width = bitmapData.width;
 		page.height = bitmapData.height;
@@ -34,8 +36,10 @@ class BitmapDataTextureLoader implements TextureLoader {
 	public function loadRegion (region:AtlasRegion):Void {
 		var regionWidth:Int = region.rotate ? region.height : region.width;
 		var regionHeight:Int = region.rotate ? region.width : region.height;
+		_widths.set(region,region.width);
 		var id:Int = _tileset.addRect(new Rectangle(region.x,region.y,regionWidth,regionHeight));
 		_ids.set(region,id);
+		trace(region.name,region.width,region.height,region.originalWidth,region.originalWidth,region.packedWidth,region.packedHeight);
 		if(!region.rotate)
 		{
 			region.width = region.packedWidth;
@@ -49,11 +53,14 @@ class BitmapDataTextureLoader implements TextureLoader {
 		{
 			region.height = region.packedWidth;
 			region.width = region.packedHeight;
+			// region.offsetX = region.offsetY;
+			// region.offsetY = region.offsetX;
 			// region.originalHeight = regionWidth;
 			// region.originalWidth = regionHeight;
 			// region.packedHeight = regionWidth;
 			// region.packedWidth = regionHeight;
 		}
+		trace(region.name,region.width,region.height,region.originalWidth,region.originalWidth,region.packedWidth,region.packedHeight);
 		// region.packedHeight = Std.int(regionHeight);
 		// region.packedWidth = Std.int(regionWidth);
 		// region.originalHeight = Std.int(regionHeight);
@@ -69,6 +76,16 @@ class BitmapDataTextureLoader implements TextureLoader {
 	public function getID(region:AtlasRegion):Int
 	{
 		return _ids.get(region);
+	}
+
+	public function getWidth(region:AtlasRegion):Float
+	{
+		return _widths.get(region);
+	}
+
+	public function getRectByID(id:Int):Rectangle
+	{
+		return _tileset.getRect(id);
 	}
 
 	public function getTileset():Tileset

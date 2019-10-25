@@ -147,6 +147,8 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 		this.removeTiles();
 
 		for (i in 0...n) {
+			// if(i != 6)
+				// continue;
 			// 获取骨骼
 			slot = drawOrder[i];
 			// 初始化参数
@@ -171,9 +173,16 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 							tile = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
 							wrapper.addTile(tile);
 							// var tile2 = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
-							// tile2.scaleX = 0.1;
-							// tile2.scaleY = 0.1;
+							// tile2.scaleX = 2;
+							// tile2.scaleY = 0.05;
 							// wrapper.addTile(tile2);
+							// tile2.x -= 40;
+							// var tile2 = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
+							// tile2.scaleX = 2;
+							// tile2.scaleY = 0.05;
+							// wrapper.addTile(tile2);
+							// tile2.y -= 40;
+							// tile2.rotation = 90;
 							_map.set(slot, wrapper);
 						} else {
 							tile = wrapper.getTileAt(0);
@@ -191,13 +200,23 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						var sin:Float = Math.sin(radians);
 						var shiftX:Float = -region.getWidth() / 2 * region.getScaleX();
 						var shiftY:Float = -region.getHeight() / 2 * region.getScaleY();
+						var offsetX:Float = atlasRegion.offsetX;
+						var offsetY:Float = atlasRegion.offsetY;
 						if (atlasRegion.rotate) {
 							tile.rotation += 90;
 							shiftX += regionHeight * (region.getWidth() / atlasRegion.width);
+							var offset2 = offsetY;
+							// offsetY = offsetX;
+							// offsetX = offset2;
+							// trace("rotate");
 						}
 
 						tile.x = region.getX() + shiftX * cos - shiftY * sin;
-						tile.y = - region.getY() + shiftX * sin + shiftY * cos + atlasRegion.offsetY;
+						tile.y = - region.getY() + shiftX * sin + shiftY * cos;
+						// trace(atlasRegion.offsetX,atlasRegion.offsetY);
+						// trace(atlasRegion.offsetX,atlasRegion.offsetY);
+						// tile.x =  region.getX() +atlasRegion.offsetX;
+						// tile.y = - region.getY()+atlasRegion.offsetY;
 
 						var bone:Bone = slot.bone;
 						#if (spine_hx <= "3.6.0")
@@ -217,14 +236,26 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 
 						// 色值处理
 						#if (openfl > "8.4.0")
-						if(wrapper.colorTransform == null)
-						{
-							wrapper.colorTransform = new ColorTransform();
-						}
 						wrapper.alpha = slot.color.a;
-						wrapper.colorTransform.redMultiplier = slot.color.r;
-						wrapper.colorTransform.greenMultiplier = slot.color.g;
-						wrapper.colorTransform.blueMultiplier = slot.color.b;
+						if(slot.color.r != 0 && slot.color.g != 0 && slot.color.b != 0)
+						{
+							if(wrapper.colorTransform == null)
+							{
+								wrapper.colorTransform = new ColorTransform();
+							}
+							wrapper.colorTransform.redMultiplier = slot.color.r;
+							wrapper.colorTransform.greenMultiplier = slot.color.g;
+							wrapper.colorTransform.blueMultiplier = slot.color.b;
+						}
+						else
+						{
+							if(wrapper.colorTransform != null)
+							{
+								wrapper.colorTransform.redMultiplier = 0;
+								wrapper.colorTransform.greenMultiplier = 0;
+								wrapper.colorTransform.blueMultiplier = 0;
+							}
+						}
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								wrapper.blendMode = openfl.display.BlendMode.ADD;
