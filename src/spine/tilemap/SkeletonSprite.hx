@@ -81,8 +81,7 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 	/**
 	 * 统一Spine更新
 	 */
-	public function onSpineUpdate(dt:Float):Void
-	{
+	public function onSpineUpdate(dt:Float):Void {
 		advanceTime(dt);
 	}
 
@@ -147,8 +146,8 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 		this.removeTiles();
 
 		for (i in 0...n) {
-			// if(i != 6)
-				// continue;
+			// if(i != 22)
+			// continue;
 			// 获取骨骼
 			slot = drawOrder[i];
 			// 初始化参数
@@ -212,7 +211,7 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						}
 
 						tile.x = region.getX() + shiftX * cos - shiftY * sin;
-						tile.y = - region.getY() + shiftX * sin + shiftY * cos;
+						tile.y = -region.getY() + shiftX * sin + shiftY * cos;
 						// trace(atlasRegion.offsetX,atlasRegion.offsetY);
 						// trace(atlasRegion.offsetX,atlasRegion.offsetY);
 						// tile.x =  region.getX() +atlasRegion.offsetX;
@@ -237,25 +236,12 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						// 色值处理
 						#if (openfl > "8.4.0")
 						wrapper.alpha = slot.color.a;
-						if(slot.color.r != 0 && slot.color.g != 0 && slot.color.b != 0)
-						{
-							if(wrapper.colorTransform == null)
-							{
-								wrapper.colorTransform = new ColorTransform();
-							}
-							wrapper.colorTransform.redMultiplier = slot.color.r;
-							wrapper.colorTransform.greenMultiplier = slot.color.g;
-							wrapper.colorTransform.blueMultiplier = slot.color.b;
+						if (wrapper.colorTransform == null) {
+							wrapper.colorTransform = new ColorTransform();
 						}
-						else
-						{
-							if(wrapper.colorTransform != null)
-							{
-								wrapper.colorTransform.redMultiplier = 0;
-								wrapper.colorTransform.greenMultiplier = 0;
-								wrapper.colorTransform.blueMultiplier = 0;
-							}
-						}
+						wrapper.colorTransform.greenMultiplier = slot.color.r;
+						wrapper.colorTransform.greenMultiplier = slot.color.g;
+						wrapper.colorTransform.blueMultiplier = slot.color.b;
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								wrapper.blendMode = openfl.display.BlendMode.ADD;
@@ -273,5 +259,9 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 				}
 			}
 		}
+	}
+
+	public function argbToNumber(a:Int, r:Int, g:Int, b:Int):UInt {
+		return a << 24 | r << 16 | g << 8 | b;
 	}
 }
