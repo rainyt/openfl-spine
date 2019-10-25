@@ -239,7 +239,7 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						if (wrapper.colorTransform == null) {
 							wrapper.colorTransform = new ColorTransform();
 						}
-						wrapper.colorTransform.greenMultiplier = slot.color.r * skeleton.color.a * region.getColor().a;
+						wrapper.colorTransform.greenMultiplier = slot.color.r * skeleton.color.r * region.getColor().r;
 						wrapper.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * region.getColor().g;
 						wrapper.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * region.getColor().b;
 						switch (slot.data.blendMode) {
