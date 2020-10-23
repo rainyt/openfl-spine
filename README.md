@@ -65,3 +65,13 @@ event.addEventListener(SpineEvent.COMPLETE,(event:SpineEvent)->{
     
 });
 ```
+
+# Spine工具
+请注意，该库只单独支持3.7或者3.8版本；因Spine的数据结构不完全一致的问题会导致读取错误，请确认需要使用的Spine版本。
+
+## 使用3.8
+库当前默认是使用3.7版本，默认指向spine-hx3.6.0版本。如果需要使用3.8+版本，需要在库之前定义版本号：
+```xml
+<define name="spine3.8"/>
+<haxelib name="openfl-spine"/>
+```

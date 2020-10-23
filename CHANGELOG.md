@@ -1,3 +1,8 @@
+# 1.5.6
+- 修复Tilemap的ScaleX/ScaleY渲染。
+- 固定Spine默认版本为3.6.0，如需要使用3.8.1版本，需要库之前添加`<define name="spine3.8"/>`
+- 新增了spine-hx3.8.1版本支持。
+
 # 1.5.5
 - 修复Tilemap的骨骼渲染问题。
 - 改善颜色更改的性能。

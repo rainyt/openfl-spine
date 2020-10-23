@@ -1,6 +1,5 @@
 package spine.openfl;
 
-import spine.attachments.Attachment;
 import lime.utils.ObjectPool;
 import openfl.geom.Matrix;
 import openfl.display.TriangleCulling;
@@ -286,7 +285,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			atlasRegion = null;
 			// 如果骨骼的渲染物件存在
 			if (slot.attachment != null) {
-				var rootregin:Dynamic = null;
 				if (Std.is(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
@@ -295,7 +293,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = _quadTriangles;
 					atlasRegion = cast region.getRegion();
-					rootregin = region;
 				} else if (Std.is(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
@@ -304,7 +301,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = region.getTriangles();
 					atlasRegion = cast region.getRegion();
-					rootregin = region;
 				}
 
 				// 矩形绘制
@@ -315,11 +311,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					spr.graphics.beginBitmapFill(curBitmap, null, true, true);
 					spr.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray), ofArrayInt(triangles), ofArrayFloat(uvs), TriangleCulling.NONE);
 					spr.graphics.endFill();
-					spr.alpha = slot.color.a * skeleton.color.a * rootregin.getColor().a;
+					spr.alpha = slot.color.a;
 					//Color change
-					spr.transform.colorTransform.greenMultiplier = slot.color.r * skeleton.color.a * rootregin.getColor().a;
-					spr.transform.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * rootregin.getColor().g;
-					spr.transform.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * rootregin.getColor().b;
+					spr.transform.colorTransform.redMultiplier = slot.color.r;
+					spr.transform.colorTransform.greenMultiplier = slot.color.g;
+					spr.transform.colorTransform.blueMultiplier = slot.color.b;
 					switch(slot.data.blendMode)
 					{
 						case BlendMode.additive:

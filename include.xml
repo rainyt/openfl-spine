@@ -2,6 +2,9 @@
 <project>
 	
 	<source path="src" />
-	<haxelib name="spine-hx"/>
+	<!-- Spine锁定版本3.8.1 -->
+	<haxelib name="spine-hx" version="3.8.1" if="spine3.8"/> 
+	<haxelib name="spine-hx" version="3.6.0" unless="spine3.8"/> 
+	<haxedef name="spine38" if="spine3.8"/>
 	
 </project>

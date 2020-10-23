@@ -24,7 +24,7 @@ class Maplive extends Sprite{
 
     public function onInit(e:Event):Void
     {
-        stage.color = 0x002630;
+        stage.color = 0xbbbbbb;
         SpineManager.init(stage);
         // var jsonData:String = Assets.getText("assets/bonus.json");
         // var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/bonus.atlas",["assets/bonus.png"]);
@@ -50,7 +50,7 @@ class Maplive extends Sprite{
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             // tilemap格式
             var tilemap:Tilemap = new Tilemap(stage.stageWidth,stage.stageHeight,textureAtals.loader.getTileset());
-            for(i in 0...400)
+            for(i in 0...30)
             {
                 var tilemapSprite = textureAtals.buildTilemapSkeleton("sxkCenter",jsonData);
                 this.addChild(tilemap);

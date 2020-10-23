@@ -229,8 +229,10 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 						wrapper.x = bone.getWorldX();
 						wrapper.y = bone.getWorldY();
 						wrapper.rotation = bone.getWorldRotationX();
-						wrapper.scaleX = bone.getWorldScaleX();
-						wrapper.scaleY = bone.getWorldScaleY();
+						if(bone.getScaleX() < 0)
+							wrapper.rotation -= 180;
+						wrapper.scaleX = bone.getWorldScaleX() * (bone.getScaleX() < 0?-1:1);
+						wrapper.scaleY = bone.getWorldScaleY() * (bone.getScaleY() < 0?-1:1);
 						this.addTile(wrapper);
 
 						// 色值处理

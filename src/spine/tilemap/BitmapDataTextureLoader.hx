@@ -36,36 +36,17 @@ class BitmapDataTextureLoader implements TextureLoader {
 	public function loadRegion (region:AtlasRegion):Void {
 		var regionWidth:Int = region.rotate ? region.height : region.width;
 		var regionHeight:Int = region.rotate ? region.width : region.height;
-		_widths.set(region,region.width);
-		var id:Int = _tileset.addRect(new Rectangle(region.x,region.y,regionWidth,regionHeight));
-		_ids.set(region,id);
-		// trace(region.name,region.width,region.height,region.originalWidth,region.originalWidth,region.packedWidth,region.packedHeight);
-		if(!region.rotate)
-		{
+		_widths.set(region, region.width);
+		var rect = new Rectangle(region.x, region.y, regionWidth, regionHeight);
+		var id:Int = _tileset.addRect(rect);
+		_ids.set(region, id);
+		if (!region.rotate) {
 			region.width = region.packedWidth;
 			region.height = region.packedHeight;
-			// region.originalWidth = regionWidth;
-			// region.originalHeight = regionHeight;
-			// region.packedWidth = regionWidth;
-			// region.packedHeight = regionHeight;
-		}
-		else
-		{
+		} else {
 			region.height = region.packedWidth;
 			region.width = region.packedHeight;
-			// region.offsetX = region.offsetY;
-			// region.offsetY = region.offsetX;
-			// region.originalHeight = regionWidth;
-			// region.originalWidth = regionHeight;
-			// region.packedHeight = regionWidth;
-			// region.packedWidth = regionHeight;
 		}
-		trace(region.name,region.width,region.height,region.originalWidth,region.originalWidth,region.packedWidth,region.packedHeight);
-		// region.packedHeight = Std.int(regionHeight);
-		// region.packedWidth = Std.int(regionWidth);
-		// region.originalHeight = Std.int(regionHeight);
-		// region.originalWidth = Std.int(regionWidth);
-		// region.width = 200;
 	}
 
 	/**

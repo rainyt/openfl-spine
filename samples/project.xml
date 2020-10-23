@@ -11,7 +11,7 @@
 	<assets path="Assets" rename="assets"/>
 	
 	<haxelib name="openfl"/>
-	<haxelib name="spine-hx"/>
+	<haxelib name="spine-hx" version="3.6.0"/>
 	<source path="../src" />
 
 	<!-- 编译APIDoc需要使用 -->
@@ -24,9 +24,5 @@
 
 	<!-- <haxelib name="qqplaycore"/> -->
 	<set name="VIEW_MODE" value="1"/>
-
-	<config:android permission="android.permission.INTERNET" />
-	<config:android permission="android.permission.ACCESS_NETWORK_STATE" />
-	<config:android permission="android.permission.ACCESS_WIFI_STATE" />
 
 </project>
