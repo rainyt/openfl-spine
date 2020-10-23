@@ -54,6 +54,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 	 * @param region 
 	 * @return Int
 	 */
+	@:keep
 	public function getID(region:AtlasRegion):Int
 	{
 		return _ids.get(region);

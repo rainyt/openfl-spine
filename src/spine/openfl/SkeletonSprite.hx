@@ -313,9 +313,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					spr.graphics.endFill();
 					spr.alpha = slot.color.a;
 					//Color change
+<<<<<<< HEAD
 					spr.transform.colorTransform.redMultiplier = slot.color.r;
 					spr.transform.colorTransform.greenMultiplier = slot.color.g;
 					spr.transform.colorTransform.blueMultiplier = slot.color.b;
+=======
+					spr.transform.colorTransform.redMultiplier = slot.color.r * skeleton.color.r * rootregin.getColor().r;
+					spr.transform.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * rootregin.getColor().g;
+					spr.transform.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * rootregin.getColor().b;
+>>>>>>> origin/master
 					switch(slot.data.blendMode)
 					{
 						case BlendMode.additive:
