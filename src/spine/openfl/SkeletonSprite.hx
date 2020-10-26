@@ -283,6 +283,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			triangles = null;
 			uvs = null;
 			atlasRegion = null;
+			var color:Color = null;
 			// 如果骨骼的渲染物件存在
 			if (slot.attachment != null) {
 				if (Std.is(slot.attachment, RegionAttachment)) {
@@ -293,6 +294,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = _quadTriangles;
 					atlasRegion = cast region.getRegion();
+					color = region.getColor();
 				} else if (Std.is(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
@@ -301,6 +303,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = region.getTriangles();
 					atlasRegion = cast region.getRegion();
+					color = region.getColor();
 				}
 
 				// 矩形绘制
@@ -313,9 +316,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					spr.graphics.endFill();
 					spr.alpha = slot.color.a;
 					//Color change
-					spr.transform.colorTransform.redMultiplier = slot.color.r * skeleton.color.r * atlasRegion.getColor().r;
-					spr.transform.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * atlasRegion.getColor().g;
-					spr.transform.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * atlasRegion.getColor().b;
+					spr.transform.colorTransform.redMultiplier = slot.color.r * skeleton.color.r * color.r;
+					spr.transform.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * color.g;
+					spr.transform.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * color.b;
 					switch(slot.data.blendMode)
 					{
 						case BlendMode.additive:
