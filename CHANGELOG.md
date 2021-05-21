@@ -1,3 +1,8 @@
+# 1.6.0
+- 弃用：不再支持`SpriteSpine`的`isNative`渲染支持，默认失效；如果仍然有需求，请参考`multipleTextureRender`多纹理渲染支持。
+- 改进：新增了`SpineRenderShader`着色器，改进`SpriteSpine`渲染，目前已新增了透明度、BlendMode.ADD、颜色修改等支持（网格同时支持）。
+- 依赖：需要依赖`openfl-glsl`库。
+
 # 1.5.6
 - 修复Tilemap的ScaleX/ScaleY渲染。
 - 固定Spine默认版本为3.6.0，如需要使用3.8.1版本，需要库之前添加`<define name="spine3.8"/>`
