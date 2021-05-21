@@ -6,11 +6,16 @@
 	
 	<template path="templates"/>
 
+	<define name="spine38"/>
+
+	<define name="spine3.8" if="spine38"/>
+
 	<assets path="Assets" rename="assets"/>
 	
 	<haxelib name="openfl"/>
 	<haxelib name="openfl-spine"/>
-	<haxelib name="spine-hx" version="3.6.0"/>
+	<haxelib name="spine-hx" version="3.6.0" unless="spine38"/>
+	<haxelib name="spine-hx" if="spine38"/>
 	<source path="Source" />
 
 	<!-- <window allow-high-dpi="true" /> -->
@@ -18,5 +23,6 @@
 
 	<!-- <haxelib name="qqplaycore"/> -->
 	<set name="VIEW_MODE" value="1"/>
+
 
 </project>
