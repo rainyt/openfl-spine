@@ -1,3 +1,5 @@
 --library openfl
 --library openfl-glsl
 --library vector-math
+--library spine-hx
+--library lime

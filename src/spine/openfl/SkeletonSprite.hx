@@ -1,6 +1,5 @@
 package spine.openfl;
 
-import zygame.shader.SpineRenderShader;
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
@@ -10,6 +9,9 @@ import openfl.display.BitmapData;
 import openfl.display.Sprite;
 #if zygame
 import zygame.display.DisplayObjectContainer;
+import zygame.shader.SpineRenderShader;
+#else
+import openfl.shader.SpineRenderShader;
 #end
 import openfl.Vector;
 import spine.attachments.MeshAttachment;
