@@ -1,4 +1,4 @@
-package maplive.core;
+package;
 
 
 import zygame.utils.SpineManager;
@@ -13,9 +13,9 @@ import openfl.utils.Assets;
 import zygame.utils.load.SpineTextureAtlasLoader;
 
 /**
- * 地图编辑器工具
+ * SpineDemo
  */
-class Maplive extends Sprite{
+class Main extends Sprite{
 
     public function new(){
         super();

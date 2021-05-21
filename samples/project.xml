@@ -2,24 +2,18 @@
 <project>
 	
 	<meta title="ZYGameEngineHaxe" package="com.sample.zygameenginehaxe" version="1.0.0" company="Company Name" />
-	<app main="maplive.core.Maplive" path="Export" file="ZYGameEngineHaxe" />
+	<app main="Main" path="Export" file="ZYGameEngineHaxe" />
 	
 	<template path="templates"/>
-
-	<source path="Source" />
 
 	<assets path="Assets" rename="assets"/>
 	
 	<haxelib name="openfl"/>
+	<haxelib name="openfl-spine"/>
 	<haxelib name="spine-hx" version="3.6.0"/>
-	<source path="../src" />
+	<source path="Source" />
 
-	<!-- 编译APIDoc需要使用 -->
-	<!-- <haxelib name="KengSDK"/>
-	<haxelib name="qqplaycore"/>
-	<haxelib name="wechatcore"/> -->
 	<!-- <window allow-high-dpi="true" /> -->
-
 	<haxedef name="gl_stats"/>
 
 	<!-- <haxelib name="qqplaycore"/> -->

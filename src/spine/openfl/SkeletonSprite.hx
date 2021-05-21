@@ -1,5 +1,8 @@
 package spine.openfl;
 
+import spine.shader.SpineRenderShader;
+import spine.utils.SkeletonClipping;
+import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
 import openfl.geom.Matrix;
 import openfl.display.TriangleCulling;
@@ -27,6 +30,10 @@ import zygame.utils.SpineManager;
  * Sprite渲染器，单个Sprite会进行单次渲染
  */
 class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
+	/**
+	 * 切割器
+	 */
+	private static var clipper:SkeletonClipping = new SkeletonClipping();
 
 	/**
 	 * 骨架对象
@@ -47,22 +54,27 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 坐标数组
 	 */
 	private var _tempVerticesArray:Array<Float>;
+
 	/**
 	 * 矩形三角形
 	 */
 	private var _quadTriangles:Array<Int>;
+
 	/**
 	 * 颜色数组（未实现）
 	 */
 	private var _colors:Array<Int>;
+
 	/**
 	 * 是否正在播放
 	 */
 	private var _isPlay:Bool = true;
+
 	/**
 	 * 当前播放的动作名
 	 */
 	private var _actionName:String = "";
+
 	/**
 	 * 顶点缓存
 	 */
@@ -77,11 +89,26 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 所有顶点数据
 	 */
 	private var allVerticesArray:Vector<Float> = new Vector<Float>();
-	
+
 	/**
 	 * 所有三角形数据
 	 */
 	private var allTriangles:Vector<Int> = new Vector<Int>();
+
+	/**
+	 * 所有顶点透明属性
+	 */
+	private var allTrianglesAlpha:Array<Float> = [];
+
+	/**
+	 * 所有顶点BlendMode属性
+	 */
+	private var allTrianglesBlendMode:Array<Float> = [];
+
+	/**
+	 * 所有顶点的颜色相乘
+	 */
+	private var allTrianglesColor:Array<Float> = [];
 
 	/**
 	 * 所有UV数据
@@ -99,21 +126,73 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private var _shape:Sprite;
 
 	/**
-	 * 是否为本地渲染，如果为true时，将支持透明度渲染，但渲染数会增加。
+	 * 弃用多张纹理渲染模式，如果超过1张2048的纹理图时，可使用该方法进行渲染，但会消耗一定的性能。
 	 */
-	public var isNative(get,set):Bool;
-	private var _isNative:Bool = false;
-	private function set_isNative(value:Bool):Bool
-	{	
-		_isNative=  value;
-		if(_isNative && _spritePool == null)
-			_spritePool = new ObjectPool(()->{
-				return new Sprite();
-			});
+	public var multipleTextureRender(get, set):Bool;
+
+	private function get_multipleTextureRender():Bool {
 		return _isNative;
 	}
-	private function get_isNative():Bool
-	{	
+
+	private function set_multipleTextureRender(value:Bool):Bool {
+		if (_isNative && _spritePool == null)
+			_spritePool = new ObjectPool(() -> {
+				return new Sprite();
+			});
+		_isNative = value;
+		return _isNative;
+	}
+
+	/**
+	 * [弃用]是否为本地渲染，如果为true时，将支持透明度渲染，但渲染数会增加。
+	 */
+	@:deprecated("请注意isNative已经被弃用，并不会生效，如果仍然需要使用isNative支持，请设置multipleTextureRender=true")
+	public var isNative(get, set):Bool;
+
+	private var _isNative:Bool = false;
+
+	/**
+	 * 是否使用缓存渲染，如果使用缓存渲染，如果使用换成渲染，则无法正常使用过渡动画
+	 */
+	public var isCache(get, set):Bool;
+
+	private var _isCache:Bool = false;
+
+	private var _shader:SpineRenderShader = new SpineRenderShader();
+
+	private function set_isCache(value:Bool):Bool {
+		_isCache = value;
+		if (_isCache && _cache == null) {
+			_cache = [];
+		}
+		return value;
+	}
+
+	private function get_isCache():Bool {
+		return _isCache;
+	}
+
+	/**
+	 * 动画缓存映射
+	 */
+	private var _cache:Map<String, Dynamic>;
+
+	private var _cacheBitmapData:BitmapData;
+
+	private var _cacheId:String;
+
+	private var _cached:Bool = false;
+
+	private function set_isNative(value:Bool):Bool {
+		// _isNative = value;
+		// if (_isNative && _spritePool == null)
+		// 	_spritePool = new ObjectPool(() -> {
+		// 		return new Sprite();
+		// 	});
+		return _isNative;
+	}
+
+	private function get_isNative():Bool {
 		return _isNative;
 	}
 
@@ -138,8 +217,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_colors = new Array<Int>();
 
 		#if !zygame
-		this.addEventListener(Event.ADDED_TO_STAGE,onAddToStage);
-		this.addEventListener(Event.REMOVED_FROM_STAGE,onRemoveToStage);
+		this.addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
+		this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoveToStage);
 		#end
 
 		_shape = new Sprite();
@@ -153,36 +232,34 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 统一的渲染入口
 	 */
-	public function onSpineUpdate(dt:Float):Void
-	{
+	public function onSpineUpdate(dt:Float):Void {
 		if (batchs == null)
 			advanceTime(dt);
 	}
 
 	#if zygame
 	/**
-     * 当从舞台移除时
-     */
-    override public function onRemoveToStage():Void
-    {
+	 * 当从舞台移除时
+	 */
+	override public function onRemoveToStage():Void {
 		SpineManager.removeOnFrame(this);
-    }
-	override public function onAddToStage():Void
-    {
+	}
+
+	override public function onAddToStage():Void {
 		SpineManager.addOnFrame(this);
-    }
+	}
 	#else
+
 	/**
-     * 当从舞台移除时
-     */
-    public function onRemoveToStage(_):Void
-    {
+	 * 当从舞台移除时
+	 */
+	public function onRemoveToStage(_):Void {
 		SpineManager.removeOnFrame(this);
-    }
-	public function onAddToStage(_):Void
-    {
+	}
+
+	public function onAddToStage(_):Void {
 		SpineManager.addOnFrame(this);
-    }
+	}
 	#end
 
 	/**
@@ -190,11 +267,20 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	#if zygame override #end public function destroy():Void {
 		SpineManager.removeOnFrame(this);
-		if(_spritePool != null)
+		if (_spritePool != null)
 			_spritePool.clear();
 		_spritePool = null;
 		removeChildren();
 		graphics.clear();
+	}
+
+	/**
+	 * 清空缓存
+	 */
+	public function clearCache():Void {
+		_cache = [];
+		_cached = false;
+		skeleton.setTime(0);
 	}
 
 	/**
@@ -205,6 +291,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_isPlay = true;
 		if (action != null)
 			_actionName = action;
+		if (isCache) {
+			clearCache();
+		}
 	}
 
 	/**
@@ -213,7 +302,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var isPlay(get, set):Bool;
 
 	private function get_isPlay():Bool {
-		return _isPlay;
+		if (_isPlay)
+			return true;
+		if (actionName == "" || actionName == null)
+			return false;
+		return true;
 	}
 
 	private function set_isPlay(bool:Bool):Bool {
@@ -245,11 +338,29 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false)
 			return;
-		skeleton.update(delta * timeScale);
-		if (isNative)
+		if (_isNative)
 			renderNative();
-		else
+		else {
+			if (isCache) {
+				_cacheId = Std.string(Math.round(skeleton.time / .01) * .01);
+				if (_cache.exists(_cacheId)) {
+					renderCacheTriangles(_cache.get(_cacheId));
+					return;
+				} else if (_cached)
+					return;
+			}
 			renderTriangles();
+		}
+	}
+
+	/**
+	 * 渲染缓存三角形，使用isCache=true时可正常使用
+	 */
+	private function renderCacheTriangles(data:Dynamic):Void {
+		_shape.graphics.clear();
+		_shape.graphics.beginBitmapFill(_cacheBitmapData, null, false, false);
+		_shape.graphics.drawTriangles(data.va, data.t, data.uv, TriangleCulling.NONE);
+		_shape.graphics.endFill();
 	}
 
 	private function renderNative():Void {
@@ -264,13 +375,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		// var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
 
 		var max:Int = _shape.numChildren - 1;
-		while (max >= 0)
-		{
+		while (max >= 0) {
 			var spr:Sprite = cast _shape.getChildAt(max);
 			_shape.removeChild(spr);
 			_spritePool.remove(spr);
 			_spritePool.add(spr);
-			max --;
+			max--;
 		}
 		allTriangles.splice(0, allTriangles.length);
 
@@ -283,10 +393,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			triangles = null;
 			uvs = null;
 			atlasRegion = null;
-			var color:Color = null;
 			// 如果骨骼的渲染物件存在
 			if (slot.attachment != null) {
-				if (Std.is(slot.attachment, RegionAttachment)) {
+				if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
 					verticesLength = 8;
@@ -294,8 +403,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = _quadTriangles;
 					atlasRegion = cast region.getRegion();
-					color = region.getColor();
-				} else if (Std.is(slot.attachment, MeshAttachment)) {
+				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
 					verticesLength = 8;
@@ -303,7 +411,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = region.getTriangles();
 					atlasRegion = cast region.getRegion();
-					color = region.getColor();
 				}
 
 				// 矩形绘制
@@ -315,12 +422,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					spr.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray), ofArrayInt(triangles), ofArrayFloat(uvs), TriangleCulling.NONE);
 					spr.graphics.endFill();
 					spr.alpha = slot.color.a;
-					//Color change
-					spr.transform.colorTransform.redMultiplier = slot.color.r * skeleton.color.r * color.r;
-					spr.transform.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * color.g;
-					spr.transform.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * color.b;
-					switch(slot.data.blendMode)
-					{
+					// Color change
+					spr.transform.colorTransform.redMultiplier = slot.color.r;
+					spr.transform.colorTransform.greenMultiplier = slot.color.g;
+					spr.transform.colorTransform.blueMultiplier = slot.color.b;
+					switch (slot.data.blendMode) {
 						case BlendMode.additive:
 							spr.blendMode = openfl.display.BlendMode.ADD;
 						case BlendMode.multiply:
@@ -340,6 +446,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 渲染实现
 	 */
 	private function renderTriangles():Void {
+		var clipper:SkeletonClipping = SkeletonSprite.clipper;
 		_buffdataPoint = 0;
 		var uindex:Int = 0;
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
@@ -368,10 +475,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			atlasRegion = null;
 			// 如果骨骼的渲染物件存在
 			if (slot.attachment != null) {
-				//如果不可见的情况下，则隐藏
-				if(slot.color.a == 0)
+				// 如果不可见的情况下，则隐藏
+				if (slot.color.a == 0)
 					continue;
-				if (Std.is(slot.attachment, RegionAttachment)) {
+				if (Std.isOfType(slot.attachment, ClippingAttachment)) {
+					// 如果是剪切
+					// var region:ClippingAttachment = cast slot.attachment;
+					// clipper.clipStart(slot, region);
+					continue;
+				} else if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
 					verticesLength = 8;
@@ -379,7 +491,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					uvs = region.getUVs();
 					triangles = _quadTriangles;
 					atlasRegion = cast region.getRegion();
-				} else if (Std.is(slot.attachment, MeshAttachment)) {
+				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
 					verticesLength = 8;
@@ -389,6 +501,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					atlasRegion = cast region.getRegion();
 				}
 
+				// if (clipper.isClipping()) {
+				// 	clipper.clipTriangles(_tempVerticesArray,_tempVerticesArray.length,triangles,triangles.length,uvs,1,1,false);
+				// 	_tempVerticesArray = clipper.getClippedVertices();
+				// 	triangles = clipper.getClippedTriangles();
+				// }
 
 				// 矩形绘制
 				if (atlasRegion != null) {
@@ -398,14 +515,28 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					} else {
 						if (bitmapData != atlasRegion.page.rendererObject) {
 							bitmapData = cast atlasRegion.page.rendererObject;
-							_shape.graphics.beginBitmapFill(bitmapData, null, true, true);
 						}
 						// 顶点重新计算
-						v = ofArrayInt(triangles);
-						for (vi in 0...v.length) {
-							v[vi] += t;
+						// v = ofArrayInt(triangles);
+						for (vi in 0...triangles.length) {
 							// 追加顶点
-							allTriangles[_buffdataPoint] = v[vi];
+							allTriangles[_buffdataPoint] = triangles[vi] + t;
+							// 添加顶点属性
+							allTrianglesAlpha[_buffdataPoint] = slot.color.a; // Alpha
+							switch (slot.data.blendMode) {
+								case BlendMode.additive:
+									allTrianglesBlendMode[_buffdataPoint] = 1;
+								case BlendMode.multiply:
+									allTrianglesBlendMode[_buffdataPoint] = 0;
+								case BlendMode.screen:
+									allTrianglesBlendMode[_buffdataPoint] = 0;
+								case BlendMode.normal:
+									allTrianglesBlendMode[_buffdataPoint] = 0;
+							}
+							allTrianglesColor[_buffdataPoint * 4] = (slot.color.r);
+							allTrianglesColor[_buffdataPoint * 4 + 1] = (slot.color.g);
+							allTrianglesColor[_buffdataPoint * 4 + 2] = (slot.color.b);
+							allTrianglesColor[_buffdataPoint * 4 + 3] = (1);
 							_buffdataPoint++;
 						}
 
@@ -419,12 +550,31 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						t += Std.int(uvs.length / 2);
 					}
 				}
+
+				// clipper.clipEndWithSlot(slot);
 			}
 		}
 
-		if (batchs == null) {
+		if (batchs == null && allTriangles.length > 2) {
+			_shape.graphics.clear();
+			_shader.data.openfl_Texture.input = bitmapData;
+			_shader.a_texalpha.value = allTrianglesAlpha;
+			_shader.a_texblendmode.value = allTrianglesBlendMode;
+			_shader.a_texcolor.value = allTrianglesColor;
+			_shape.graphics.beginShaderFill(_shader);
+			// _shape.graphics.beginBitmapFill(bitmapData, null, false, false);
 			_shape.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 			_shape.graphics.endFill();
+			// 缓存
+			if (isCache && _cache != null) {
+				if (_cacheBitmapData == null)
+					_cacheBitmapData = bitmapData;
+				_cache[_cacheId] = {
+					va: allVerticesArray.concat(),
+					t: allTriangles.concat(),
+					uv: allUvs.concat()
+				};
+			}
 		}
 	}
 
@@ -464,17 +614,22 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * @return Bool
 	 */
 	override private function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool {
-		var bool:Bool = super.__hitTest(x, y, shapeFlag, stack, interactiveOnly, hitObject);
-		if (bool == true) {
-			return true;
-		}
+		// var bool:Bool = super.__hitTest(x, y, shapeFlag, stack, interactiveOnly, hitObject);
+		// if (bool == true) {
+		// return true;
+		// }
 		if (this.mouseEnabled == false || this.visible == false)
 			return false;
 		if (this.getBounds(stage).contains(x, y)) {
-			stack.push(this);
+			if (stack != null)
+				stack.push(this);
 			return true;
 		}
 		return false;
 	}
 	#end
+
+	public function getMaxTime():Float {
+		return 0;
+	}
 }

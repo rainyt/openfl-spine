@@ -31,6 +31,19 @@ class SkeletonBatchs extends Sprite implements SpineBaseDisplay{
         SpineManager.addOnFrame(this);
     }
 
+    /**
+	 * 是否正在播放
+	 */
+	public var isPlay(get, set):Bool;
+
+	private function get_isPlay():Bool {
+		return true;
+	}
+
+	private function set_isPlay(bool:Bool):Bool {
+		return bool;
+	}
+
     public function onSpineUpdate(dt:Float):Void
     {
         this.graphics.clear();
@@ -105,7 +118,7 @@ class SkeletonBatchs extends Sprite implements SpineBaseDisplay{
      */
     override public function addChildAt(child:DisplayObject,index:Int):DisplayObject
     {
-        if(!Std.is(child,SkeletonSprite)){
+        if(!Std.isOfType(child,SkeletonSprite)){
             throw "请不要添加非spine.openfl.SkeletonSprite对象！";
         }
         var s:SkeletonSprite = cast(child,SkeletonSprite);

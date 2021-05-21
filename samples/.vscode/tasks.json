@@ -4,15 +4,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build API文档",
-            "type":"shell",
-            "command":"sh build_docs.sh",
-            "problemMatcher":[],
-            "group": {
-                "kind": "build"
-            }
-        },
-        {
             "type": "lime",
             "command": "run",
             "problemMatcher": [

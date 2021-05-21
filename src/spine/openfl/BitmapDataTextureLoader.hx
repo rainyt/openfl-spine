@@ -2,10 +2,10 @@ package spine.openfl;
 
 import spine.support.graphics.TextureAtlas;
 import openfl.display.BitmapData;
-import openfl.Assets;
 import spine.support.graphics.TextureLoader;
 import zygame.utils.StringUtils;
 
+@:keep
 class BitmapDataTextureLoader implements TextureLoader {
 
 	private var _bitmapData:Map<String,BitmapData>;

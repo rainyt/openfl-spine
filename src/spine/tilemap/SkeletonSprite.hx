@@ -30,52 +30,27 @@
 
 package spine.tilemap;
 
-import openfl.geom.ColorTransform;
 import spine.base.SpineBaseDisplay;
 import zygame.utils.SpineManager;
-import openfl.display.BitmapData;
-import spine.attachments.MeshAttachment;
-import spine.Bone;
 import spine.Skeleton;
 import spine.SkeletonData;
-import spine.Slot;
-import spine.support.graphics.TextureAtlas;
-import spine.attachments.RegionAttachment;
-import spine.support.graphics.Color;
-import openfl.display.TileContainer;
-import openfl.display.Tile;
-import openfl.events.Event;
-import spine.BlendMode;
-import spine.support.graphics.Color;
 
 /**
  * Tilemap渲染器
  */
-class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
-	public var skeleton:Skeleton;
+class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 	public var timeScale:Float = 1;
-
-	// 坐标数组
-	private var _tempVerticesArray:Array<Float>;
 
 	private var _isPlay:Bool = true;
 
 	private var _actionName:String = "";
 
-	/**
-	 * 渲染骨骼对应关系
-	 */
-	private var _map:Map<Slot, TileContainer>;
-
 	public function new(skeletonData:SkeletonData) {
-		super();
-
-		skeleton = new Skeleton(skeletonData);
-		skeleton.updateWorldTransform();
-
-		_map = new Map<Slot, TileContainer>();
-
-		SpineManager.addOnFrame(this);
+		super(new Skeleton(skeletonData));
+		this.skeleton.updateWorldTransform();
+		#if zygame
+		this.mouseChildren = false;
+		#end
 	}
 
 	/**
@@ -96,6 +71,8 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 	public var isPlay(get, set):Bool;
 
 	private function get_isPlay():Bool {
+		if (actionName == "" || actionName == null)
+			return false;
 		return _isPlay;
 	}
 
@@ -115,12 +92,16 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 
 	public function play(action:String = null, loop:Bool = true):Void {
 		_isPlay = true;
+		if (this.visible)
+			SpineManager.addOnFrame(this);
 		if (action != null)
 			_actionName = action;
+		this.advanceTime(0);
 	}
 
 	public function stop():Void {
 		_isPlay = false;
+		SpineManager.removeOnFrame(this);
 	}
 
 	public function advanceTime(delta:Float):Void {
@@ -130,140 +111,12 @@ class SkeletonSprite extends TileContainer implements SpineBaseDisplay {
 		renderTriangles();
 	}
 
-	private function renderTriangles():Void {
-		var drawOrder:Array<Slot> = skeleton.drawOrder;
-		var n:Int = drawOrder.length;
-		var triangles:Array<Int> = null;
-		var uvs:Array<Float> = null;
-		var atlasRegion:AtlasRegion;
-		var bitmapData:BitmapData = null;
-		var slot:Slot;
-		var skeletonColor:Color;
-		var soltColor:Color;
-		var regionColor:Color;
-		// var blend:Int;
-
-		this.removeTiles();
-
-		for (i in 0...n) {
-			// if(i != 22)
-			// continue;
-			// 获取骨骼
-			slot = drawOrder[i];
-			// 初始化参数
-			triangles = null;
-			uvs = null;
-			atlasRegion = null;
-			bitmapData = null;
-			// 如果骨骼的渲染物件存在
-			if (slot.attachment != null) {
-				if (Std.is(slot.attachment, RegionAttachment)) {
-					// 如果是矩形
-					var region:RegionAttachment = cast slot.attachment;
-					regionColor = region.getColor();
-					atlasRegion = cast region.getRegion();
-
-					// 矩形绘制
-					if (atlasRegion != null) {
-						var wrapper:TileContainer = _map.get(slot);
-						var tile:Tile = null;
-						if (wrapper == null) {
-							wrapper = new TileContainer();
-							tile = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
-							wrapper.addTile(tile);
-							// var tile2 = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
-							// tile2.scaleX = 2;
-							// tile2.scaleY = 0.05;
-							// wrapper.addTile(tile2);
-							// tile2.x -= 40;
-							// var tile2 = new Tile(atlasRegion.page.rendererObject.getID(atlasRegion));
-							// tile2.scaleX = 2;
-							// tile2.scaleY = 0.05;
-							// wrapper.addTile(tile2);
-							// tile2.y -= 40;
-							// tile2.rotation = 90;
-							_map.set(slot, wrapper);
-						} else {
-							tile = wrapper.getTileAt(0);
-							tile.id = atlasRegion.page.rendererObject.getID(atlasRegion);
-						}
-
-						var regionHeight:Float = atlasRegion.rotate ? atlasRegion.width : atlasRegion.height;
-
-						tile.rotation = -region.getRotation();
-						tile.scaleX = region.getScaleX() * (region.getWidth() / atlasRegion.width);
-						tile.scaleY = region.getScaleY() * (region.getHeight() / atlasRegion.height);
-
-						var radians:Float = -region.getRotation() * Math.PI / 180;
-						var cos:Float = Math.cos(radians);
-						var sin:Float = Math.sin(radians);
-						var shiftX:Float = -region.getWidth() / 2 * region.getScaleX();
-						var shiftY:Float = -region.getHeight() / 2 * region.getScaleY();
-						var offsetX:Float = atlasRegion.offsetX;
-						var offsetY:Float = atlasRegion.offsetY;
-						if (atlasRegion.rotate) {
-							tile.rotation += 90;
-							shiftX += regionHeight * (region.getWidth() / atlasRegion.width);
-							var offset2 = offsetY;
-							// offsetY = offsetX;
-							// offsetX = offset2;
-							// trace("rotate");
-						}
-
-						tile.x = region.getX() + shiftX * cos - shiftY * sin;
-						tile.y = -region.getY() + shiftX * sin + shiftY * cos;
-						// trace(atlasRegion.offsetX,atlasRegion.offsetY);
-						// trace(atlasRegion.offsetX,atlasRegion.offsetY);
-						// tile.x =  region.getX() +atlasRegion.offsetX;
-						// tile.y = - region.getY()+atlasRegion.offsetY;
-
-						var bone:Bone = slot.bone;
-						#if (spine_hx <= "3.6.0")
-						var flipX:Int = skeleton.flipX ? -1 : 1;
-						var flipY:Int = skeleton.flipY ? -1 : 1;
-						#else
-						var flipX:Float = skeleton.getScaleX();
-						var flipY:Float = skeleton.getScaleY();
-						#end
-
-						wrapper.x = bone.getWorldX();
-						wrapper.y = bone.getWorldY();
-						wrapper.rotation = bone.getWorldRotationX();
-						if(bone.getScaleX() < 0)
-							wrapper.rotation -= 180;
-						wrapper.scaleX = bone.getWorldScaleX() * (bone.getScaleX() < 0?-1:1);
-						wrapper.scaleY = bone.getWorldScaleY() * (bone.getScaleY() < 0?-1:1);
-						this.addTile(wrapper);
-
-						// 色值处理
-						#if (openfl > "8.4.0")
-						wrapper.alpha = slot.color.a * skeleton.color.a * region.getColor().a;
-						if (wrapper.colorTransform == null) {
-							wrapper.colorTransform = new ColorTransform();
-						}
-						wrapper.colorTransform.redMultiplier = slot.color.r * skeleton.color.r * region.getColor().r;
-						wrapper.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * region.getColor().g;
-						wrapper.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * region.getColor().b;
-						switch (slot.data.blendMode) {
-							case BlendMode.additive:
-								wrapper.blendMode = openfl.display.BlendMode.ADD;
-							case BlendMode.multiply:
-								wrapper.blendMode = openfl.display.BlendMode.MULTIPLY;
-							case BlendMode.screen:
-								wrapper.blendMode = openfl.display.BlendMode.SCREEN;
-							case BlendMode.normal:
-								wrapper.blendMode = openfl.display.BlendMode.NORMAL;
-						}
-						#end
-					}
-				} else if (Std.is(slot.attachment, MeshAttachment)) {
-					throw "tilemap not support MeshAttachment!";
-				}
-			}
+	override private function set_visible(value:Bool):Bool {
+		if (!value) {
+			SpineManager.removeOnFrame(this);
+		} else if (_isPlay) {
+			SpineManager.addOnFrame(this);
 		}
-	}
-
-	public function argbToNumber(a:Int, r:Int, g:Int, b:Int):UInt {
-		return a << 24 | r << 16 | g << 8 | b;
+		return super.set_visible(value);
 	}
 }
