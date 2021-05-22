@@ -1,13 +1,13 @@
 package spine.shader;
 
-import glsl.OpenFLShader;
+import glsl.OpenFLGraphicsShader;
 import glsl.GLSL;
 import VectorMath;
 
 /**
  * 用于实现Spine在Sprite模式下的透明值、BlendMode等支持
  */
-class SpineRenderShader extends OpenFLShader {
+class SpineRenderShader extends OpenFLGraphicsShader {
 	/**
 	 * 纹理透明度
 	 */
