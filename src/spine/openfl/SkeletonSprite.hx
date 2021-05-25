@@ -11,7 +11,7 @@ import openfl.display.Sprite;
 import zygame.display.DisplayObjectContainer;
 import zygame.shader.SpineRenderShader;
 #else
-import openfl.shader.SpineRenderShader;
+import spine.shader.SpineRenderShader;
 #end
 import openfl.Vector;
 import spine.attachments.MeshAttachment;
@@ -343,7 +343,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false)
 			return;
-		if (isNative)
+		if (_isNative)
 			renderNative();
 		else {
 			if (isCache) {
@@ -599,12 +599,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		if (batchs == null && allTriangles.length > 2) {
 			_shape.graphics.clear();
-			_shader.data.openfl_Texture.input = bitmapData;
+			_shader.data.bitmap.input = bitmapData;
 			_shader.a_texalpha.value = allTrianglesAlpha;
 			_shader.a_texblendmode.value = allTrianglesBlendMode;
 			_shader.a_texcolor.value = allTrianglesColor;
 			_shape.graphics.beginShaderFill(_shader);
-			// _shape.graphics.beginBitmapFill(bitmapData, null, false, false);
 			_shape.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 			_shape.graphics.endFill();
 			// 缓存
