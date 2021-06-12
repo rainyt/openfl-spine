@@ -8,8 +8,8 @@ import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 #if zygame
-import zygame.display.DisplayObjectContainer;
 import zygame.shader.SpineRenderShader;
+import zygame.display.DisplayObjectContainer;
 #else
 import spine.shader.SpineRenderShader;
 #end
@@ -71,6 +71,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 是否正在播放
 	 */
 	private var _isPlay:Bool = true;
+
+	private var _isDipose:Bool = false;
 
 	/**
 	 * 当前播放的动作名
@@ -189,11 +191,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private var _cached:Bool = false;
 
 	private function set_isNative(value:Bool):Bool {
-		// _isNative = value;
-		// if (_isNative && _spritePool == null)
-		// 	_spritePool = new ObjectPool(() -> {
-		// 		return new Sprite();
-		// 	});
 		return _isNative;
 	}
 
@@ -277,6 +274,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_spritePool = null;
 		removeChildren();
 		graphics.clear();
+		_isDipose = true;
 	}
 
 	/**
@@ -341,7 +339,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * @param delta
 	 */
 	public function advanceTime(delta:Float):Void {
-		if (_isPlay == false)
+		if (_isPlay == false || _isDipose)
 			return;
 		if (_isNative)
 			renderNative();
@@ -387,10 +385,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			_spritePool.add(spr);
 			max--;
 		}
-		allTriangles.splice(0, allTriangles.length);
-
+		allTriangles = new Vector<Int>();
 		var t:Int = 0;
-
 		for (i in 0...n) {
 			// 获取骨骼
 			slot = drawOrder[i];
@@ -476,9 +472,13 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		}
 
 		_shape.graphics.clear();
-		allTriangles.splice(0, allTriangles.length);
-
+		allTriangles = new Vector<Int>();
 		var t:Int = 0;
+
+		var writeVertices:Array<Float> = null;
+		var writeTriangles:Array<Int> = null;
+
+		var bitmaps = [];
 
 		for (i in 0...n) {
 			// 获取骨骼
@@ -494,8 +494,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					continue;
 				if (Std.isOfType(slot.attachment, ClippingAttachment)) {
 					// 如果是剪切
-					// var region:ClippingAttachment = cast slot.attachment;
-					// clipper.clipStart(slot, region);
+					var region:ClippingAttachment = cast slot.attachment;
+					clipper.clipStart(slot, region);
 					continue;
 				} else if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
@@ -514,33 +514,55 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					triangles = region.getTriangles();
 					atlasRegion = cast region.getRegion();
 				}
-
-				// if (clipper.isClipping()) {
-				// 	clipper.clipTriangles(_tempVerticesArray,_tempVerticesArray.length,triangles,triangles.length,uvs,1,1,false);
-				// 	_tempVerticesArray = clipper.getClippedVertices();
-				// 	triangles = clipper.getClippedTriangles();
-				// }
+				// 裁剪实现
+				if (clipper.isClipping()) {
+					clipper.clipTriangles(_tempVerticesArray, _tempVerticesArray.length, triangles, triangles.length, uvs, 1, 1, true);
+					if (clipper.getClippedTriangles().length == 0) {
+						clipper.clipEndWithSlot(slot);
+						continue;
+					} else {
+						var clippedVertices = clipper.getClippedVertices();
+						writeVertices = [];
+						uvs = [];
+						var i = 0;
+						while (true) {
+							writeVertices.push(clippedVertices[i]);
+							writeVertices.push(clippedVertices[i + 1]);
+							uvs.push(clippedVertices[i + 4]);
+							uvs.push(clippedVertices[i + 5]);
+							i += 6;
+							if (i >= clippedVertices.length)
+								break;
+						}
+						writeTriangles = clipper.getClippedTriangles();
+					}
+				} else {
+					writeVertices = _tempVerticesArray;
+					writeTriangles = triangles;
+				}
 
 				// 矩形绘制
 				if (atlasRegion != null) {
 					if (batchs != null) {
 						// 上传到批量渲染
-						batchs.uploadBuffData(this, ofArrayFloat(_tempVerticesArray), ofArrayInt(triangles), ofArrayFloat(uvs));
+						batchs.uploadBuffData(this, ofArrayFloat(writeVertices), ofArrayInt(writeTriangles), ofArrayFloat(uvs));
 					} else {
-						if (bitmapData != atlasRegion.page.rendererObject) {
-							bitmapData = cast atlasRegion.page.rendererObject;
+						bitmapData = cast atlasRegion.page.rendererObject;
+						if (bitmaps.indexOf(bitmapData) == -1) {
+							bitmaps.push(bitmapData);
 						}
 						// 顶点重新计算
 						if (slot.data.blendMode != BlendMode.additive && slot.data.blendMode != BlendMode.normal) {
 							/**
 							 * 注意，该实现现在存在层级问题，永远比非着色器的高一层，需要后续解决。
 							 */
+							if (_spritePool == null)
+								continue;
 							var spr:Sprite = _spritePool.get();
 
-							var curBitmap:BitmapData = cast atlasRegion.page.rendererObject;
 							spr.graphics.clear();
-							spr.graphics.beginBitmapFill(curBitmap, null, true, true);
-							spr.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray), ofArrayInt(triangles), ofArrayFloat(uvs), TriangleCulling.NONE);
+							spr.graphics.beginBitmapFill(bitmapData, null, true, true);
+							spr.graphics.drawTriangles(ofArrayFloat(writeVertices), ofArrayInt(writeTriangles), ofArrayFloat(uvs), TriangleCulling.NONE);
 							spr.graphics.endFill();
 							spr.alpha = slot.color.a;
 							// Color change
@@ -559,9 +581,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 							}
 							_shape.addChild(spr);
 						} else {
-							for (vi in 0...triangles.length) {
+							for (vi in 0...writeTriangles.length) {
 								// 追加顶点
-								allTriangles[_buffdataPoint] = triangles[vi] + t;
+								allTriangles[_buffdataPoint] = writeTriangles[vi] + t;
 								// 添加顶点属性
 								allTrianglesAlpha[_buffdataPoint] = slot.color.a; // Alpha
 								switch (slot.data.blendMode) {
@@ -577,13 +599,14 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 								allTrianglesColor[_buffdataPoint * 4] = (slot.color.r);
 								allTrianglesColor[_buffdataPoint * 4 + 1] = (slot.color.g);
 								allTrianglesColor[_buffdataPoint * 4 + 2] = (slot.color.b);
-								allTrianglesColor[_buffdataPoint * 4 + 3] = (1);
+								allTrianglesColor[_buffdataPoint * 4 + 3] = (bitmaps.indexOf(bitmapData));
+								// allTrianglesColor[_buffdataPoint * 4 + 3] = (1);
 								_buffdataPoint++;
 							}
 
 							for (ui in 0...uvs.length) {
 								// 追加坐标
-								allVerticesArray[uindex] = _tempVerticesArray[ui];
+								allVerticesArray[uindex] = writeVertices[ui];
 								// 追加UV
 								allUvs[uindex] = uvs[ui];
 								uindex++;
@@ -593,13 +616,22 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					}
 				}
 
-				// clipper.clipEndWithSlot(slot);
+				clipper.clipEndWithSlot(slot);
 			}
 		}
 
 		if (batchs == null && allTriangles.length > 2) {
 			_shape.graphics.clear();
-			_shader.data.bitmap.input = bitmapData;
+			#if zygame
+			if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
+				_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
+			} else {
+				_shader.data.u_malpha.value = [this.alpha];
+			}
+			#else
+			_shader.data.u_malpha.value = [this.alpha];
+			#end
+			_shader.data.bitmap.input = bitmaps[0];
 			_shader.a_texalpha.value = allTrianglesAlpha;
 			_shader.a_texblendmode.value = allTrianglesBlendMode;
 			_shader.a_texcolor.value = allTrianglesColor;
@@ -655,10 +687,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * @return Bool
 	 */
 	override private function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool {
-		// var bool:Bool = super.__hitTest(x, y, shapeFlag, stack, interactiveOnly, hitObject);
-		// if (bool == true) {
-		// return true;
-		// }
 		if (this.mouseEnabled == false || this.visible == false)
 			return false;
 		if (this.getBounds(stage).contains(x, y)) {

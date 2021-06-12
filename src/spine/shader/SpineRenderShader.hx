@@ -1,7 +1,8 @@
 package spine.shader;
 
+import glsl.GLSL.texture2D;
+import glsl.Sampler2D;
 import glsl.OpenFLGraphicsShader;
-import glsl.GLSL;
 import VectorMath;
 
 /**
@@ -34,11 +35,17 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 */
 	@:varying public var mulcolor:Vec4;
 
+	/**
+	 * 透明度
+	 */
+	@:uniform public var malpha:Float;
+
 	override function fragment() {
 		super.fragment();
-		gl_FragColor = color * alphaBlendMode.x * gl_openfl_Alphav;
-		gl_FragColor.w *= (1 - alphaBlendMode.y);
-		gl_FragColor.rgb *= mulcolor.rgb;
+		gl_FragColor = color * alphaBlendMode.x;
+		gl_FragColor.a = gl_FragColor.a * (1 - alphaBlendMode.y);
+		gl_FragColor.rgb = gl_FragColor.rgb * mulcolor.rgb;
+		gl_FragColor = gl_FragColor * malpha;
 	}
 
 	/**
