@@ -11,7 +11,7 @@ import spine.SkeletonDataFileHandle;
 import zygame.utils.StringUtils;
 
 /**
- * SpineTextureAtalsLoader加载器
+ * SpineTextureAtlasLoader加载器
  */
 class SpineTextureAtlasLoader {
 
@@ -19,7 +19,7 @@ class SpineTextureAtlasLoader {
     private var _texs:Map<String,BitmapData>;
     private var _texJson:String;
     private var _errorCall:String->Void;
-    private var _call:SpineTextureAtals->Void;
+    private var _call:SpineTextureAtlas->Void;
     public var path:String;
 
     /**
@@ -38,7 +38,7 @@ class SpineTextureAtlasLoader {
      * 载入Spine纹理集合
      * @param call 
      */
-    public function load(call:SpineTextureAtals->Void,errorCall:String->Void){
+    public function load(call:SpineTextureAtlas->Void,errorCall:String->Void){
         _errorCall = errorCall;
         _call = call;
         _texs = new Map<String,BitmapData>();
@@ -59,7 +59,7 @@ class SpineTextureAtlasLoader {
         else
         {
             Assets.loadText(_texJson).onComplete(function(data:String):Void{
-                var spine:SpineTextureAtals = new SpineTextureAtals(_texs,data);
+                var spine:SpineTextureAtlas = new SpineTextureAtlas(_texs,data);
                 spine.path = path;
                 _call(spine);
             }).onError(_errorCall);
@@ -70,7 +70,7 @@ class SpineTextureAtlasLoader {
 /**
  * Spine纹理集
  */
-class SpineTextureAtals {
+class SpineTextureAtlas {
 
     private var _tilemapSkeletonManager:SkeletonJson;
     private var _spriteSkeletonManager:SkeletonJson;
