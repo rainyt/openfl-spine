@@ -371,7 +371,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		// 是否开始填充
 		var isFill = false;
 
-		trace("骨架数量：", n);
 		for (i in 0...n) {
 			// 获取骨骼
 			slot = drawOrder[i];
@@ -433,7 +432,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					writeTriangles = triangles;
 				}
 
-				trace("尝试渲染");
 				// 矩形绘制
 				if (atlasRegion != null) {
 					if (bitmapData != null
@@ -505,9 +503,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		// 最后一个，直接渲染
 		if (_spritePool != null)
 			drawSprite(null, bitmapData);
-
-		// trace("报错");
-		// throw "？？";
 	}
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData):Void {
@@ -549,8 +544,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		spr.graphics.endFill();
 		_shape.addChild(spr);
-
-		trace("渲染");
 	}
 
 	/**
