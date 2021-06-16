@@ -371,6 +371,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		// 是否开始填充
 		var isFill = false;
 
+		trace("骨架数量：", n);
 		for (i in 0...n) {
 			// 获取骨骼
 			slot = drawOrder[i];
@@ -432,6 +433,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					writeTriangles = triangles;
 				}
 
+				trace("尝试渲染");
 				// 矩形绘制
 				if (atlasRegion != null) {
 					if (bitmapData != null
@@ -495,31 +497,33 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						uindex++;
 					}
 					t += Std.int(uvs.length / 2);
-
-					if (i == n - 1) {
-						// 最后一个，直接渲染
-						if (_spritePool == null)
-							continue;
-						drawSprite(slot, bitmapData);
-					}
 				}
 				clipper.clipEndWithSlot(slot);
 			}
 		}
+
+		// 最后一个，直接渲染
+		if (_spritePool != null)
+			drawSprite(null, bitmapData);
+
+		// trace("报错");
+		// throw "？？";
 	}
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData):Void {
 		var spr:Sprite = _spritePool.get();
 
-		switch (slot.data.blendMode) {
-			case BlendMode.additive:
-			// 内置Shader支持
-			case BlendMode.multiply:
-				spr.blendMode = openfl.display.BlendMode.MULTIPLY;
-			case BlendMode.screen:
-				spr.blendMode = openfl.display.BlendMode.SCREEN;
-			case BlendMode.normal:
-				spr.blendMode = openfl.display.BlendMode.NORMAL;
+		if (slot != null) {
+			switch (slot.data.blendMode) {
+				case BlendMode.additive:
+				// 内置Shader支持
+				case BlendMode.multiply:
+					spr.blendMode = openfl.display.BlendMode.MULTIPLY;
+				case BlendMode.screen:
+					spr.blendMode = openfl.display.BlendMode.SCREEN;
+				case BlendMode.normal:
+					spr.blendMode = openfl.display.BlendMode.NORMAL;
+			}
 		}
 
 		spr.graphics.clear();
@@ -545,6 +549,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		spr.graphics.endFill();
 		_shape.addChild(spr);
+
+		trace("渲染");
 	}
 
 	/**
