@@ -28,15 +28,11 @@ SpineManager.init(this.stage);
 ```
 
 # Sprite渲染器（已提高了性能，内置批量渲染处理）
-该对象拥有批渲染高性能渲染，能够得到1draw的渲染。但是会有以下几个限制：
-- 必须使用单张资源纹理渲染。
-- 单张纹理资源大小不超过2048*2048。
-- [注意] 使用批渲染渲染时，在openfl-spine1.6.0开始支持透明度，改色以及网格功能。
-
-This object has high-performance batch rendering and can get 1draw rendering. But there will be the following restrictions:
-- Must use single resource texture rendering.
-- The size of a single texture resource does not exceed 2048*2048.
-- [Note] When using batch rendering, the transparency, color change and grid functions are supported in openfl-spine1.6.0.
+使用Sprite渲染Spine对象，使用SpriteSpine渲染已支持以下特性：
+- 遮罩
+- 多纹理渲染
+- BlendMode支持
+- 透明度支持
 
 Demo：
 ```haxe
@@ -51,18 +47,12 @@ Demo：
             openflSprite.play("walk");
             openflSprite.scaleX = 0.6;
             openflSprite.scaleY = 0.6;
-            openflSprite.multipleTextureRender = true;
         },function(error:String):Void{
             trace("加载失败：",error);
         });
 ```
-上面提及到必须使用单张图片纹理渲染，但也可以通过multipleTextureRender属性开启支持多纹理功能，但将会牺牲一定层度的性能：
-As mentioned above, a single image texture must be used for rendering, but it is also possible to enable multi-texture support through the multipleTextureRender property, but a certain level of performance will be sacrificed:
-```haxe
-//功能能够通过multipleTextureRender属性开启，多张纹理图的渲染，必须开启这个属性，否则渲染会有异常。
-spine.multipleTextureRender = true;
-```
-[注意] openfl-spine1.6.0开始将弃用`isNative`功能，因为从1.6.0开始，已经可以正常支持alpha/blendMode/颜色修改等功能；但如果仍然希望使用多纹理时，则需要使用`multipleTextureRender`。Openfl-spine 1.6.0 will deprecate the `isNative` function, because since 1.6.0, functions such as alpha/blendMode/color modification can be normally supported; but if you still want to use multiple textures, you need to use `multipleTextureRender`.
+
+[注意] 从openfl-spine1.6.4版本开始，将启用`isNative`以及`multipleTextureRender`的支持，使用SpriteSpine渲染时，将自动支持多纹理渲染。
       
 # Tilemap渲染器
 Tilemap需要一个tilemap进行装载，这意味着一样的图集的Spine只需要1drawcall。Tilemap requires a tilemap to load, which means that Spine of the same atlas only needs 1 drawcall.

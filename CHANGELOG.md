@@ -1,3 +1,8 @@
+# 1.6.4
+- 修正：修复`SpineTextureAtlasLoader`错别字。
+- 删除：删除`isNative`以及`multipleTextureRender`的渲染支持。
+- 改进：`SpriteSpine`新增自动多纹理渲染支持。
+
 # 1.6.3
 - 新增：对`SpriteSpine`增加了遮罩支持。
 

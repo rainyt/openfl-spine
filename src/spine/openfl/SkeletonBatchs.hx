@@ -14,6 +14,7 @@ import zygame.utils.SpineManager;
 /**
  * 骨骼批渲染处理
  */
+@:noCompletion
 class SkeletonBatchs extends Sprite implements SpineBaseDisplay{
 
     public var allVerticesArray:Vector<Float> = new Vector<Float>();

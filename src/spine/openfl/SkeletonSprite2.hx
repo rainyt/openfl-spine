@@ -50,8 +50,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 批渲染对象
 	 */
-	@:noCompletion
-	@:deprecated("batchs接口并没有正式完成，不推荐使用")
 	public var batchs:SkeletonBatchs;
 
 	/**
@@ -139,13 +137,35 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private var _shape:Sprite;
 
 	/**
+	 * 弃用多张纹理渲染模式，如果超过1张2048的纹理图时，可使用该方法进行渲染，但会消耗一定的性能。
+	 */
+	public var multipleTextureRender(get, set):Bool;
+
+	private function get_multipleTextureRender():Bool {
+		return _isNative;
+	}
+
+	private function set_multipleTextureRender(value:Bool):Bool {
+		_isNative = value;
+		return _isNative;
+	}
+
+	/**
+	 * [弃用]是否为本地渲染，如果为true时，将支持透明度渲染，但渲染数会增加。
+	 */
+	@:deprecated("请注意isNative已经被弃用，并不会生效，如果仍然需要使用isNative支持，请设置multipleTextureRender=true")
+	public var isNative(get, set):Bool;
+
+	private var _isNative:Bool = false;
+
+	/**
 	 * 是否使用缓存渲染，如果使用缓存渲染，如果使用换成渲染，则无法正常使用过渡动画
 	 */
 	public var isCache(get, set):Bool;
 
 	private var _isCache:Bool = false;
 
-	// private var _shader:SpineRenderShader = new SpineRenderShader();
+	private var _shader:SpineRenderShader = new SpineRenderShader();
 
 	private function set_isCache(value:Bool):Bool {
 		_isCache = value;
@@ -169,6 +189,14 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private var _cacheId:String;
 
 	private var _cached:Bool = false;
+
+	private function set_isNative(value:Bool):Bool {
+		return _isNative;
+	}
+
+	private function get_isNative():Bool {
+		return _isNative;
+	}
 
 	/**
 	 * 创建一个Spine对象
@@ -207,7 +235,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 统一的渲染入口
 	 */
 	public function onSpineUpdate(dt:Float):Void {
-		advanceTime(dt);
+		if (batchs == null)
+			advanceTime(dt);
 	}
 
 	#if zygame
@@ -312,15 +341,19 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		if (isCache) {
-			_cacheId = Std.string(Math.round(skeleton.time / .01) * .01);
-			if (_cache.exists(_cacheId)) {
-				renderCacheTriangles(_cache.get(_cacheId));
-				return;
-			} else if (_cached)
-				return;
+		if (_isNative)
+			renderNative();
+		else {
+			if (isCache) {
+				_cacheId = Std.string(Math.round(skeleton.time / .01) * .01);
+				if (_cache.exists(_cacheId)) {
+					renderCacheTriangles(_cache.get(_cacheId));
+					return;
+				} else if (_cached)
+					return;
+			}
+			renderTriangles();
 		}
-		renderTriangles();
 	}
 
 	/**
@@ -331,6 +364,83 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shape.graphics.beginBitmapFill(_cacheBitmapData, null, false, false);
 		_shape.graphics.drawTriangles(data.va, data.t, data.uv, TriangleCulling.NONE);
 		_shape.graphics.endFill();
+	}
+
+	private function renderNative():Void {
+		_buffdataPoint = 0;
+		var drawOrder:Array<Slot> = skeleton.drawOrder;
+		var n:Int = drawOrder.length;
+		var triangles:Array<Int> = null;
+		var uvs:Array<Float> = null;
+		var verticesLength:Int = 0;
+		var atlasRegion:AtlasRegion;
+		var slot:Slot;
+		// var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
+
+		var max:Int = _shape.numChildren - 1;
+		while (max >= 0) {
+			var spr:Sprite = cast _shape.getChildAt(max);
+			_shape.removeChild(spr);
+			_spritePool.remove(spr);
+			_spritePool.add(spr);
+			max--;
+		}
+		allTriangles = new Vector<Int>();
+		var t:Int = 0;
+		for (i in 0...n) {
+			// 获取骨骼
+			slot = drawOrder[i];
+			// 初始化参数
+			triangles = null;
+			uvs = null;
+			atlasRegion = null;
+			// 如果骨骼的渲染物件存在
+			if (slot.attachment != null) {
+				if (Std.isOfType(slot.attachment, RegionAttachment)) {
+					// 如果是矩形
+					var region:RegionAttachment = cast slot.attachment;
+					verticesLength = 8;
+					region.computeWorldVertices(slot.bone, _tempVerticesArray, 0, 2);
+					uvs = region.getUVs();
+					triangles = _quadTriangles;
+					atlasRegion = cast region.getRegion();
+				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
+					// 如果是网格
+					var region:MeshAttachment = cast slot.attachment;
+					verticesLength = 8;
+					region.computeWorldVertices(slot, 0, region.getWorldVerticesLength(), _tempVerticesArray, 0, 2);
+					uvs = region.getUVs();
+					triangles = region.getTriangles();
+					atlasRegion = cast region.getRegion();
+				}
+
+				// 矩形绘制
+				if (atlasRegion != null) {
+					var spr:Sprite = _spritePool.get();
+					var curBitmap:BitmapData = cast atlasRegion.page.rendererObject;
+					spr.graphics.clear();
+					spr.graphics.beginBitmapFill(curBitmap, null, true, true);
+					spr.graphics.drawTriangles(ofArrayFloat(_tempVerticesArray), ofArrayInt(triangles), ofArrayFloat(uvs), TriangleCulling.NONE);
+					spr.graphics.endFill();
+					spr.alpha = slot.color.a;
+					// Color change
+					spr.transform.colorTransform.redMultiplier = slot.color.r;
+					spr.transform.colorTransform.greenMultiplier = slot.color.g;
+					spr.transform.colorTransform.blueMultiplier = slot.color.b;
+					switch (slot.data.blendMode) {
+						case BlendMode.additive:
+							spr.blendMode = openfl.display.BlendMode.ADD;
+						case BlendMode.multiply:
+							spr.blendMode = openfl.display.BlendMode.MULTIPLY;
+						case BlendMode.screen:
+							spr.blendMode = openfl.display.BlendMode.SCREEN;
+						case BlendMode.normal:
+							spr.blendMode = openfl.display.BlendMode.NORMAL;
+					}
+					_shape.addChild(spr);
+				}
+			}
+		}
 	}
 
 	/**
@@ -368,8 +478,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var writeVertices:Array<Float> = null;
 		var writeTriangles:Array<Int> = null;
 
-		// 是否开始填充
-		var isFill = false;
+		var bitmaps = [];
 
 		for (i in 0...n) {
 			// 获取骨骼
@@ -434,117 +543,112 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 				// 矩形绘制
 				if (atlasRegion != null) {
-					if (bitmapData != null
-						&& (bitmapData != atlasRegion.page.rendererObject
-							|| (slot.data.blendMode != BlendMode.additive && slot.data.blendMode != BlendMode.normal))) {
-						isFill = true;
+					if (batchs != null) {
+						// 上传到批量渲染
+						batchs.uploadBuffData(this, ofArrayFloat(writeVertices), ofArrayInt(writeTriangles), ofArrayFloat(uvs));
 					} else {
 						bitmapData = cast atlasRegion.page.rendererObject;
-					}
-
-					// 如果是可以填充
-					if (isFill) {
-						if (_spritePool == null)
-							continue;
-						drawSprite(slot, bitmapData);
-
-						// 重置
-						allTriangles = new Vector();
-						allTrianglesAlpha = [];
-						allTrianglesColor = [];
-						allVerticesArray = new Vector();
-						allUvs = new Vector();
-						t = 0;
-						uindex = 0;
-						_buffdataPoint = 0;
-
-						isFill = false;
-					}
-
-					bitmapData = cast atlasRegion.page.rendererObject;
-
-					// 补充完毕后仍然需要记录
-					for (vi in 0...writeTriangles.length) {
-						// 追加顶点
-						allTriangles[_buffdataPoint] = writeTriangles[vi] + t;
-						// 添加顶点属性
-						allTrianglesAlpha[_buffdataPoint] = slot.color.a; // Alpha
-						switch (slot.data.blendMode) {
-							case BlendMode.additive:
-								allTrianglesBlendMode[_buffdataPoint] = 1;
-							case BlendMode.multiply:
-								allTrianglesBlendMode[_buffdataPoint] = 0;
-							case BlendMode.screen:
-								allTrianglesBlendMode[_buffdataPoint] = 0;
-							case BlendMode.normal:
-								allTrianglesBlendMode[_buffdataPoint] = 0;
+						if (bitmaps.indexOf(bitmapData) == -1) {
+							bitmaps.push(bitmapData);
 						}
-						allTrianglesColor[_buffdataPoint * 4] = (slot.color.r);
-						allTrianglesColor[_buffdataPoint * 4 + 1] = (slot.color.g);
-						allTrianglesColor[_buffdataPoint * 4 + 2] = (slot.color.b);
-						allTrianglesColor[_buffdataPoint * 4 + 3] = 0;
-						// allTrianglesColor[_buffdataPoint * 4 + 3] = (1);
-						_buffdataPoint++;
-					}
+						// 顶点重新计算
+						if (slot.data.blendMode != BlendMode.additive && slot.data.blendMode != BlendMode.normal) {
+							/**
+							 * 注意，该实现现在存在层级问题，永远比非着色器的高一层，需要后续解决。
+							 */
+							if (_spritePool == null)
+								continue;
+							var spr:Sprite = _spritePool.get();
 
-					for (ui in 0...uvs.length) {
-						// 追加坐标
-						allVerticesArray[uindex] = writeVertices[ui];
-						// 追加UV
-						allUvs[uindex] = uvs[ui];
-						uindex++;
-					}
-					t += Std.int(uvs.length / 2);
+							spr.graphics.clear();
+							spr.graphics.beginBitmapFill(bitmapData, null, true, true);
+							spr.graphics.drawTriangles(ofArrayFloat(writeVertices), ofArrayInt(writeTriangles), ofArrayFloat(uvs), TriangleCulling.NONE);
+							spr.graphics.endFill();
+							spr.alpha = slot.color.a;
+							// Color change
+							spr.transform.colorTransform.redMultiplier = slot.color.r;
+							spr.transform.colorTransform.greenMultiplier = slot.color.g;
+							spr.transform.colorTransform.blueMultiplier = slot.color.b;
+							switch (slot.data.blendMode) {
+								case BlendMode.additive:
+									spr.blendMode = openfl.display.BlendMode.ADD;
+								case BlendMode.multiply:
+									spr.blendMode = openfl.display.BlendMode.MULTIPLY;
+								case BlendMode.screen:
+									spr.blendMode = openfl.display.BlendMode.SCREEN;
+								case BlendMode.normal:
+									spr.blendMode = openfl.display.BlendMode.NORMAL;
+							}
+							_shape.addChild(spr);
+						} else {
+							for (vi in 0...writeTriangles.length) {
+								// 追加顶点
+								allTriangles[_buffdataPoint] = writeTriangles[vi] + t;
+								// 添加顶点属性
+								allTrianglesAlpha[_buffdataPoint] = slot.color.a; // Alpha
+								switch (slot.data.blendMode) {
+									case BlendMode.additive:
+										allTrianglesBlendMode[_buffdataPoint] = 1;
+									case BlendMode.multiply:
+										allTrianglesBlendMode[_buffdataPoint] = 0;
+									case BlendMode.screen:
+										allTrianglesBlendMode[_buffdataPoint] = 0;
+									case BlendMode.normal:
+										allTrianglesBlendMode[_buffdataPoint] = 0;
+								}
+								allTrianglesColor[_buffdataPoint * 4] = (slot.color.r);
+								allTrianglesColor[_buffdataPoint * 4 + 1] = (slot.color.g);
+								allTrianglesColor[_buffdataPoint * 4 + 2] = (slot.color.b);
+								allTrianglesColor[_buffdataPoint * 4 + 3] = (bitmaps.indexOf(bitmapData));
+								// allTrianglesColor[_buffdataPoint * 4 + 3] = (1);
+								_buffdataPoint++;
+							}
 
-					if (i == n - 1) {
-						// 最后一个，直接渲染
-						if (_spritePool == null)
-							continue;
-						drawSprite(slot, bitmapData);
+							for (ui in 0...uvs.length) {
+								// 追加坐标
+								allVerticesArray[uindex] = writeVertices[ui];
+								// 追加UV
+								allUvs[uindex] = uvs[ui];
+								uindex++;
+							}
+							t += Std.int(uvs.length / 2);
+						}
 					}
 				}
+
 				clipper.clipEndWithSlot(slot);
 			}
 		}
-	}
 
-	private function drawSprite(slot:Slot, bitmapData:BitmapData):Void {
-		var spr:Sprite = _spritePool.get();
-
-		switch (slot.data.blendMode) {
-			case BlendMode.additive:
-			// 内置Shader支持
-			case BlendMode.multiply:
-				spr.blendMode = openfl.display.BlendMode.MULTIPLY;
-			case BlendMode.screen:
-				spr.blendMode = openfl.display.BlendMode.SCREEN;
-			case BlendMode.normal:
-				spr.blendMode = openfl.display.BlendMode.NORMAL;
-		}
-
-		spr.graphics.clear();
-		var _shader:SpineRenderShader = cast spr.shader;
-		if (_shader == null) {
-			_shader = new SpineRenderShader();
-			spr.shader = _shader;
-		}
-		#if zygame
-		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
-			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
-		} else {
+		if (batchs == null && allTriangles.length > 2) {
+			_shape.graphics.clear();
+			#if zygame
+			if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
+				_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
+			} else {
+				_shader.data.u_malpha.value = [this.alpha];
+			}
+			#else
 			_shader.data.u_malpha.value = [this.alpha];
+			#end
+			_shader.data.bitmap.input = bitmaps[0];
+			_shader.a_texalpha.value = allTrianglesAlpha;
+			_shader.a_texblendmode.value = allTrianglesBlendMode;
+			_shader.a_texcolor.value = allTrianglesColor;
+			_shape.graphics.beginShaderFill(_shader);
+			_shape.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
+			_shape.graphics.endFill();
+			// 缓存
+			if (isCache && _cache != null) {
+				if (_cacheBitmapData == null)
+					_cacheBitmapData = bitmapData;
+				_cache[_cacheId] = {
+					va: allVerticesArray.concat(),
+					t: allTriangles.concat(),
+					uv: allUvs.concat()
+				};
+			}
 		}
-		#else
-		_shader.data.u_malpha.value = [this.alpha];
-		#end
-		_shader.data.bitmap.input = bitmapData;
-		_shader.a_texalpha.value = allTrianglesAlpha;
-		_shader.a_texblendmode.value = allTrianglesBlendMode;
-		_shader.a_texcolor.value = allTrianglesColor;
-		spr.graphics.beginShaderFill(_shader);
-		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
-		spr.graphics.endFill();
-		_shape.addChild(spr);
 	}
 
 	/**
