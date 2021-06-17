@@ -1,7 +1,5 @@
-# 1.6.5
-- 修复：修复Spine不支持透明度的问题。
-
-# 1.6.4
+# 1.6.7
+- 修复：修复`SpriteSpine`不支持透明度的问题。
 - 修正：修复`SpineTextureAtlasLoader`错别字。
 - 删除：删除`isNative`以及`multipleTextureRender`的渲染支持。
 - 改进：`SpriteSpine`新增自动多纹理渲染支持。
