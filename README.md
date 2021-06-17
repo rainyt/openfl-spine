@@ -58,12 +58,19 @@ Demo：
 Tilemap需要一个tilemap进行装载，这意味着一样的图集的Spine只需要1drawcall。Tilemap requires a tilemap to load, which means that Spine of the same atlas only needs 1 drawcall.
 
 # Spine事件侦听器
-侦听spine的原生事件，请使用（To listen to spine's native events, please use）：
+通用的动画事件侦听方法：
 ```haxe
 var event:AnimationEvent = new AnimationEvent();
 var spine:SkeletonAnimation;
 spine.state.addListener(event);
 event.addEventListener(SpineEvent.COMPLETE,(event:SpineEvent)->{
+    
+});
+```
+在SpriteSpine渲染对象下，可以直接侦听：
+```haxe
+var spine:SkeletonAnimation;
+spine.addEventListener(SpineEvent.COMPLETE,(event:SpineEvent)->{
     
 });
 ```
