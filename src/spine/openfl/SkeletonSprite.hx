@@ -468,7 +468,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						// 追加顶点
 						allTriangles[_buffdataPoint] = writeTriangles[vi] + t;
 						// 添加顶点属性
-						allTrianglesAlpha[_buffdataPoint] = slot.color.a; // Alpha
+						allTrianglesAlpha[_buffdataPoint] = slot.color.a * @:privateAccess this.__worldAlpha; // Alpha
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								allTrianglesBlendMode[_buffdataPoint] = 1;
