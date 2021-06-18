@@ -1,3 +1,6 @@
+# 1.6.8
+- 修复：修复遮罩会影响到其他`SpriteSpine`对象的问题。
+
 # 1.6.7
 - 修复：修复`SpriteSpine`不支持透明度的问题。
 - 修正：修复`SpineTextureAtlasLoader`错别字。

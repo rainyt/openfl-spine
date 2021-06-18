@@ -338,6 +338,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	private function renderTriangles():Void {
 		var clipper:SkeletonClipping = SkeletonSprite.clipper;
+		clipper.clipEnd(); // 清理遮罩数据
 		_buffdataPoint = 0;
 		var uindex:Int = 0;
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
