@@ -278,9 +278,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private function get_isPlay():Bool {
 		if (_isPlay)
 			return true;
-		if (actionName == "" || actionName == null)
-			return false;
-		return true;
+		return false;
 	}
 
 	private function set_isPlay(bool:Bool):Bool {
