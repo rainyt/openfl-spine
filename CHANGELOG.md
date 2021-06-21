@@ -1,6 +1,7 @@
 # 1.6.8
 - 修复：修复遮罩会影响到其他`SpriteSpine`对象的问题。
 - 修复：修复`SpriteSpine.isPlay`属性状态不正确的问题。
+- 修复：修复`SpriteSpine`的BlendMode渲染错误的问题。
 
 # 1.6.7
 - 修复：修复`SpriteSpine`不支持透明度的问题。

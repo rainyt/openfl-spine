@@ -369,6 +369,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		// 是否开始填充
 		var isFill = false;
+		var isBitmapBlendMode = false;
 
 		for (i in 0...n) {
 			// 获取骨骼
@@ -433,9 +434,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 				// 矩形绘制
 				if (atlasRegion != null) {
-					if (bitmapData != null
-						&& (bitmapData != atlasRegion.page.rendererObject
-							|| (slot.data.blendMode != BlendMode.additive && slot.data.blendMode != BlendMode.normal))) {
+					if (bitmapData != null && (bitmapData != atlasRegion.page.rendererObject)) {
+						isFill = true;
+					} else if ((slot.data.blendMode != BlendMode.additive && slot.data.blendMode != BlendMode.normal)) {
+						isBitmapBlendMode = true;
 						isFill = true;
 					} else {
 						bitmapData = cast atlasRegion.page.rendererObject;
@@ -494,6 +496,22 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						uindex++;
 					}
 					t += Std.int(uvs.length / 2);
+
+					// 如果是BitmapBlend渲染
+					if (isBitmapBlendMode) {
+						drawSprite(slot, bitmapData);
+						// 重置
+						allTriangles = new Vector();
+						allTrianglesAlpha = [];
+						allTrianglesColor = [];
+						allVerticesArray = new Vector();
+						allUvs = new Vector();
+						t = 0;
+						uindex = 0;
+						_buffdataPoint = 0;
+
+						isFill = false;
+					}
 				}
 				clipper.clipEndWithSlot(slot);
 			}
