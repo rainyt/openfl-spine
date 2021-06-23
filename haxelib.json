@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
-  "version": "1.6.7",
-  "releasenote": "New SpriteSpine mask support.",
+  "version": "1.6.9",
+  "releasenote": "Fix blendmode and mask errors of spritespin.",
   "contributors": ["rainy"],
   "classPath": "src",
   "dependencies": {

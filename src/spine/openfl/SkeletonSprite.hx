@@ -613,4 +613,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function getMaxTime():Float {
 		return 0;
 	}
+
+	public function isHidden():Bool {
+		return this.__worldAlpha == 0 || !this.__visible;
+	}
+
 }

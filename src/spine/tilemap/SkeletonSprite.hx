@@ -45,6 +45,10 @@ class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 
 	private var _actionName:String = "";
 
+	public function isHidden():Bool {
+		return this.alpha == 0 || !this.visible;
+	}
+
 	public function new(skeletonData:SkeletonData) {
 		super(new Skeleton(skeletonData));
 		this.skeleton.updateWorldTransform();
