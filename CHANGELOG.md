@@ -1,3 +1,6 @@
+# 1.7.0
+- 修复：修复`SpriteSpine`的C++渲染异常问题。
+
 # 1.6.8
 - 修复：修复遮罩会影响到其他`SpriteSpine`对象的问题。
 - 修复：修复`SpriteSpine.isPlay`属性状态不正确的问题。

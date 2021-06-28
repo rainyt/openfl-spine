@@ -268,6 +268,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		if (isCache) {
 			clearCache();
 		}
+		this.advanceTime(0);
 	}
 
 	/**
@@ -523,8 +524,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData):Void {
+		if (allVerticesArray.length == 0 || allTriangles.length == 0 || allUvs.length == 0) {
+			return;
+		}
 		var spr:Sprite = _spritePool.get();
-
 		if (slot != null) {
 			switch (slot.data.blendMode) {
 				case BlendMode.additive:
@@ -617,5 +620,4 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function isHidden():Bool {
 		return this.__worldAlpha == 0 || !this.__visible;
 	}
-
 }
