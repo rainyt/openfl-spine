@@ -1,3 +1,6 @@
+# 1.7.1
+- 新增：新增SpriteSpine的smoothing支持。
+
 # 1.7.0
 - 修复：修复`SpriteSpine`的C++渲染异常问题。
 

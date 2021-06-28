@@ -7,6 +7,7 @@ import openfl.geom.Matrix;
 import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
+import openfl.display3D.Context3DTextureFilter;
 #if zygame
 import zygame.shader.SpineRenderShader;
 import zygame.display.DisplayObjectContainer;
@@ -564,7 +565,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		_shader.data.bitmap.input = bitmapData;
 		// Smoothing
-		_shader.data.bitmap.filter = smoothing ? 0 : 1;
+		_shader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
