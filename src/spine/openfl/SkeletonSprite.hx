@@ -48,6 +48,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var timeScale:Float = 1;
 
 	/**
+	 * SpriteSpine的平滑支持，默认为false，可设置为true开启平滑支持
+	 */
+	public var smoothing:Bool = false;
+
+	/**
 	 * 批渲染对象
 	 */
 	@:noCompletion
@@ -556,7 +561,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		#else
 		_shader.data.u_malpha.value = [this.alpha];
 		#end
+
 		_shader.data.bitmap.input = bitmapData;
+		// Smoothing
+		_shader.data.bitmap.filter = smoothing ? 0 : 1;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
