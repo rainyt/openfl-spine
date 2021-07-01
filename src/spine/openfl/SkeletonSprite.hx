@@ -361,7 +361,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var max:Int = _shape.numChildren - 1;
 		while (max >= 0) {
 			var spr:Sprite = cast _shape.getChildAt(max);
-			_shape.removeChild(spr);
+			// _shape.removeChild(spr);
+			spr.visible = false;
 			_spritePool.remove(spr);
 			_spritePool.add(spr);
 			max--;
@@ -573,6 +574,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		spr.graphics.endFill();
 		_shape.addChild(spr);
+		spr.visible = true;
 	}
 
 	/**
