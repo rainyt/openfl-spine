@@ -9,11 +9,9 @@ import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.display3D.Context3DTextureFilter;
 #if zygame
-import zygame.shader.SpineRenderShader;
 import zygame.display.DisplayObjectContainer;
-#else
-import spine.shader.SpineRenderShader;
 #end
+import spine.shader.SpineRenderShader;
 import openfl.Vector;
 import spine.attachments.MeshAttachment;
 import spine.Skeleton;
@@ -52,6 +50,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * SpriteSpine的平滑支持，默认为false，可设置为true开启平滑支持
 	 */
 	public var smoothing:Bool = false;
+
+	/**
+	 * 着色器定义，默认为SpineRenderShader
+	 */
+	public var shaderClass:Class<SpineRenderShader> = SpineRenderShader;
 
 	/**
 	 * 批渲染对象
@@ -150,8 +153,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var isCache(get, set):Bool;
 
 	private var _isCache:Bool = false;
-
-	// private var _shader:SpineRenderShader = new SpineRenderShader();
 
 	private function set_isCache(value:Bool):Bool {
 		_isCache = value;
@@ -317,14 +318,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		if (isCache) {
-			_cacheId = Std.string(Math.round(skeleton.time / .01) * .01);
-			if (_cache.exists(_cacheId)) {
-				renderCacheTriangles(_cache.get(_cacheId));
-				return;
-			} else if (_cached)
-				return;
-		}
+		// 禁用Cache功能
+		// if (isCache) {
+		// 	_cacheId = Std.string(Math.round(skeleton.time / .01) * .01);
+		// 	if (_cache.exists(_cacheId)) {
+		// 		renderCacheTriangles(_cache.get(_cacheId));
+		// 		return;
+		// 	} else if (_cached)
+		// 		return;
+		// }
 		renderTriangles();
 	}
 
@@ -550,8 +552,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		spr.graphics.clear();
 		var _shader:SpineRenderShader = cast spr.shader;
-		if (_shader == null) {
-			_shader = new SpineRenderShader();
+		if (_shader == null || !Std.isOfType(_shader, shaderClass)) {
+			_shader = Type.createInstance(shaderClass, []);
 			spr.shader = _shader;
 		}
 		#if zygame

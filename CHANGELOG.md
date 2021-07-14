@@ -1,5 +1,6 @@
 # 1.7.2
 - 改进：改进SpriteSpine的性能，减少了removeChild的调用。
+- 新增：新增`SpriteSpine.shaderClass`自定义着色器支持。
 
 # 1.7.1
 - 新增：新增SpriteSpine的smoothing支持。

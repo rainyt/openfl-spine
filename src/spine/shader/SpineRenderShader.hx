@@ -8,6 +8,7 @@ import VectorMath;
 /**
  * 用于实现Spine在Sprite模式下的透明值、BlendMode等支持
  */
+@:autoBuild(glsl.macro.GLSLCompileMacro.build())
 class SpineRenderShader extends OpenFLGraphicsShader {
 	/**
 	 * 纹理透明度

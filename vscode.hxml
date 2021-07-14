@@ -3,3 +3,4 @@
 --library vector-math
 --library spine-hx
 --library lime
+--class-path src
