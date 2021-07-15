@@ -54,7 +54,20 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 着色器定义，默认为SpineRenderShader
 	 */
-	public var shaderClass:Class<SpineRenderShader> = SpineRenderShader;
+	public var shaderClass(get, set):Class<SpineRenderShader>;
+
+	private var _shaderClass:Class<SpineRenderShader>;
+	private var _shaderClassName:String = null;
+
+	private function get_shaderClass():Class<SpineRenderShader> {
+		return _shaderClass;
+	}
+
+	private function set_shaderClass(shader:Class<SpineRenderShader>):Class<SpineRenderShader> {
+		_shaderClass = shader;
+		_shaderClassName = Type.getClassName(shader);
+		return shader;
+	}
 
 	/**
 	 * 批渲染对象
@@ -552,7 +565,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		spr.graphics.clear();
 		var _shader:SpineRenderShader = cast spr.shader;
-		if (_shader == null || !Std.isOfType(_shader, shaderClass)) {
+		if (_shader == null || _shader.getShaderClass() != _shaderClassName) {
 			_shader = Type.createInstance(shaderClass, []);
 			spr.shader = _shader;
 		}

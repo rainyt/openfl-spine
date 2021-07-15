@@ -41,6 +41,16 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 */
 	@:uniform public var malpha:Float;
 
+	/**
+	 * 着色器名字
+	 */
+	private var _shaderClassName:String = null;
+
+	public function new() {
+		super();
+		_shaderClassName = Type.getClassName(Type.getClass(this));
+	}
+
 	override function fragment() {
 		super.fragment();
 		gl_FragColor = color * alphaBlendMode.x;
@@ -56,5 +66,13 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 		super.vertex();
 		alphaBlendMode = vec2(texalpha, texblendmode);
 		mulcolor = texcolor;
+	}
+
+	/**
+	 * 获取着色器
+	 * @return String
+	 */
+	public function getShaderClass():String {
+		return _shaderClassName;
 	}
 }

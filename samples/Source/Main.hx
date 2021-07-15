@@ -42,7 +42,7 @@ class Main extends Sprite {
 
 		var jsonData:String = Assets.getText("assets/sxkCenter.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/sxkCenter.atlas", ["assets/sxkCenter.png"]);
-		spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void {
+		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// tilemap格式
 			var tilemap:Tilemap = new Tilemap(stage.stageWidth, stage.stageHeight, textureAtals.loader.getTileset());
 			for (i in 0...30) {
@@ -64,7 +64,7 @@ class Main extends Sprite {
 		// Sprite
 		var jsonData:String = Assets.getText("assets/test1.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
-		spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void {
+		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite格式
 			for (i in 0...10) {
 				var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
