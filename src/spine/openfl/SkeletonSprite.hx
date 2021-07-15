@@ -60,6 +60,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private var _shaderClassName:String = null;
 
 	private function get_shaderClass():Class<SpineRenderShader> {
+		if(_shaderClass == null)
+			shaderClass = SpineRenderShader;
 		return _shaderClass;
 	}
 
