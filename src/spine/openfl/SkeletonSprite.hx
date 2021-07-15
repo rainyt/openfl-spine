@@ -57,17 +57,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var shaderClass(get, set):Class<SpineRenderShader>;
 
 	private var _shaderClass:Class<SpineRenderShader>;
-	private var _shaderClassName:String = null;
+	private var _shaderVersion:Int = 0;
 
 	private function get_shaderClass():Class<SpineRenderShader> {
-		if(_shaderClass == null)
+		if (_shaderClass == null)
 			shaderClass = SpineRenderShader;
 		return _shaderClass;
 	}
 
 	private function set_shaderClass(shader:Class<SpineRenderShader>):Class<SpineRenderShader> {
 		_shaderClass = shader;
-		_shaderClassName = Type.getClassName(shader);
+		_shaderVersion++;
 		return shader;
 	}
 
@@ -567,8 +567,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		spr.graphics.clear();
 		var _shader:SpineRenderShader = cast spr.shader;
-		if (_shader == null || _shader.getShaderClass() != _shaderClassName) {
+		if (_shader == null || _shader.shaderVersion != _shaderVersion) {
 			_shader = Type.createInstance(shaderClass, []);
+			_shader.shaderVersion = _shaderVersion;
 			spr.shader = _shader;
 		}
 		#if zygame
