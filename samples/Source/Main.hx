@@ -1,5 +1,7 @@
 package;
 
+import spine.shader.SpineRenderShader;
+import openfl.Lib;
 import zygame.utils.SpineManager;
 import openfl.display.Tilemap;
 import openfl.display.Sprite;
@@ -66,7 +68,7 @@ class Main extends Sprite {
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite格式
-			for (i in 0...10) {
+			for (i in 0...1) {
 				var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
 				this.addChild(spriteSpine);
 				spriteSpine.y = 400;
@@ -74,6 +76,15 @@ class Main extends Sprite {
 				spriteSpine.play("daiji");
 				spriteSpine.scaleX = 0.6;
 				spriteSpine.scaleY = 0.6;
+				// Lib.setTimeout(function(){
+				// 	spriteSpine.shaderClass = FishSpineShader;
+				// },2000);
+				// Lib.setTimeout(function(){
+				// 	spriteSpine.shaderClass = SpineRenderShader;
+				// },4000);
+				// Lib.setTimeout(function(){
+				// 	spriteSpine.shaderClass = FishSpineShader;
+				// },6000);
 			}
 		}, function(error:String):Void {
 			trace("加载失败：", error);
