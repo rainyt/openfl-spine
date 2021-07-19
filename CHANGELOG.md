@@ -1,5 +1,7 @@
 # 1.7.3
 - 修复：修复自定义着色器没有正常更换的问题。
+- 新增：新增`independent`的属性支持，可以让Spine单独不被`isLockFrameFps`影响。
+
 
 # 1.7.2
 - 改进：改进SpriteSpine的性能，减少了removeChild的调用。

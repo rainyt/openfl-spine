@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "releasenote": "New smooth support for SpriteSpine.",
   "contributors": ["rainy"],
   "classPath": "src",

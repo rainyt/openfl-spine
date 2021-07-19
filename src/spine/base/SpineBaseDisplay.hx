@@ -1,13 +1,30 @@
 package spine.base;
 
 interface SpineBaseDisplay {
+	/**
+	 * 是否可见
+	 */
+	public var visible(get, set):Bool;
 
-    public var visible(get,set):Bool;
-
+	/**
+	 * 是否正在播放
+	 */
 	public var isPlay(get, set):Bool;
 
-    public function isHidden():Bool;
+	/**
+	 * 是否不可见
+	 * @return Bool
+	 */
+	public function isHidden():Bool;
 
-    public function onSpineUpdate(dt:Float):Void;
+	/**
+	 * Spine渲染
+	 * @param dt 
+	 */
+	public function onSpineUpdate(dt:Float):Void;
 
+	/**
+	 * 是否为独立运行，不受SpineManager的影响
+	 */
+	public var independent:Bool;
 }

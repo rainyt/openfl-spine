@@ -26,6 +26,11 @@ class SkeletonBatchs extends Sprite implements SpineBaseDisplay {
 	private var _setXBool:Bool = true;
 	private var _isClearTriangles:Bool = true;
 
+	/**
+	 * 是否为独立运行，不受SpineManager的影响
+	 */
+	public var independent:Bool = false;
+
 	public function new(bitmapData:BitmapData) {
 		super();
 		_bitmapData = bitmapData;

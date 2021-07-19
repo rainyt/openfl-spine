@@ -27,9 +27,9 @@ class SpineManager {
 	/**
 	 * 初始化更新器
 	 * @param stage
-     * @param isLockFrameFps 是否根据帧频率来播放动画，默认为false
+	 * @param isLockFrameFps 是否根据帧频率来播放动画，默认为false
 	 */
-	public static function init(pstage:Stage,isLockFrameFps:Bool = false):Void {
+	public static function init(pstage:Stage, isLockFrameFps:Bool = false):Void {
 		if (stage != null)
 			return;
 		stage = pstage;
@@ -56,17 +56,23 @@ class SpineManager {
 	}
 
 	private static function onFrame(event:Event):Void {
-		if (!isLockFrameFps) {
-			_newFpsTime = Date.now().getTime();
-			var currentFpsTime = _newFpsTime - _lastFpsTime;
-			currentFpsTime = currentFpsTime / 1000;
-			_lastFpsTime = _newFpsTime;
-			for (display in spineOnFrames) {
+		_newFpsTime = Date.now().getTime();
+		var currentFpsTime = _newFpsTime - _lastFpsTime;
+		currentFpsTime = currentFpsTime / 1000;
+		_lastFpsTime = _newFpsTime;
+		for (display in spineOnFrames) {
+			if (display.independent)
 				display.onSpineUpdate(currentFpsTime);
+		}
+		if (!isLockFrameFps) {
+			for (display in spineOnFrames) {
+				if (!display.independent)
+					display.onSpineUpdate(currentFpsTime);
 			}
 		} else {
 			for (display in spineOnFrames) {
-				display.onSpineUpdate(1/stage.frameRate);
+				if (!display.independent)
+					display.onSpineUpdate(1 / stage.frameRate);
 			}
 		}
 	}

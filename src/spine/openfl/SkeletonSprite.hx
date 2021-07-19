@@ -37,6 +37,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private static var clipper:SkeletonClipping = new SkeletonClipping();
 
 	/**
+	 * 是否为独立运行，不受SpineManager的影响
+	 */
+	public var independent:Bool = false;
+
+	/**
 	 * 骨架对象
 	 */
 	public var skeleton:Skeleton;

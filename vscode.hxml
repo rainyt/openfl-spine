@@ -4,3 +4,4 @@
 --library spine-hx
 --library lime
 --class-path src
+--class-path zygame-src
