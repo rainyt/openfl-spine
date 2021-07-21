@@ -15,7 +15,7 @@
 	<haxelib name="openfl"/>
 	<haxelib name="openfl-spine"/>
 	<haxelib name="spine-hx" version="3.6.0" unless="spine38"/>
-	<haxelib name="spine-hx" if="spine38"/>
+	<haxelib name="spine-hx" version="3.8.1" if="spine38"/>
 	<source path="Source" />
 
 	<!-- <window allow-high-dpi="true" /> -->
