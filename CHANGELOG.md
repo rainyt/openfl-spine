@@ -1,3 +1,6 @@
+# 1.7.7
+- 改进：改进SkeletonSpriteBatchs批处理功能。
+
 # 1.7.4
 - 新增：新增`SpriteSpine.isCache`缓存动画数据支持。但请注意，如果使用setMixByName等API，会影响缓存的正确帧；因此在使用setMixByName的情况下，应禁用`isCache`。
 
