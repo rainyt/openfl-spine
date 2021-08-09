@@ -22,7 +22,7 @@ import spine.support.graphics.TextureAtlas;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.Color;
 import openfl.events.Event;
-import spine.openfl.SkeletonBatchs;
+import spine.openfl.SkeletonSpriteBatchs;
 import spine.utils.VectorUtils;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
@@ -96,9 +96,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 批渲染对象
 	 */
-	@:noCompletion
-	@:deprecated("batchs接口并没有正式完成，不推荐使用")
-	public var batchs:SkeletonBatchs;
+	public var batchs:SkeletonSpriteBatchs;
 
 	/**
 	 * 坐标数组
@@ -158,11 +156,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 所有顶点BlendMode属性
 	 */
 	private var allTrianglesBlendMode:Array<Float> = [];
-
-	/**
-	 * BlendMode渲染间距
-	 */
-	private var _blendsCatIndex:Array<Int> = [];
 
 	/**
 	 * 所有顶点的颜色相乘
@@ -596,6 +589,14 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		if (allVerticesArray.length == 0 || allTriangles.length == 0 || allUvs.length == 0) {
 			return;
 		}
+
+		if (batchs != null) {
+			// 往批处理上传数据
+			batchs.uploadBuffData(this, allVerticesArray, this.allTriangles, this.allUvs, this.allTrianglesColor, this.allTrianglesBlendMode,
+				this.allTrianglesAlpha);
+			return;
+		}
+
 		var spr:Sprite = _spritePool.get();
 		if (slot != null) {
 			switch (slot.data.blendMode) {
