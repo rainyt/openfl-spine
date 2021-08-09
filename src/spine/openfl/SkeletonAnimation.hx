@@ -37,13 +37,6 @@ import spine.AnimationState;
 import spine.AnimationStateData;
 
 class SkeletonAnimation extends SkeletonSprite {
-	#if zygame
-	/**
-	 * 资源索引
-	 */
-	public var assetsId:String = null;
-	#end
-
 	public var state:AnimationState;
 
 	/**
@@ -90,7 +83,6 @@ class SkeletonAnimation extends SkeletonSprite {
 		state.update(time / timeScale);
 		skeleton.update(time / timeScale);
 		if (skeleton.time > getMaxTime()) {
-			_cached = true;
 			skeleton.setTime(0);
 		}
 		state.apply(skeleton);
@@ -111,6 +103,8 @@ class SkeletonAnimation extends SkeletonSprite {
 			this.state.setAnimationByName(0, action, loop);
 		}
 		this._currentAnimation = getAnimation(action);
+		// trace("持续", _currentAnimation.duration, Std.int(_currentAnimation.duration * 60));
+		// 假设13.3667
 		super.play(action);
 	}
 
@@ -164,5 +158,11 @@ class SkeletonAnimation extends SkeletonSprite {
 		super.removeEventListener(type, listener, useCapture);
 		if (_event != null)
 			_event.addEventListener(type, listener);
+	}
+
+	override function __getCurrentFrameId():Int {
+		if (_currentAnimation == null)
+			return -1;
+		return Std.int(skeleton.time / _currentAnimation.duration * Std.int(_currentAnimation.duration * 60));
 	}
 }

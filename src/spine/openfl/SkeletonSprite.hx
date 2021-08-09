@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
@@ -31,6 +32,11 @@ import zygame.utils.SpineManager;
  * Sprite渲染器，单个Sprite会进行单次渲染
  */
 class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
+	/**
+	 * 资源索引
+	 */
+	public var assetsId:String = null;
+
 	/**
 	 * 切割器
 	 */
@@ -176,9 +182,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 	private function set_isCache(value:Bool):Bool {
 		_isCache = value;
-		if (_isCache && _cache == null) {
-			_cache = [];
-		}
 		return value;
 	}
 
@@ -186,16 +189,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return _isCache;
 	}
 
-	/**
-	 * 动画缓存映射
-	 */
-	private var _cache:Map<String, Dynamic>;
-
 	private var _cacheBitmapData:BitmapData;
-
-	private var _cacheId:String;
-
-	private var _cached:Bool = false;
 
 	/**
 	 * 创建一个Spine对象
@@ -276,15 +270,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	/**
-	 * 清空缓存
-	 */
-	public function clearCache():Void {
-		_cache = [];
-		_cached = false;
-		skeleton.setTime(0);
-	}
-
-	/**
 	 * 播放
 	 */
 	public function play(action:String = null, loop:Bool = true):Void {
@@ -292,9 +277,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_isPlay = true;
 		if (action != null)
 			_actionName = action;
-		if (isCache) {
-			clearCache();
-		}
 		this.advanceTime(0);
 	}
 
@@ -331,6 +313,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_isPlay = false;
 	}
 
+	private function __getCurrentFrameId():Int {
+		return -1;
+	}
+
 	/**
 	 * 激活渲染
 	 * @param delta
@@ -338,26 +324,69 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		// 禁用Cache功能
-		// if (isCache) {
-		// 	_cacheId = Std.string(Math.round(skeleton.time / .01) * .01);
-		// 	if (_cache.exists(_cacheId)) {
-		// 		renderCacheTriangles(_cache.get(_cacheId));
-		// 		return;
-		// 	} else if (_cached)
-		// 		return;
-		// }
+		if (isCache) {
+			var id = __getCurrentFrameId();
+			if (id != -1) {
+				// 检查是否存在缓存
+				var cacheData = GlobalAnimationCache.getCacheByID(assetsId);
+				var cacheData2 = cacheData.getFrame(this.actionName, id);
+				if (cacheData2 != null) {
+					// trace("尝试缓存渲染");
+					this.renderCacheTriangles(cacheData2);
+					return;
+				}
+			}
+		}
 		renderTriangles();
 	}
 
 	/**
 	 * 渲染缓存三角形，使用isCache=true时可正常使用
 	 */
-	private function renderCacheTriangles(data:Dynamic):Void {
-		_shape.graphics.clear();
-		_shape.graphics.beginBitmapFill(_cacheBitmapData, null, false, false);
-		_shape.graphics.drawTriangles(data.va, data.t, data.uv, TriangleCulling.NONE);
-		_shape.graphics.endFill();
+	private function renderCacheTriangles(data:SpineCacheFrameData):Void {
+		var max:Int = _shape.numChildren - 1;
+		while (max >= 0) {
+			var spr:Sprite = cast _shape.getChildAt(max);
+			spr.visible = false;
+			_spritePool.remove(spr);
+			_spritePool.add(spr);
+			max--;
+		}
+		if (_cacheBitmapData == null) {
+			for (slot in skeleton.drawOrder) {
+				var region:AtlasRegion = null;
+				if (Std.isOfType(slot.attachment, RegionAttachment)) {
+					region = cast cast(slot.attachment, RegionAttachment).getRegion();
+				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
+					region = cast cast(slot.attachment, RegionAttachment).getRegion();
+				}
+				_cacheBitmapData = region.page.rendererObject;
+				if (_cacheBitmapData != null)
+					break;
+			}
+		}
+		var oldTriangles = this.allTriangles;
+		var oldTrianglesAlpha = this.allTrianglesAlpha;
+		var oldTrianglesBlendMode = this.allTrianglesBlendMode;
+		var oldTrianglesColor = this.allTrianglesColor;
+		var oldUvs = this.allUvs;
+		var oldVerticesArray = this.allVerticesArray;
+
+		this.allTriangles = data.allTriangles;
+		this.allTrianglesAlpha = data.allTrianglesAlpha;
+		this.allTrianglesBlendMode = data.allTrianglesBlendMode;
+		this.allTrianglesColor = data.allTrianglesColor;
+		this.allUvs = data.allUvs;
+		this.allVerticesArray = data.allVerticesArray;
+
+		drawSprite(null, _cacheBitmapData);
+
+		this.allTriangles = oldTriangles;
+		this.allTrianglesAlpha = oldTrianglesAlpha;
+		this.allTrianglesBlendMode = oldTrianglesBlendMode;
+		this.allTrianglesColor = oldTrianglesColor;
+		this.allUvs = oldUvs;
+		this.allVerticesArray = oldVerticesArray;
 	}
 
 	/**
@@ -598,6 +627,21 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.endFill();
 		_shape.addChild(spr);
 		spr.visible = true;
+
+		if (isCache) {
+			var frameid = __getCurrentFrameId();
+			var datas = GlobalAnimationCache.getCacheByID(this.assetsId);
+			if (datas.getFrame(actionName, frameid) == null) {
+				var frame = new SpineCacheFrameData();
+				frame.allTriangles = allTriangles.copy();
+				frame.allUvs = allUvs.copy();
+				frame.allVerticesArray = allVerticesArray.copy();
+				frame.allTrianglesAlpha = allTrianglesAlpha.copy();
+				frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
+				frame.allTrianglesColor = allTrianglesColor.copy();
+				datas.addFrame(actionName, frameid, frame);
+			}
+		}
 	}
 
 	/**
