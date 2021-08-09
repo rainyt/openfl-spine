@@ -1,5 +1,6 @@
 package zygame.utils.load;
 
+import haxe.crypto.Md5;
 import openfl.display.BitmapData;
 import openfl.Assets;
 // import zygame.utils.AssetsUtils in Assets;
