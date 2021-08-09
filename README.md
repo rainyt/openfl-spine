@@ -33,6 +33,7 @@ SpineManager.init(this.stage);
 - 多纹理渲染
 - BlendMode支持
 - 透明度支持
+- 帧缓存（isCache）
 
 Demo：
 ```haxe
@@ -41,6 +42,7 @@ Demo：
         spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
             //Sprite格式
             var openflSprite = textureAtals.buildSpriteSkeleton("spineboy-pro",jsonData);
+            openflSprite.isCache = true; // 可提高一定的性能，如果有多个相同的Spine的情况下
             this.addChild(openflSprite);
             openflSprite.y = 500;
             openflSprite.x = 500;

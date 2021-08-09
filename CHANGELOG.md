@@ -1,5 +1,5 @@
 # 1.7.4
-- 新增：新增`Spine.isCache`缓存动画数据支持。
+- 新增：新增`SpriteSpine.isCache`缓存动画数据支持。但请注意，如果使用setMixByName等API，会影响缓存的正确帧；因此在使用setMixByName的情况下，应禁用`isCache`。
 
 # 1.7.3
 - 修复：修复自定义着色器没有正常更换的问题。
