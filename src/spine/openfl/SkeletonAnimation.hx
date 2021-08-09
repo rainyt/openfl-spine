@@ -81,10 +81,10 @@ class SkeletonAnimation extends SkeletonSprite {
 
 	private function _advanceTime(time:Float):Void {
 		state.update(time / timeScale);
-		skeleton.update(time / timeScale);
-		if (skeleton.time > getMaxTime()) {
-			skeleton.setTime(0);
-		}
+		// skeleton.update(time / timeScale);
+		// if (skeleton.time > getMaxTime()) {
+		// skeleton.setTime(0);
+		// }
 		state.apply(skeleton);
 		skeleton.updateWorldTransform();
 		super.advanceTime(time);
@@ -106,6 +106,13 @@ class SkeletonAnimation extends SkeletonSprite {
 		// trace("持续", _currentAnimation.duration, Std.int(_currentAnimation.duration * 60));
 		// 假设13.3667
 		super.play(action);
+	}
+
+	override function get_isCache():Bool {
+		if (state.tracks.length > 2) {
+			return false;
+		}
+		return super.get_isCache();
 	}
 
 	private function getAnimation(name:String):Animation {
@@ -161,8 +168,9 @@ class SkeletonAnimation extends SkeletonSprite {
 	}
 
 	override function __getCurrentFrameId():Int {
-		if (_currentAnimation == null)
+		var current = state.getCurrent(0);
+		if (current == null || state.tracks.length > 1)
 			return -1;
-		return Std.int(skeleton.time / _currentAnimation.duration * Std.int(_currentAnimation.duration * 60));
+		return Std.int(current.trackTime % _currentAnimation.duration / _currentAnimation.duration * Std.int(_currentAnimation.duration * 60));
 	}
 }

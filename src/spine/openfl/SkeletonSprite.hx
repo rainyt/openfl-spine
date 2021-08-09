@@ -38,6 +38,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var assetsId:String = null;
 
 	/**
+	 * 缓存ID
+	 */
+	public var cacheId(get, never):String;
+
+	private function get_cacheId():String {
+		if (this.skeleton.skin != null)
+			return assetsId + ":" + this.skeleton.skin.name;
+		return assetsId;
+	}
+
+	/**
 	 * 切割器
 	 */
 	private static var clipper:SkeletonClipping = new SkeletonClipping();
@@ -328,10 +339,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			var id = __getCurrentFrameId();
 			if (id != -1) {
 				// 检查是否存在缓存
-				var cacheData = GlobalAnimationCache.getCacheByID(assetsId);
+				var cacheData = GlobalAnimationCache.getCacheByID(cacheId);
 				var cacheData2 = cacheData.getFrame(this.actionName, id);
 				if (cacheData2 != null) {
-					// trace("尝试缓存渲染");
 					this.renderCacheTriangles(cacheData2);
 					return;
 				}
@@ -358,9 +368,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					region = cast cast(slot.attachment, RegionAttachment).getRegion();
 				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
-					region = cast cast(slot.attachment, RegionAttachment).getRegion();
+					region = cast cast(slot.attachment, MeshAttachment).getRegion();
 				}
-				_cacheBitmapData = region.page.rendererObject;
+				if (region != null)
+					_cacheBitmapData = region.page.rendererObject;
 				if (_cacheBitmapData != null)
 					break;
 			}
@@ -630,7 +641,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		if (isCache) {
 			var frameid = __getCurrentFrameId();
-			var datas = GlobalAnimationCache.getCacheByID(this.assetsId);
+			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
 			if (datas.getFrame(actionName, frameid) == null) {
 				var frame = new SpineCacheFrameData();
 				frame.allTriangles = allTriangles.copy();

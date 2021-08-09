@@ -31,12 +31,11 @@ class SpineCacheData {
 	public function addFrame(anmieName:String, frame:Int, data:SpineCacheFrameData) {
 		if (!_cache.exists(anmieName))
 			_cache.set(anmieName, []);
-		_cache.get(anmieName).insert(frame, data);
+		_cache.get(anmieName)[frame] = data;
 	}
 }
 
 class SpineCacheFrameData {
-
 	/**
 	 * 三角形透明参数
 	 */
