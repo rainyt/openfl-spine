@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import zygame.components.ZBox;
 import spine.attachments.MeshAttachment;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.TextureAtlas.AtlasRegion;
@@ -13,12 +14,20 @@ import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
 import spine.utils.VectorUtils;
 import zygame.utils.SpineManager;
+import spine.shader.SpineRenderBatchShader;
+import spine.shader.SpineRenderShader;
+import openfl.display3D.Context3DTextureFilter;
 
 /**
  * 骨骼批渲染处理
  */
 @:noCompletion
-class SkeletonSpriteBatchs extends Sprite implements SpineBaseDisplay {
+class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
+	/**
+	 * 着色器
+	 */
+	private var _shader:SpineRenderBatchShader;
+
 	/**
 	 * 所有顶点数据
 	 */
@@ -44,6 +53,10 @@ class SkeletonSpriteBatchs extends Sprite implements SpineBaseDisplay {
 	 */
 	private var allTrianglesColor:Array<Float> = [];
 
+	private var allXy:Array<Float> = [];
+
+	private var allScale:Array<Float> = [];
+
 	/**
 	 * 所有UV数据
 	 */
@@ -61,7 +74,8 @@ class SkeletonSpriteBatchs extends Sprite implements SpineBaseDisplay {
 	public function new() {
 		super();
 		// _bitmapData = bitmapData;
-		SpineManager.addOnFrame(this);
+		SpineManager.addOnFrame(this, true);
+		_shader = new SpineRenderBatchShader();
 	}
 
 	/**
@@ -78,19 +92,21 @@ class SkeletonSpriteBatchs extends Sprite implements SpineBaseDisplay {
 	}
 
 	public function onSpineUpdate(dt:Float):Void {
-		this.graphics.clear();
 		endFill();
-		allVerticesArray.splice(0, allVerticesArray.length);
-		allUvs.splice(0, allUvs.length);
-		allTriangles.splice(0, allTriangles.length);
-		allTrianglesAlpha.splice(0, allTrianglesAlpha.length);
-		allTrianglesColor.splice(0, allTrianglesColor.length);
-		allTrianglesBlendMode.splice(0, allTrianglesBlendMode.length);
 	}
 
 	public function clearTriangles():Void {
 		allTriangles.splice(0, allTriangles.length);
 	}
+
+	private var _uploadBuffDataMaps:Map<SkeletonSprite, {
+		v:Vector<Float>,
+		i:Vector<Int>,
+		uvs:Vector<Float>,
+		color:Array<Float>,
+		blend:Array<Float>,
+		alphas:Array<Float>
+	}> = [];
 
 	/**
 	 * 上传数据渲染
@@ -114,32 +130,44 @@ class SkeletonSpriteBatchs extends Sprite implements SpineBaseDisplay {
 					break;
 			}
 		}
+		_uploadBuffDataMaps.set(sprite, {
+			v: v.copy(),
+			i: i.copy(),
+			uvs: uvs.copy(),
+			color: color.copy(),
+			blend: blend.copy(),
+			alphas: alphas.copy()
+		});
+		flushBuffData(sprite);
+	}
+
+	public function flushBuffData(sprite:SkeletonSprite):Void {
+		var buffer = _uploadBuffDataMaps.get(sprite);
+		if (buffer == null)
+			return;
 		// 更新顶点
 		var t:Int = Std.int(allUvs.length / 2);
-		for (vi in i) {
-			allTriangles.push(vi + t);
+		for (vi in buffer.i) {
+			allTriangles.push(vi);
+			allXy.push(sprite.x);
+			allXy.push(sprite.y);
+			allScale.push(sprite.scaleX);
+			allScale.push(sprite.scaleY);
 		}
-		for (uv in uvs) {
+		for (uv in buffer.uvs) {
 			allUvs.push(uv);
 		}
-		for (c in color) {
+		for (c in buffer.color) {
 			allTrianglesColor.push(c);
 		}
-		for (b in blend) {
+		for (b in buffer.blend) {
 			allTrianglesBlendMode.push(b);
 		}
-		for (a in alphas) {
+		for (a in buffer.alphas) {
 			allTrianglesAlpha.push(a);
 		}
-		// 更新坐标
-		var isX = true;
-		for (xy in v) {
-			if (isX) {
-				allVerticesArray.push(xy + sprite.x);
-			} else {
-				allVerticesArray.push(xy + sprite.y);
-			}
-			isX = !isX;
+		for (xy in buffer.v) {
+			allVerticesArray.push(xy);
 		}
 	}
 
@@ -147,10 +175,45 @@ class SkeletonSpriteBatchs extends Sprite implements SpineBaseDisplay {
 	 * 最终批渲染
 	 */
 	private function endFill():Void {
-		this.graphics.beginBitmapFill(_bitmapData, null, true, true);
+		// for (i in 0...this.numChildren) {
+		// 	var display:SkeletonSprite = cast this.getChildAt(i);
+		// 	flushBuffData(display);
+		// }
+		if (allTriangles.length == 0)
+			return;
+		this.graphics.clear();
+		_shader.data.bitmap.input = _bitmapData;
+		// Smoothing smoothing todo
+		#if zygame
+		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
+			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
+		} else {
+			_shader.data.u_malpha.value = [this.alpha];
+		}
+		#else
+		_shader.data.u_malpha.value = [this.alpha];
+		#end
+		_shader.data.u_size.value = [this.getStageWidth(), this.getStageHeight()];
+		_shader.data.bitmap.filter = false ? LINEAR : NEAREST;
+		_shader.a_texalpha.value = allTrianglesAlpha;
+		_shader.a_texblendmode.value = allTrianglesBlendMode;
+		_shader.a_texcolor.value = allTrianglesColor;
+		_shader.a_xy.value = allXy;
+		_shader.a_scale.value = allScale;
+		// this.graphics.beginBitmapFill(_bitmapData);
+		this.graphics.beginShaderFill(_shader);
 		this.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		this.graphics.endFill();
 		_isClearTriangles = false;
+
+		allVerticesArray.splice(0, allVerticesArray.length);
+		allUvs.splice(0, allUvs.length);
+		allTriangles.splice(0, allTriangles.length);
+		allTrianglesAlpha.splice(0, allTrianglesAlpha.length);
+		allTrianglesColor.splice(0, allTrianglesColor.length);
+		allTrianglesBlendMode.splice(0, allTrianglesBlendMode.length);
+		allScale.splice(0, allScale.length);
+		allXy.splice(0, allXy.length);
 	}
 
 	/**
