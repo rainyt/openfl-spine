@@ -76,7 +76,11 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 	public function new() {
 		super();
 		// _bitmapData = bitmapData;
+		#if zygame
 		SpineManager.addOnFrame(this, true);
+		#else
+		SpineManager.addOnFrame(this);
+		#end
 		_shader = new SpineRenderBatchShader();
 	}
 
@@ -209,7 +213,11 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		#else
 		_shader.data.u_malpha.value = [this.alpha];
 		#end
+		#if zygame
 		_shader.data.u_size.value = [this.getStageWidth(), this.getStageHeight()];
+		#else
+		_shader.data.u_size.value = [this.stage.stageWidth, this.stage.stageHeight];
+		#end
 		_shader.data.bitmap.filter = false ? LINEAR : NEAREST;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;

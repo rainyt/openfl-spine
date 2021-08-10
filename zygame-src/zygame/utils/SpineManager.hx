@@ -81,9 +81,9 @@ class SpineManager {
 	 * 添加到更新器中
 	 * @param spine
 	 */
-	public static function addOnFrame(spine:SpineBaseDisplay):Void {
-		if (spineOnFrames.indexOf(spine) == -1)
-			if (!Std.isOfType(s, spine.openfl.SkeletonSpriteBatchs))
+	public static function addOnFrame(s:SpineBaseDisplay):Void {
+		if (spineOnFrames.indexOf(s) == -1)
+			if (Std.isOfType(s, spine.openfl.SkeletonSpriteBatchs))
 				spineOnFrames.push(s);
 			else
 				spineOnFrames.insert(0, s);
