@@ -328,7 +328,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		if (isCache) {
+		if (isCache && !__getChange()) {
 			var id = __getCurrentFrameId();
 			if (id != -1) {
 				// 检查是否存在缓存
@@ -391,6 +391,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		this.allTrianglesColor = oldTrianglesColor;
 		this.allUvs = oldUvs;
 		this.allVerticesArray = oldVerticesArray;
+	}
+
+	private function __getChange():Bool {
+		return @:privateAccess this.__worldAlphaChanged;
 	}
 
 	/**
@@ -641,6 +645,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.visible = true;
 
 		if (isCache) {
+			if (__getChange()) {
+				GlobalAnimationCache.clearCacheByID(this.cacheId);
+			}
 			var frameid = __getCurrentFrameId();
 			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
 			if (datas.getFrame(actionName, frameid) == null) {

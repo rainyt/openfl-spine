@@ -116,6 +116,9 @@ class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
 	 */
 	public function uploadBuffData(sprite:SkeletonSprite, v:Vector<Float>, i:Vector<Int>, uvs:Vector<Float>, color:Array<Float>, blend:Array<Float>,
 			alphas:Array<Float>):Void {
+		if (sprite.visible == false) {
+			return;
+		}
 		if (_bitmapData == null) {
 			for (slot in sprite.skeleton.drawOrder) {
 				var region:AtlasRegion = null;
@@ -138,7 +141,6 @@ class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
 			blend: blend.copy(),
 			alphas: alphas.copy()
 		});
-		flushBuffData(sprite);
 	}
 
 	public function flushBuffData(sprite:SkeletonSprite):Void {
@@ -148,9 +150,11 @@ class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
 		// 更新顶点
 		var t:Int = Std.int(allUvs.length / 2);
 		for (vi in buffer.i) {
-			allTriangles.push(vi);
+			allTriangles.push(vi + t);
 			allXy.push(sprite.x);
 			allXy.push(sprite.y);
+			// allXy.push(0);
+			// allXy.push(0);
 			allScale.push(sprite.scaleX);
 			allScale.push(sprite.scaleY);
 		}
@@ -175,13 +179,23 @@ class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
 	 * 最终批渲染
 	 */
 	private function endFill():Void {
-		// for (i in 0...this.numChildren) {
-		// 	var display:SkeletonSprite = cast this.getChildAt(i);
-		// 	flushBuffData(display);
-		// }
-		if (allTriangles.length == 0)
+		allVerticesArray.splice(0, allVerticesArray.length);
+		allUvs.splice(0, allUvs.length);
+		allTriangles.splice(0, allTriangles.length);
+		allTrianglesAlpha.splice(0, allTrianglesAlpha.length);
+		allTrianglesColor.splice(0, allTrianglesColor.length);
+		allTrianglesBlendMode.splice(0, allTrianglesBlendMode.length);
+		allScale.splice(0, allScale.length);
+		allXy.splice(0, allXy.length);
+
+		for (i in 0...this.numChildren) {
+			var display:SkeletonSprite = cast this.getChildAt(i);
+			flushBuffData(display);
+		}
+		if (allTriangles.length == 0) {
+			this.graphics.clear();
 			return;
-		this.graphics.clear();
+		}
 		_shader.data.bitmap.input = _bitmapData;
 		// Smoothing smoothing todo
 		#if zygame
@@ -200,20 +214,11 @@ class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
 		_shader.a_texcolor.value = allTrianglesColor;
 		_shader.a_xy.value = allXy;
 		_shader.a_scale.value = allScale;
-		// this.graphics.beginBitmapFill(_bitmapData);
+		this.graphics.clear();
 		this.graphics.beginShaderFill(_shader);
 		this.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		this.graphics.endFill();
 		_isClearTriangles = false;
-
-		allVerticesArray.splice(0, allVerticesArray.length);
-		allUvs.splice(0, allUvs.length);
-		allTriangles.splice(0, allTriangles.length);
-		allTrianglesAlpha.splice(0, allTrianglesAlpha.length);
-		allTrianglesColor.splice(0, allTrianglesColor.length);
-		allTrianglesBlendMode.splice(0, allTrianglesBlendMode.length);
-		allScale.splice(0, allScale.length);
-		allXy.splice(0, allXy.length);
 	}
 
 	/**

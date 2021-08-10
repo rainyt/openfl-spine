@@ -21,4 +21,9 @@ class GlobalAnimationCache {
 			cacheMaps.set(id, new SpineCacheData());
 		return cacheMaps.get(id);
 	}
+
+	public static function clearCacheByID(id:String):Void {
+		if (cacheMaps.exists(id))
+			cacheMaps.remove(id);
+	}
 }
