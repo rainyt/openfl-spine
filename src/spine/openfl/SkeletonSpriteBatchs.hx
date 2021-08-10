@@ -216,8 +216,12 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		#if zygame
 		_shader.data.u_size.value = [this.getStageWidth(), this.getStageHeight()];
 		#else
-		_shader.data.u_size.value = [this.stage.stageWidth, this.stage.stageHeight];
+		_shader.data.u_size.value = [
+			this.stage.stageWidth * @:privateAccess this.__worldTransform.a,
+			this.stage.stageHeight * @:privateAccess this.__worldTransform.d
+		];
 		#end
+		// #end
 		_shader.data.bitmap.filter = false ? LINEAR : NEAREST;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
