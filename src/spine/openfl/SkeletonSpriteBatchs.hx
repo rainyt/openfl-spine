@@ -1,6 +1,8 @@
 package spine.openfl;
 
+#if zygame
 import zygame.components.ZBox;
+#end
 import spine.attachments.MeshAttachment;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.TextureAtlas.AtlasRegion;
@@ -22,7 +24,7 @@ import openfl.display3D.Context3DTextureFilter;
  * 骨骼批渲染处理
  */
 @:noCompletion
-class SkeletonSpriteBatchs extends ZBox implements SpineBaseDisplay {
+class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements SpineBaseDisplay {
 	/**
 	 * 着色器
 	 */
