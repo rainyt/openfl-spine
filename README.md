@@ -76,6 +76,16 @@ spine.addEventListener(SpineEvent.COMPLETE,(event:SpineEvent)->{
     
 });
 ```
+在openfl-spine1.8.0版本开始，SpriteSpine可以被批处理(Starting from version 1.8.0 of openfl-spine, SpriteSpine can be batch processed)：
+```haxe
+var batch:SkeletonSpriteBatchs = new SkeletonSpriteBatchs();
+for(i in 0...100){
+    var spine:SkeletonAnimation = buildSpine();
+    this.addChild(spine);
+    spine.x = Math.random() * 300;
+    spine.y = Math.random() * 300;
+}
+```
 
 # Spine工具
 请注意，该库只单独支持3.7或者3.8版本；因Spine的数据结构不完全一致的问题会导致读取错误，请确认需要使用的Spine版本。
