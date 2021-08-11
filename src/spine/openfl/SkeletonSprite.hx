@@ -594,8 +594,27 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			return;
 		}
 
+		// 缓存
+		if (isCache) {
+			if (__getChange()) {
+				GlobalAnimationCache.clearCacheByID(this.cacheId);
+			}
+			var frameid = __getCurrentFrameId();
+			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
+			if (datas.getFrame(actionName, frameid) == null) {
+				var frame = new SpineCacheFrameData();
+				frame.allTriangles = allTriangles.copy();
+				frame.allUvs = allUvs.copy();
+				frame.allVerticesArray = allVerticesArray.copy();
+				frame.allTrianglesAlpha = allTrianglesAlpha.copy();
+				frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
+				frame.allTrianglesColor = allTrianglesColor.copy();
+				datas.addFrame(actionName, frameid, frame);
+			}
+		}
+
+		// 往批处理上传数据
 		if (batchs != null) {
-			// 往批处理上传数据
 			batchs.uploadBuffData(this, allVerticesArray, this.allTriangles, this.allUvs, this.allTrianglesColor, this.allTrianglesBlendMode,
 				this.allTrianglesAlpha);
 			return;
@@ -643,24 +662,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.endFill();
 		_shape.addChild(spr);
 		spr.visible = true;
-
-		if (isCache) {
-			if (__getChange()) {
-				GlobalAnimationCache.clearCacheByID(this.cacheId);
-			}
-			var frameid = __getCurrentFrameId();
-			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
-			if (datas.getFrame(actionName, frameid) == null) {
-				var frame = new SpineCacheFrameData();
-				frame.allTriangles = allTriangles.copy();
-				frame.allUvs = allUvs.copy();
-				frame.allVerticesArray = allVerticesArray.copy();
-				frame.allTrianglesAlpha = allTrianglesAlpha.copy();
-				frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
-				frame.allTrianglesColor = allTrianglesColor.copy();
-				datas.addFrame(actionName, frameid, frame);
-			}
-		}
 	}
 
 	/**

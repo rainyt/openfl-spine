@@ -8,6 +8,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.utils.Assets;
 import zygame.utils.load.SpineTextureAtlasLoader;
+import spine.openfl.SkeletonSpriteBatchs;
 
 /**
  * SpineDemo
@@ -40,8 +41,7 @@ class Main extends Sprite {
 		//     trace("加载失败：",error);
 		// });
 
-        #if !(spine38)
-
+		#if !(spine38)
 		var jsonData:String = Assets.getText("assets/sxkCenter.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/sxkCenter.atlas", ["assets/sxkCenter.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
@@ -60,18 +60,20 @@ class Main extends Sprite {
 		}, function(error:String):Void {
 			trace("加载失败：", error);
 		});
-
-        #else
-
+		#else
 		// Sprite
 		var jsonData:String = Assets.getText("assets/test1.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite格式
-			for (i in 0...1) {
+			var batch = new SkeletonSpriteBatchs();
+			this.addChild(batch);
+			for (i in 0...100) {
 				var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
-				this.addChild(spriteSpine);
-				spriteSpine.y = 400;
+				batch.addChild(spriteSpine);
+				spriteSpine.isCache = true;
+				trace("spriteSpine.isCache=",spriteSpine.isCache);
+				spriteSpine.y = 400 * Math.random();
 				spriteSpine.x = Math.random() * stage.stageWidth;
 				spriteSpine.play("daiji");
 				spriteSpine.scaleX = 0.6;
@@ -89,8 +91,7 @@ class Main extends Sprite {
 		}, function(error:String):Void {
 			trace("加载失败：", error);
 		});
-
-        #end
+		#end
 
 		var fps:openfl.display.FPS = new openfl.display.FPS();
 		fps.textColor = 0xffffff;
