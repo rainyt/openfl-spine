@@ -5,7 +5,6 @@ import VectorMath;
 /**
  * 为批渲染对象实现XY/SCALE等支持
  */
-@:debug
 class SpineRenderBatchShader extends SpineRenderShader {
 	/**
 	 * 顶点位移
