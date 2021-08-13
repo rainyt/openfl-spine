@@ -12,9 +12,9 @@ class SpineRenderBatchShader extends SpineRenderShader {
 	@:attribute public var xy:Vec2;
 
 	/**
-	 * 顶点缩放
+	 * 顶点缩放、旋转
 	 */
-	@:attribute public var scale:Vec2;
+	@:attribute public var scaleAndRotation:Vec3;
 
 	/**
 	 * 尺寸
@@ -90,13 +90,14 @@ class SpineRenderBatchShader extends SpineRenderShader {
 	override function vertex() {
 		super.vertex();
 		var mat:Mat4 = gl_openfl_Matrix;
-		var smat4:Mat4 = scaleXY(scale.x, scale.y);
+		var smat4:Mat4 = scaleXY(scaleAndRotation.x, scaleAndRotation.y);
+		var rmat4:Mat4 = rotaion(scaleAndRotation.z, vec3(0, 0, 1), vec3(0, 0, 0));
 		var uv:Vec2 = 2. / size.xy;
 		var trans:Mat4 = translation(xy.x * uv.x, xy.y * uv.y);
 		mat[3].x += trans[3].x;
 		mat[3].y -= trans[3].y;
 		alphaBlendMode = vec2(texalpha, texblendmode);
 		mulcolor = texcolor;
-		this.gl_Position = mat * smat4 * gl_openfl_Position;
+		this.gl_Position = mat * smat4 * rmat4 * gl_openfl_Position;
 	}
 }

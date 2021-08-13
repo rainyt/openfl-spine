@@ -163,6 +163,7 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 			// allXy.push(0);
 			allScale.push(sprite.scaleX);
 			allScale.push(sprite.scaleY);
+			allScale.push(sprite.rotation);
 		}
 		for (uv in buffer.uvs) {
 			allUvs.push(uv);
@@ -227,7 +228,7 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
 		_shader.a_xy.value = allXy;
-		_shader.a_scale.value = allScale;
+		_shader.a_scaleAndRotation.value = allScale;
 		this.graphics.clear();
 		this.graphics.beginShaderFill(_shader);
 		this.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
