@@ -328,18 +328,25 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		if (isCache && !__getChange()) {
-			var id = __getCurrentFrameId();
-			if (id != -1) {
-				// 检查是否存在缓存
-				var cacheData = GlobalAnimationCache.getCacheByID(cacheId);
-				var cacheData2 = cacheData.getFrame(this.actionName, id);
-				if (cacheData2 != null) {
-					this.renderCacheTriangles(cacheData2);
-					return;
+		if (isCache) {
+			if (__getChange()) {
+				GlobalAnimationCache.clearCacheByID(this.cacheId);
+				_lastAlpha = @:privateAccess this.__worldAlpha;
+				trace("清空：",this.cacheId);
+			} else {
+				var id = __getCurrentFrameId();
+				if (id != -1) {
+					// 检查是否存在缓存
+					var cacheData = GlobalAnimationCache.getCacheByID(cacheId);
+					var cacheData2 = cacheData.getFrame(this.actionName, id);
+					if (cacheData2 != null) {
+						this.renderCacheTriangles(cacheData2);
+						return;
+					}
 				}
 			}
 		}
+
 		renderTriangles();
 	}
 
@@ -393,8 +400,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		this.allVerticesArray = oldVerticesArray;
 	}
 
+	private var _lastAlpha:Float = 0;
+
 	private function __getChange():Bool {
-		return @:privateAccess this.__worldAlphaChanged;
+		return @:privateAccess this.__worldAlpha != _lastAlpha;
 	}
 
 	/**
@@ -596,9 +605,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		// 缓存
 		if (isCache) {
-			if (__getChange()) {
-				GlobalAnimationCache.clearCacheByID(this.cacheId);
-			}
 			var frameid = __getCurrentFrameId();
 			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
 			if (datas.getFrame(actionName, frameid) == null) {
