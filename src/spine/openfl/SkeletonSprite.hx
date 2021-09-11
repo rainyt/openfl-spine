@@ -332,7 +332,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			if (__getChange()) {
 				GlobalAnimationCache.clearCacheByID(this.cacheId);
 				_lastAlpha = @:privateAccess this.__worldAlpha;
-				trace("清空：",this.cacheId);
 			} else {
 				var id = __getCurrentFrameId();
 				if (id != -1) {
