@@ -96,15 +96,12 @@ class SkeletonAnimation extends SkeletonSprite {
 	 * @param loop 是否循环
 	 */
 	override public function play(action:String = null, loop:Bool = true):Void {
-		isPlay = true;
-		if (action == this.actionName)
-			return;
-		if (action != null && action != "") {
-			this.state.setAnimationByName(0, action, loop);
+		if (action != this.actionName) {
+			if (action != null && action != "") {
+				this.state.setAnimationByName(0, action, loop);
+			}
+			this._currentAnimation = getAnimation(action);
 		}
-		this._currentAnimation = getAnimation(action);
-		// trace("持续", _currentAnimation.duration, Std.int(_currentAnimation.duration * 60));
-		// 假设13.3667
 		super.play(action);
 	}
 
