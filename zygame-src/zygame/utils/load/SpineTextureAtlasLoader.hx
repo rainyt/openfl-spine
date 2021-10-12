@@ -1,5 +1,6 @@
 package zygame.utils.load;
 
+import spine.support.utils.JsonValue;
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
 import openfl.Assets;
@@ -133,7 +134,12 @@ class SpineTextureAtlas {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
+		
+		#if spine4
+		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
+		#else
 		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(new SkeletonDataFileHandle(null, data));
+		#end
 		_skeletonData.set(id, skeletonData);
 		return skeletonData;
 	}
@@ -148,7 +154,11 @@ class SpineTextureAtlas {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
+		#if spine4
+		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
+		#else
 		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(new SkeletonDataFileHandle(null, data));
+		#end
 		_skeletonData.set(id, skeletonData);
 		return skeletonData;
 	}

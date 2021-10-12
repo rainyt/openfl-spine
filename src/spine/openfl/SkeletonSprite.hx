@@ -518,6 +518,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						bitmapData = cast atlasRegion.page.rendererObject;
 					}
 
+					// isBitmapBlendMode = false;
+					// isFill = true;
+
 					// 如果是可以填充
 					if (isFill) {
 						if (_spritePool == null)
@@ -574,7 +577,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 					// 如果是BitmapBlend渲染
 					if (isBitmapBlendMode) {
-						drawSprite(slot, bitmapData);
+						drawSprite(slot, bitmapData, true);
 						// 重置
 						allTriangles = new Vector();
 						allTrianglesAlpha = [];
@@ -597,7 +600,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			drawSprite(null, bitmapData);
 	}
 
-	private function drawSprite(slot:Slot, bitmapData:BitmapData):Void {
+	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
 		if (allVerticesArray.length == 0 || allTriangles.length == 0 || allUvs.length == 0) {
 			return;
 		}
@@ -626,7 +629,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		}
 
 		var spr:Sprite = _spritePool.get();
-		if (slot != null) {
+		if (slot != null && isBlendMode) {
 			switch (slot.data.blendMode) {
 				case BlendMode.additive:
 				// 内置Shader支持
@@ -637,6 +640,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				case BlendMode.normal:
 					spr.blendMode = openfl.display.BlendMode.NORMAL;
 			}
+		} else {
+			spr.blendMode = openfl.display.BlendMode.NORMAL;
 		}
 
 		spr.graphics.clear();

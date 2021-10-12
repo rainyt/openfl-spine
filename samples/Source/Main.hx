@@ -41,7 +41,7 @@ class Main extends Sprite {
 		//     trace("加载失败：",error);
 		// });
 
-		#if !(spine38)
+		#if !(spine38 || spine4)
 		var jsonData:String = Assets.getText("assets/sxkCenter.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/sxkCenter.atlas", ["assets/sxkCenter.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
@@ -60,6 +60,28 @@ class Main extends Sprite {
 		}, function(error:String):Void {
 			trace("加载失败：", error);
 		});
+		#elseif spine4
+		// Sprite
+		var jsonData:String = Assets.getText("assets/symZ_expand.json");
+		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/symZ_expand.atlas", ["assets/symZ_expand.png"]);
+		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
+			// Sprite格式
+			for (i in 0...1) {
+				var spriteSpine = textureAtals.buildSpriteSkeleton("symZ_expand", jsonData);
+				this.addChild(spriteSpine);
+				// spriteSpine.isCache = true;
+				trace("spriteSpine.isCache=", spriteSpine.isCache);
+				spriteSpine.y = 400;
+				spriteSpine.x = 400;
+				spriteSpine.play("looped");
+				spriteSpine.scaleX = 0.6;
+				spriteSpine.scaleY = 0.6;
+				// Tilemap
+				// var tilemapSpine = textureAtals.buildTilemapSkeleton("symZ_expand", jsonData);
+			}
+		}, function(error:String):Void {
+			trace("加载失败：", error);
+		});
 		#else
 		// Sprite
 		var jsonData:String = Assets.getText("assets/test1.json");
@@ -72,7 +94,7 @@ class Main extends Sprite {
 				var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
 				batch.addChild(spriteSpine);
 				spriteSpine.isCache = true;
-				trace("spriteSpine.isCache=",spriteSpine.isCache);
+				trace("spriteSpine.isCache=", spriteSpine.isCache);
 				spriteSpine.y = 400 * Math.random();
 				spriteSpine.x = Math.random() * stage.stageWidth;
 				spriteSpine.play("daiji");
