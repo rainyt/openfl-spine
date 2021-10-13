@@ -98,3 +98,15 @@ The library currently uses version 3.7 by default and points to version spine-hx
 <define name="spine3.8"/>
 <haxelib name="openfl-spine"/>
 ```
+
+## 使用4.0
+在2021年10月13日，开始支持Spine4.0，如果需要使用4.0，需要在库之前定义版本号：
+On October 13, 2021, spine4.0 will be supported. If 4.0 needs to be used, the version number needs to be defined before the Library:
+```xml
+<define name="spine4"/>
+<haxelib name="openfl-spine"/>
+```
+
+## 常见问题
+1. 当发生资源载入错误时，请检查Spine的版本是否一致，例如3.8的Spine文件不能在4.0中使用。When a resource loading error occurs, please check whether the version of spine is consistent. For example, the spine file of 3.8 cannot be used in 4.0.
+    - 这种情况需要确保所有Spine的资源版本都为一致。In this case, you need to ensure that the resource versions of all spines are consistent.

@@ -3,3 +3,6 @@
 samples/Export
 samples/Export/bin
 samples/.vscode
+samples/Assets/symZ_expand.atlas
+samples/Assets/symZ_expand.json
+samples/Assets/symZ_expand.png

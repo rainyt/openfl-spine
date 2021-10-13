@@ -517,10 +517,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					} else {
 						bitmapData = cast atlasRegion.page.rendererObject;
 					}
-
-					// isBitmapBlendMode = false;
-					// isFill = true;
-
+					
 					// 如果是可以填充
 					if (isFill) {
 						if (_spritePool == null)
