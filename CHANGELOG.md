@@ -1,4 +1,4 @@
-# 1.8.3
+# 1.8.2
 - 修复：修复SkeletonAnimation在stop后再调用play会无法继续播放动画的问题。
 - 修复：修复BlendMode渲染异常的问题。
 - 新增：新增Spine4的支持，当需要使用时，在openfl-spine之前定义：`<define name="spine4"/>`。
