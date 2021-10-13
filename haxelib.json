@@ -5,7 +5,7 @@
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
   "version": "1.8.2",
-  "releasenote": "New batch rendering and cache animation support",
+  "releasenote": "New Spine4 support.",
   "contributors": ["rainy"],
   "classPath": "src",
   "dependencies": {
