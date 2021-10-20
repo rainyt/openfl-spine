@@ -24,6 +24,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 	}
 
 	public function loadRegion (region:AtlasRegion):Void {
+		#if !spine4
 		if(region.offsetX == 0 && region.offsetY == 0)
 			return;
 		if(region.rotate)
@@ -64,6 +65,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 				region.packedHeight = region.width;
 			}
 		}
+		#end
 	}
 
 	public function unloadPage (page:AtlasPage):Void {
