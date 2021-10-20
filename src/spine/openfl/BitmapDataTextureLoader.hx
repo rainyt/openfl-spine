@@ -41,29 +41,6 @@ class BitmapDataTextureLoader implements TextureLoader {
 			region.packedWidth = v1;
 
 		}
-
-		if(region.originalWidth == region.packedWidth && region.originalHeight == region.packedHeight || (region.width < region.packedWidth && region.height < region.packedHeight))
-		{
-			if(region.width < region.originalWidth)
-			{
-				region.packedWidth = region.width;
-			}
-			if(region.height < region.originalHeight)
-			{
-				region.packedHeight = region.height;
-			}
-		}
-		else
-		{
-			if(region.height < region.originalWidth)
-			{
-				region.packedWidth = region.height;
-			}
-			if(region.width < region.originalHeight)
-			{
-				region.packedHeight = region.width;
-			}
-		}
 	}
 
 	public function unloadPage (page:AtlasPage):Void {
