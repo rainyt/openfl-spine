@@ -161,7 +161,7 @@ class SkeletonAnimation extends SkeletonSprite {
 	override function removeEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false) {
 		super.removeEventListener(type, listener, useCapture);
 		if (_event != null)
-			_event.addEventListener(type, listener);
+			_event.removeEventListener(type, listener);
 	}
 
 	override function __getCurrentFrameId():Int {
