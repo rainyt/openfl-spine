@@ -590,6 +590,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				}
 				clipper.clipEndWithSlot(slot);
 			}
+			else if (slot != null && clipper.isClipping())
+			{
+				clipper.clipEndWithSlot(slot);
+			}
 		}
 
 		// 最后一个，直接渲染
