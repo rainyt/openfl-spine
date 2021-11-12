@@ -45,11 +45,15 @@ class SpineCacheFrameData {
 	 * 三角形BlendMode运算
 	 */
 	public var allTrianglesBlendMode:Array<Float>;
+	
+	public var allTrianglesBlendModeType:Array<Float>;
 
 	/**
 	 * 三角形颜色运算
 	 */
 	public var allTrianglesColor:Array<Float>;
+	
+	public var allTrianglesDarkColor:Array<Float>;
 
 	/**
 	 * 顶点坐标

@@ -9,7 +9,7 @@ import VectorMath;
  * 用于实现Spine在Sprite模式下的透明值、BlendMode等支持
  */
 @:autoBuild(glsl.macro.GLSLCompileMacro.build())
-class SpineRenderShader extends OpenFLGraphicsShader {
+class SpineRenderNormalShader extends OpenFLGraphicsShader {
 	/**
 	 * 纹理透明度
 	 */
@@ -49,7 +49,7 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 * Shader版本号
 	 */
 	public var shaderVersion:Int = 0;
-
+	
 	public function new() {
 		super();
 	}
@@ -57,9 +57,9 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	override function fragment() {
 		super.fragment();
 		gl_FragColor = color * alphaBlendMode.x;
-		gl_FragColor.a = gl_FragColor.a * (1 - alphaBlendMode.y);
-		gl_FragColor.rgb = gl_FragColor.rgb * mulcolor.rgb;
-		gl_FragColor = gl_FragColor * malpha;
+		gl_FragColor.a = gl_FragColor.a /** (1 - alphaBlendMode.y)*/;
+		gl_FragColor.rgb = gl_FragColor.rgb * mulcolor.rgb + ((1 - gl_FragColor.rgb) * muldarkcolor.rgb) * gl_FragColor.a;
+ 		gl_FragColor = gl_FragColor * malpha;
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import flash.display.Shader;
 import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
@@ -13,6 +14,7 @@ import openfl.display3D.Context3DTextureFilter;
 import zygame.display.DisplayObjectContainer;
 #end
 import spine.shader.SpineRenderShader;
+import spine.shader.SpineRenderNormalShader;
 import openfl.Vector;
 import spine.attachments.MeshAttachment;
 import spine.Skeleton;
@@ -92,6 +94,29 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shaderVersion++;
 		return shader;
 	}
+	
+	private var _shader:SpineRenderShader;
+	
+	// Tint Black Normal shader
+	
+	public var normalShaderClass(get, set):Class<SpineRenderNormalShader>;
+
+	private var _normalShaderClass:Class<SpineRenderNormalShader>;
+	private var _normalShaderVersion:Int = 0;
+
+	private function get_normalShaderClass():Class<SpineRenderNormalShader> {
+		if (_normalShaderClass == null)
+			normalShaderClass = SpineRenderNormalShader;
+		return _normalShaderClass;
+	}
+
+	private function set_normalShaderClass(normalShader:Class<SpineRenderNormalShader>):Class<SpineRenderNormalShader> {
+		_normalShaderClass = normalShader;
+		_normalShaderVersion++;
+		return normalShader;
+	}
+	
+	private var _normalShader:SpineRenderNormalShader;
 
 	/**
 	 * 批渲染对象
@@ -161,6 +186,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 所有顶点的颜色相乘
 	 */
 	private var allTrianglesColor:Array<Float> = [];
+	
+	private var allTrianglesDarkColor:Array<Float> = [];
 
 	/**
 	 * 所有UV数据
@@ -378,14 +405,18 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var oldTriangles = this.allTriangles;
 		var oldTrianglesAlpha = this.allTrianglesAlpha;
 		var oldTrianglesBlendMode = this.allTrianglesBlendMode;
+		//var oldTrianglesBlendModeType = this.allTrianglesBlendModeType;
 		var oldTrianglesColor = this.allTrianglesColor;
+		var oldTrianglesDarkColor = this.allTrianglesDarkColor;
 		var oldUvs = this.allUvs;
 		var oldVerticesArray = this.allVerticesArray;
 
 		this.allTriangles = data.allTriangles;
 		this.allTrianglesAlpha = data.allTrianglesAlpha;
 		this.allTrianglesBlendMode = data.allTrianglesBlendMode;
+		//this.allTrianglesBlendModeType = data.allTrianglesBlendModeType;
 		this.allTrianglesColor = data.allTrianglesColor;
+		this.allTrianglesDarkColor = data.allTrianglesDarkColor;
 		this.allUvs = data.allUvs;
 		this.allVerticesArray = data.allVerticesArray;
 
@@ -394,7 +425,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		this.allTriangles = oldTriangles;
 		this.allTrianglesAlpha = oldTrianglesAlpha;
 		this.allTrianglesBlendMode = oldTrianglesBlendMode;
+		//this.allTrianglesBlendModeType = oldTrianglesBlendModeType;
 		this.allTrianglesColor = oldTrianglesColor;
+		this.allTrianglesDarkColor = oldTrianglesDarkColor;
 		this.allUvs = oldUvs;
 		this.allVerticesArray = oldVerticesArray;
 	}
@@ -528,6 +561,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						allTriangles = new Vector();
 						allTrianglesAlpha = [];
 						allTrianglesColor = [];
+						allTrianglesDarkColor = [];
 						allVerticesArray = new Vector();
 						allUvs = new Vector();
 						t = 0;
@@ -547,19 +581,35 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						allTrianglesAlpha[_buffdataPoint] = slot.color.a * @:privateAccess this.__worldAlpha; // Alpha
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
-								allTrianglesBlendMode[_buffdataPoint] = 1;
+									allTrianglesBlendMode[_buffdataPoint] = 1;
+									
 							case BlendMode.multiply:
-								allTrianglesBlendMode[_buffdataPoint] = 0;
+									allTrianglesBlendMode[_buffdataPoint] = 0;
+									
 							case BlendMode.screen:
-								allTrianglesBlendMode[_buffdataPoint] = 0;
+									allTrianglesBlendMode[_buffdataPoint] = 0;
+									
 							case BlendMode.normal:
-								allTrianglesBlendMode[_buffdataPoint] = 0;
+									allTrianglesBlendMode[_buffdataPoint] = 0;
+									
 						}
+						
+						var tempDarkColor = new Color( 0,0,0,1);
+						if (slot.data.darkColor != null)
+						{
+							tempDarkColor = slot.darkColor;
+							isBitmapBlendMode = true;
+						}
+						
+						allTrianglesDarkColor[_buffdataPoint * 4] = tempDarkColor.r;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 1] = tempDarkColor.g;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 2] = tempDarkColor.b;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = tempDarkColor.a;
+						
 						allTrianglesColor[_buffdataPoint * 4] = (slot.color.r);
 						allTrianglesColor[_buffdataPoint * 4 + 1] = (slot.color.g);
 						allTrianglesColor[_buffdataPoint * 4 + 2] = (slot.color.b);
-						allTrianglesColor[_buffdataPoint * 4 + 3] = 0;
-						// allTrianglesColor[_buffdataPoint * 4 + 3] = (1);
+						allTrianglesColor[_buffdataPoint * 4 + 3] = slot.color.a;
 						_buffdataPoint++;
 					}
 
@@ -579,6 +629,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						allTriangles = new Vector();
 						allTrianglesAlpha = [];
 						allTrianglesColor = [];
+						allTrianglesDarkColor = [];
 						allVerticesArray = new Vector();
 						allUvs = new Vector();
 						t = 0;
@@ -598,7 +649,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		// 最后一个，直接渲染
 		if (_spritePool != null)
-			drawSprite(null, bitmapData);
+			drawSprite(null, bitmapData, false);
 	}
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
@@ -617,7 +668,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				frame.allVerticesArray = allVerticesArray.copy();
 				frame.allTrianglesAlpha = allTrianglesAlpha.copy();
 				frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
+				//frame.allTrianglesBlendModeType = allTrianglesBlendModeType.copy();
 				frame.allTrianglesColor = allTrianglesColor.copy();
+				frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
 				datas.addFrame(actionName, frameid, frame);
 			}
 		}
@@ -628,47 +681,98 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				this.allTrianglesAlpha);
 			return;
 		}
-
+		
 		var spr:Sprite = _spritePool.get();
-		if (slot != null && isBlendMode) {
-			switch (slot.data.blendMode) {
+		
+		if (slot != null && slot.data != null && isBlendMode) 
+		{
+			switch (slot.data.blendMode) 
+			{
 				case BlendMode.additive:
-				// 内置Shader支持
+					// TODO applyAdditiveShader(spr, bitmapData);
+			
 				case BlendMode.multiply:
-					spr.blendMode = openfl.display.BlendMode.MULTIPLY;
+					// TODO applyMultiplyShader(spr, bitmapData);
+			
 				case BlendMode.screen:
-					spr.blendMode = openfl.display.BlendMode.SCREEN;
+					//TODO applyScreenShader(spr, bitmapData);
+			
 				case BlendMode.normal:
-					spr.blendMode = openfl.display.BlendMode.NORMAL;
-			}
-		} else {
-			spr.blendMode = openfl.display.BlendMode.NORMAL;
+					applyNormalShader(spr, bitmapData);
+			}	
+		} 
+		else 
+		{
+			applyNormalShader(spr, bitmapData);
 		}
-
+	}
+	
+	//private function applyBaseShader(spr:Sprite, bitmapData:BitmapData)
+	//{
+		//spr.graphics.clear();
+		//_shader = cast spr.shader;
+		//if (_shader == null || _shader.shaderVersion != _shaderVersion) {
+			//_shader = Type.createInstance(shaderClass, []);
+			//_shader.shaderVersion = _shaderVersion;
+			//spr.shader = _shader;
+		//}
+		//
+			//#if zygame
+		//if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
+			//_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
+		//} else {
+			//_shader.data.u_malpha.value = [this.alpha];
+		//}
+		//#else
+		//_shader.data.u_malpha.value = [this.alpha];
+		//#end
+//
+		//_shader.data.bitmap.input = bitmapData;
+		//// Smoothing
+		//_shader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
+		//_shader.a_texalpha.value = allTrianglesAlpha;
+		//_shader.a_texblendmode.value = allTrianglesBlendMode;
+		////_shader.a_blendmodetype.value = allTrianglesBlendModeType;
+		//_shader.a_texcolor.value = allTrianglesColor;
+		////if(slot.data.darkColor != null)
+		//_shader.a_darkcolor.value = allTrianglesDarkColor;
+		//
+		//spr.graphics.beginShaderFill(_shader);
+		//spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
+		//spr.graphics.endFill();
+		//_shape.addChild(spr);
+		//spr.visible = true;
+	//}
+	
+	private function applyNormalShader(spr:Sprite, bitmapData:BitmapData)
+	{
 		spr.graphics.clear();
-		var _shader:SpineRenderShader = cast spr.shader;
-		if (_shader == null || _shader.shaderVersion != _shaderVersion) {
-			_shader = Type.createInstance(shaderClass, []);
-			_shader.shaderVersion = _shaderVersion;
-			spr.shader = _shader;
+		_normalShader = cast spr.shader;
+		if (_normalShader == null || _normalShader.shaderVersion != _normalShaderVersion) {
+			_normalShader = Type.createInstance(normalShaderClass, []);
+			_normalShader.shaderVersion = _normalShaderVersion;
+			spr.shader = _normalShader;
 		}
-		#if zygame
+		
+			#if zygame
 		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
-			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
+			_normalShader.data.u_malpha.value = [this.parent.alpha * this.alpha];
 		} else {
-			_shader.data.u_malpha.value = [this.alpha];
+			_normalShader.data.u_malpha.value = [this.alpha];
 		}
 		#else
-		_shader.data.u_malpha.value = [this.alpha];
+		_normalShader.data.u_malpha.value = [this.alpha];
 		#end
 
-		_shader.data.bitmap.input = bitmapData;
+		_normalShader.data.bitmap.input = bitmapData;
 		// Smoothing
-		_shader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
-		_shader.a_texalpha.value = allTrianglesAlpha;
-		_shader.a_texblendmode.value = allTrianglesBlendMode;
-		_shader.a_texcolor.value = allTrianglesColor;
-		spr.graphics.beginShaderFill(_shader);
+		_normalShader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
+		_normalShader.a_texalpha.value = allTrianglesAlpha;
+		_normalShader.a_texblendmode.value = allTrianglesBlendMode;
+		_normalShader.a_texcolor.value = allTrianglesColor;
+		_normalShader.a_darkcolor.value = allTrianglesDarkColor;
+		
+		spr.graphics.beginShaderFill(_normalShader);
 		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		spr.graphics.endFill();
 		_shape.addChild(spr);
