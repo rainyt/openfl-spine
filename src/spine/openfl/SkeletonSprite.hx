@@ -562,30 +562,19 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
-								
-								//var tempBlendModeAlpha:Float = 1 - ((tempLightColor.r + tempLightColor.g + tempLightColor.b) +
-																//(tempDarkColor.r + tempDarkColor.g + tempDarkColor.b)) / 6;
-								
 								allTrianglesBlendMode[_buffdataPoint] = 1;
-								
 							case BlendMode.multiply:
-								//var tempBlendModeAlpha:Float = ((tempLightColor.r + tempLightColor.g + tempLightColor.b) +
-																//(tempDarkColor.r + tempDarkColor.g + tempDarkColor.b)) / 6;
-								//
 								allTrianglesBlendMode[_buffdataPoint] = 0;
-									
 							case BlendMode.screen:
 								allTrianglesBlendMode[_buffdataPoint] = 0;
-								
 							case BlendMode.normal:
 								allTrianglesBlendMode[_buffdataPoint] = 0;
-									
 						}
 						
 						allTrianglesDarkColor[_buffdataPoint * 4] = tempDarkColor.r;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 1] = tempDarkColor.g;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 2] = tempDarkColor.b;
-						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = 0/*tempDarkColor.a*/;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = 0;
 						
 						allTrianglesColor[_buffdataPoint * 4] = tempLightColor.r;
 						allTrianglesColor[_buffdataPoint * 4 + 1] = tempLightColor.g;
@@ -667,6 +656,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			switch (slot.data.blendMode) {
 				case BlendMode.additive:
 				// 内置Shader支持
+					spr.blendMode = openfl.display.BlendMode.ADD;
 				case BlendMode.multiply:
 					spr.blendMode = openfl.display.BlendMode.MULTIPLY;
 				case BlendMode.screen:
