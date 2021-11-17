@@ -58,7 +58,7 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 		super.fragment();
 		gl_FragColor = color * alphaBlendMode.x;
 		gl_FragColor.a = gl_FragColor.a * (1 - alphaBlendMode.y);
-		gl_FragColor.rgb = (gl_FragColor.rgb * mulcolor.rgb + ((1 - gl_FragColor.rgb) * muldarkcolor.rgb)) * gl_FragColor.a;
+		gl_FragColor.rgb = (gl_FragColor.rgb * mulcolor.rgb + ((1 - gl_FragColor.rgb) * muldarkcolor.rgb) * gl_FragColor.a);
 		gl_FragColor = gl_FragColor * malpha;
 	}
 
