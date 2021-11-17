@@ -161,7 +161,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 所有顶点的颜色相乘
 	 */
 	private var allTrianglesColor:Array<Float> = [];
-	
+
 	private var allTrianglesDarkColor:Array<Float> = [];
 
 	/**
@@ -522,7 +522,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					} else {
 						bitmapData = cast atlasRegion.page.rendererObject;
 					}
-					
+
 					// 如果是可以填充
 					if (isFill) {
 						if (_spritePool == null)
@@ -551,15 +551,14 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						allTriangles[_buffdataPoint] = writeTriangles[vi] + t;
 						// 添加顶点属性
 						allTrianglesAlpha[_buffdataPoint] = slot.color.a * @:privateAccess this.__worldAlpha; // Alpha
-						
+
 						var tempLightColor = slot.color;
-						var tempDarkColor = new Color( 0,0,0,1);
-						if (slot.data.darkColor != null)
-						{
+						var tempDarkColor = new Color(0, 0, 0, 1);
+						if (slot.data.darkColor != null) {
 							tempDarkColor = slot.darkColor;
 							isBitmapBlendMode = true;
 						}
-						
+
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
 								allTrianglesBlendMode[_buffdataPoint] = 1;
@@ -570,17 +569,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 							case BlendMode.normal:
 								allTrianglesBlendMode[_buffdataPoint] = 0;
 						}
-						
+
 						allTrianglesDarkColor[_buffdataPoint * 4] = tempDarkColor.r;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 1] = tempDarkColor.g;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 2] = tempDarkColor.b;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = 0;
-						
+
 						allTrianglesColor[_buffdataPoint * 4] = tempLightColor.r;
 						allTrianglesColor[_buffdataPoint * 4 + 1] = tempLightColor.g;
 						allTrianglesColor[_buffdataPoint * 4 + 2] = tempLightColor.b;
 						allTrianglesColor[_buffdataPoint * 4 + 3] = 0;
-						
+
 						_buffdataPoint++;
 					}
 
@@ -611,9 +610,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					}
 				}
 				clipper.clipEndWithSlot(slot);
-			}
-			else if (slot != null && clipper.isClipping())
-			{
+			} else if (slot != null && clipper.isClipping()) {
 				clipper.clipEndWithSlot(slot);
 			}
 		}
@@ -640,6 +637,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				frame.allTrianglesAlpha = allTrianglesAlpha.copy();
 				frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
 				frame.allTrianglesColor = allTrianglesColor.copy();
+				frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
 				datas.addFrame(actionName, frameid, frame);
 			}
 		}
@@ -655,7 +653,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		if (slot != null && isBlendMode) {
 			switch (slot.data.blendMode) {
 				case BlendMode.additive:
-				// 内置Shader支持
+					// 内置Shader支持
 					spr.blendMode = openfl.display.BlendMode.ADD;
 				case BlendMode.multiply:
 					spr.blendMode = openfl.display.BlendMode.MULTIPLY;

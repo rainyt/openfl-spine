@@ -50,7 +50,10 @@ class SpineCacheFrameData {
 	 * 三角形颜色运算
 	 */
 	public var allTrianglesColor:Array<Float>;
-	
+
+	/**
+	 * 深色颜色运算
+	 */
 	public var allTrianglesDarkColor:Array<Float>;
 
 	/**
