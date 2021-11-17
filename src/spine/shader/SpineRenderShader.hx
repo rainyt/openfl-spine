@@ -24,6 +24,8 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 * 颜色变更：rgba，其中a代表是否需要计算颜色变更
 	 */
 	@:attribute public var texcolor:Vec4;
+	
+	@:attribute public var darkcolor:Vec4;
 
 	/**
 	 * x:透明度
@@ -35,6 +37,8 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 * 颜色相乘
 	 */
 	@:varying public var mulcolor:Vec4;
+	
+	@:varying public var muldarkcolor:Vec4;
 
 	/**
 	 * 透明度
@@ -54,7 +58,7 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 		super.fragment();
 		gl_FragColor = color * alphaBlendMode.x;
 		gl_FragColor.a = gl_FragColor.a * (1 - alphaBlendMode.y);
-		gl_FragColor.rgb = gl_FragColor.rgb * mulcolor.rgb;
+		gl_FragColor.rgb = (gl_FragColor.rgb * mulcolor.rgb + ((1 - gl_FragColor.rgb) * muldarkcolor.rgb) * gl_FragColor.a);
 		gl_FragColor = gl_FragColor * malpha;
 	}
 
@@ -65,6 +69,7 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 		super.vertex();
 		alphaBlendMode = vec2(texalpha, texblendmode);
 		mulcolor = texcolor;
+		muldarkcolor = darkcolor;
 	}
 
 }

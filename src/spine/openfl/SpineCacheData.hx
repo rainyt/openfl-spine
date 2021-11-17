@@ -50,6 +50,8 @@ class SpineCacheFrameData {
 	 * 三角形颜色运算
 	 */
 	public var allTrianglesColor:Array<Float>;
+	
+	public var allTrianglesDarkColor:Array<Float>;
 
 	/**
 	 * 顶点坐标
