@@ -556,7 +556,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						var tempDarkColor = new Color(0, 0, 0, 1);
 						if (slot.data.darkColor != null) {
 							tempDarkColor = slot.darkColor;
-							isBitmapBlendMode = true;
+							// 	isBitmapBlendMode = true;
 						}
 
 						switch (slot.data.blendMode) {
