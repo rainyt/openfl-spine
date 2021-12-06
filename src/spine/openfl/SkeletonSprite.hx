@@ -370,7 +370,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 							this.addChild(_img);
 							_img.visible = true;
 							_img.dataProvider = cacheData2;
-							_img.alpha = 0.5;
+							// _img.alpha = 0.5;
 							return;
 						}
 						_img.visible = false;
