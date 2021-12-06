@@ -8,6 +8,16 @@ import openfl.Vector;
 class SpineCacheData {
 	private var _cache:Map<String, Array<SpineCacheFrameData>> = [];
 
+	#if zygame
+	public var glBitmapData:zygame.utils.load.DynamicTextureLoader.DynamicTextureAtlas;
+
+	public function getGLBitmapData():zygame.utils.load.DynamicTextureLoader.DynamicTextureAtlas {
+		if (glBitmapData == null)
+			glBitmapData = new zygame.utils.load.DynamicTextureLoader.DynamicTextureAtlas();
+		return glBitmapData;
+	}
+	#end
+
 	public function new() {}
 
 	/**

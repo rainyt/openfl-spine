@@ -2,6 +2,8 @@
 - 新增：新增TintBlack支持。
 - 修复：修复事件无法正常移除的问题。
 - 修复：修复剪辑遇到空骨架应预期结束。
+- 新增：新增`CacheMode.GL_BITMAP`缓冲区位图缓存支持，但需要`zygameui`引擎库支持。
+- 改进：改进`isCache`状态下的透明清除值默认为1。
 
 # 1.8.2
 - 修复：修复SkeletonAnimation在stop后再调用play会无法继续播放动画的问题。

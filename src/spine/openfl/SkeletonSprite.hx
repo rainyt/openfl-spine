@@ -11,6 +11,7 @@ import openfl.display.Sprite;
 import openfl.display3D.Context3DTextureFilter;
 #if zygame
 import zygame.display.DisplayObjectContainer;
+import zygame.components.ZImage;
 #end
 import spine.shader.SpineRenderShader;
 import openfl.Vector;
@@ -80,6 +81,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 	private var _shaderClass:Class<SpineRenderShader>;
 	private var _shaderVersion:Int = 0;
+
+	#if zygame
+	private var _img:ZImage;
+	#end
 
 	private function get_shaderClass():Class<SpineRenderShader> {
 		if (_shaderClass == null)
@@ -185,6 +190,13 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var isCache(get, set):Bool;
 
 	private var _isCache:Bool = false;
+
+	/**
+	 * 缓存模式：
+	 * TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
+	 * GL_BITMAP：使用GL缓冲区位图的形式进行缓存，可能会提高一定的内存。(暂需要zygameui库支持)
+	 */
+	public var cacheMode:CacheMode = TRIANGLES;
 
 	private function set_isCache(value:Bool):Bool {
 		_isCache = value;
@@ -339,10 +351,32 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				if (id != -1) {
 					// 检查是否存在缓存
 					var cacheData = GlobalAnimationCache.getCacheByID(cacheId);
-					var cacheData2 = cacheData.getFrame(this.actionName, id);
-					if (cacheData2 != null) {
-						this.renderCacheTriangles(cacheData2);
-						return;
+					if (cacheMode == TRIANGLES) {
+						var cacheData2 = cacheData.getFrame(this.actionName, id);
+						if (cacheData2 != null) {
+							this.renderCacheTriangles(cacheData2);
+							return;
+						}
+					} else {
+						// GLBITMAP缓存
+						#if zygame
+						if (_img == null) {
+							_img = new ZImage();
+						}
+						var glBitmaps = cacheData.getGLBitmapData();
+						var cacheData2 = glBitmaps.getBitmapDataFrame("f" + id);
+						if (cacheData2 != null) {
+							clearSprite();
+							this.addChild(_img);
+							_img.visible = true;
+							_img.dataProvider = cacheData2;
+							_img.alpha = 0.5;
+							return;
+						}
+						_img.visible = false;
+						#else
+						throw "Not support GL_BITMAP, need use `zygameui` engine lib.";
+						#end
 					}
 				}
 			}
@@ -355,14 +389,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 渲染缓存三角形，使用isCache=true时可正常使用
 	 */
 	private function renderCacheTriangles(data:SpineCacheFrameData):Void {
-		var max:Int = _shape.numChildren - 1;
-		while (max >= 0) {
-			var spr:Sprite = cast _shape.getChildAt(max);
-			spr.visible = false;
-			_spritePool.remove(spr);
-			_spritePool.add(spr);
-			max--;
-		}
+		clearSprite();
 		if (_cacheBitmapData == null) {
 			for (slot in skeleton.drawOrder) {
 				var region:AtlasRegion = null;
@@ -404,10 +431,23 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		this.allVerticesArray = oldVerticesArray;
 	}
 
-	private var _lastAlpha:Float = 0;
+	private var _lastAlpha:Float = 1;
 
 	private function __getChange():Bool {
 		return @:privateAccess this.__worldAlpha != _lastAlpha;
+	}
+
+	private function clearSprite():Void {
+		var max:Int = _shape.numChildren - 1;
+		while (max >= 0) {
+			var spr:Sprite = cast _shape.getChildAt(max);
+			// _shape.removeChild(spr);
+			spr.visible = false;
+			_spritePool.remove(spr);
+			_spritePool.add(spr);
+			max--;
+		}
+		_shape.graphics.clear();
 	}
 
 	/**
@@ -430,17 +470,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		var v:Vector<Int> = null;
 
-		var max:Int = _shape.numChildren - 1;
-		while (max >= 0) {
-			var spr:Sprite = cast _shape.getChildAt(max);
-			// _shape.removeChild(spr);
-			spr.visible = false;
-			_spritePool.remove(spr);
-			_spritePool.add(spr);
-			max--;
-		}
+		this.clearSprite();
 
-		_shape.graphics.clear();
 		allTriangles = new Vector<Int>();
 		var t:Int = 0;
 
@@ -626,19 +657,23 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		}
 
 		// 缓存
+		var datas:SpineCacheData = null;
+		var frameid:Int = null;
 		if (isCache) {
-			var frameid = __getCurrentFrameId();
-			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
-			if (datas.getFrame(actionName, frameid) == null) {
-				var frame = new SpineCacheFrameData();
-				frame.allTriangles = allTriangles.copy();
-				frame.allUvs = allUvs.copy();
-				frame.allVerticesArray = allVerticesArray.copy();
-				frame.allTrianglesAlpha = allTrianglesAlpha.copy();
-				frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
-				frame.allTrianglesColor = allTrianglesColor.copy();
-				frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
-				datas.addFrame(actionName, frameid, frame);
+			frameid = __getCurrentFrameId();
+			datas = GlobalAnimationCache.getCacheByID(this.cacheId);
+			if (cacheMode == TRIANGLES) {
+				if (datas.getFrame(actionName, frameid) == null) {
+					var frame = new SpineCacheFrameData();
+					frame.allTriangles = allTriangles.copy();
+					frame.allUvs = allUvs.copy();
+					frame.allVerticesArray = allVerticesArray.copy();
+					frame.allTrianglesAlpha = allTrianglesAlpha.copy();
+					frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
+					frame.allTrianglesColor = allTrianglesColor.copy();
+					frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
+					datas.addFrame(actionName, frameid, frame);
+				}
 			}
 		}
 
@@ -695,6 +730,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.endFill();
 		_shape.addChild(spr);
 		spr.visible = true;
+
+		#if zygame
+		if (isCache && cacheMode == GL_BITMAP) {
+			// GLBITMAP缓存
+			var glBitmaps = datas.getGLBitmapData();
+			if (glBitmaps.getBitmapDataFrame("f" + frameid) == null) {
+				// 进行缓存
+				glBitmaps.putSprite("f" + frameid, this);
+			}
+		}
+		#end
 	}
 
 	/**
