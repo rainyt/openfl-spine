@@ -77,6 +77,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 着色器定义，默认为SpineRenderShader
 	 */
+	@:deprecated("shaderClass is deprecated.Please use this.shader = new CustomShader();")
 	public var shaderClass(get, set):Class<SpineRenderShader>;
 
 	private var _shaderClass:Class<SpineRenderShader>;
@@ -234,6 +235,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoveToStage);
 		#end
 
+		// this.addEventListener(Event.)
+
 		_shape = new Sprite();
 		this.addChild(_shape);
 
@@ -370,10 +373,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 							this.addChild(_img);
 							_img.visible = true;
 							_img.dataProvider = cacheData2;
+							_img.scale(1 / glBitmaps.scale);
 							// _img.alpha = 0.5;
 							return;
 						}
-						_img.visible = false;
+						// _img.visible = false;
 						#else
 						throw "Not support GL_BITMAP, need use `zygameui` engine lib.";
 						#end
@@ -702,12 +706,14 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		}
 
 		spr.graphics.clear();
-		var _shader:SpineRenderShader = cast spr.shader;
-		if (_shader == null || _shader.shaderVersion != _shaderVersion) {
-			_shader = Type.createInstance(shaderClass, []);
-			_shader.shaderVersion = _shaderVersion;
-			spr.shader = _shader;
-		}
+		// todo 这里应该只需要一个Shader即可，无需使用过多的相同的Shader
+		var _shader = spr.shader == null ? SpineRenderShader.shader : spr.shader;
+		// var _shader:SpineRenderShader = cast spr.shader;
+		// if (_shader == null || _shader.shaderVersion != _shaderVersion) {
+		// _shader = Type.createInstance(shaderClass, []);
+		// _shader.shaderVersion = _shaderVersion;
+		// spr.shader = _shader;
+		// }
 		#if zygame
 		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
 			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];

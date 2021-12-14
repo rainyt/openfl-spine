@@ -11,6 +11,19 @@ import VectorMath;
 @:autoBuild(glsl.macro.GLSLCompileMacro.build())
 class SpineRenderShader extends OpenFLGraphicsShader {
 	/**
+	 * 获得单独的shader
+	 */
+	public static var shader(get, never):SpineRenderShader;
+
+	private static var _shader:SpineRenderShader;
+
+	private static function get_shader():SpineRenderShader {
+		if (_shader == null)
+			_shader = new SpineRenderShader();
+		return _shader;
+	}
+
+	/**
 	 * 纹理透明度
 	 */
 	@:attribute public var texalpha:Float;
@@ -24,7 +37,7 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 * 颜色变更：rgba，其中a代表是否需要计算颜色变更
 	 */
 	@:attribute public var texcolor:Vec4;
-	
+
 	@:attribute public var darkcolor:Vec4;
 
 	/**
@@ -37,7 +50,7 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 	 * 颜色相乘
 	 */
 	@:varying public var mulcolor:Vec4;
-	
+
 	@:varying public var muldarkcolor:Vec4;
 
 	/**
@@ -71,5 +84,4 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 		mulcolor = texcolor;
 		muldarkcolor = darkcolor;
 	}
-
 }

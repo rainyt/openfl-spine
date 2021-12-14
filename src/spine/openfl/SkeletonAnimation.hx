@@ -36,6 +36,9 @@ import spine.SkeletonData;
 import spine.AnimationState;
 import spine.AnimationStateData;
 
+#if test
+@:build(zygame.macro.performance.PerformanceUtils.build())
+#end
 class SkeletonAnimation extends SkeletonSprite {
 	public var state:AnimationState;
 
@@ -112,7 +115,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		return super.get_isCache();
 	}
 
-	private function getAnimation(name:String):Animation {
+	public function getAnimation(name:String):Animation {
 		for (animation in this.state.getData().getSkeletonData().animations) {
 			if (animation.name == name)
 				return animation;

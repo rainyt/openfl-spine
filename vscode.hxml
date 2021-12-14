@@ -1,7 +1,26 @@
+# -main zygame.core.Start
+--library zygameui
+--library zygameui-api
 --library openfl
---library openfl-glsl
---library vector-math
---library spine-hx
 --library lime
---class-path src
---class-path zygame-src
+--library spine-hx
+--library castle
+--library hscript
+--library tweenxcore
+--library crypto
+--library KengSDK
+--library feathersui
+--library swf
+--library differ
+--library vector-math
+--library openfl-glsl
+--library openfl-spine
+--library openfl-gpu-particles
+-D vscode
+-D zygame
+-D api
+-D openfl_swf
+-lib KengSDK
+-cp src
+-cp openfl9-source
+# --js bin/main.js
