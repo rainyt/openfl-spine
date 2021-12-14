@@ -707,7 +707,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		spr.graphics.clear();
 		// todo 这里应该只需要一个Shader即可，无需使用过多的相同的Shader
-		var _shader = spr.shader == null ? SpineRenderShader.shader : spr.shader;
+		var _shader:SpineRenderShader = spr.shader == null ? SpineRenderShader.shader : cast spr.shader;
 		// var _shader:SpineRenderShader = cast spr.shader;
 		// if (_shader == null || _shader.shaderVersion != _shaderVersion) {
 		// _shader = Type.createInstance(shaderClass, []);
