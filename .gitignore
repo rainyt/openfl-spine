@@ -6,3 +6,9 @@ samples/.vscode
 samples/Assets/symZ_expand.atlas
 samples/Assets/symZ_expand.json
 samples/Assets/symZ_expand.png
+src/.DS_Store
+zygame-src/zygame/utils/.DS_Store
+zygame-src/zygame/utils/load/.DS_Store
+src/spine/openfl/.DS_Store
+src/spine/.DS_Store
+samples/Assets/.DS_Store

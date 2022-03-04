@@ -662,7 +662,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		// 缓存
 		var datas:SpineCacheData = null;
-		var frameid:Int = null;
+		var frameid:Null<Int> = null;
 		if (isCache) {
 			frameid = __getCurrentFrameId();
 			datas = GlobalAnimationCache.getCacheByID(this.cacheId);
@@ -800,7 +800,10 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return 0;
 	}
 
+	private var _isHidden:Bool = false;
+
 	public function isHidden():Bool {
-		return this.__worldAlpha == 0 || !this.__visible;
+		_isHidden = this.__worldAlpha == 0 || !this.__visible;
+		return _isHidden;
 	}
 }
