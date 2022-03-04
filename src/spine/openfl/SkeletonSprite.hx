@@ -74,30 +74,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	public var smoothing:Bool = false;
 
-	/**
-	 * 着色器定义，默认为SpineRenderShader
-	 */
-	@:deprecated("shaderClass is deprecated.Please use this.shader = new CustomShader();")
-	public var shaderClass(get, set):Class<SpineRenderShader>;
-
-	private var _shaderClass:Class<SpineRenderShader>;
-	private var _shaderVersion:Int = 0;
-
 	#if zygame
 	private var _img:ZImage;
 	#end
-
-	private function get_shaderClass():Class<SpineRenderShader> {
-		if (_shaderClass == null)
-			shaderClass = SpineRenderShader;
-		return _shaderClass;
-	}
-
-	private function set_shaderClass(shader:Class<SpineRenderShader>):Class<SpineRenderShader> {
-		_shaderClass = shader;
-		_shaderVersion++;
-		return shader;
-	}
 
 	/**
 	 * 批渲染对象
@@ -708,12 +687,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.clear();
 		// todo 这里应该只需要一个Shader即可，无需使用过多的相同的Shader
 		var _shader:SpineRenderShader = this.shader == null ? SpineRenderShader.shader : cast this.shader;
-		// var _shader:SpineRenderShader = cast spr.shader;
-		// if (_shader == null || _shader.shaderVersion != _shaderVersion) {
-		// _shader = Type.createInstance(shaderClass, []);
-		// _shader.shaderVersion = _shaderVersion;
-		// spr.shader = _shader;
-		// }
 		#if zygame
 		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
 			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];

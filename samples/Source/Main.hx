@@ -100,15 +100,6 @@ class Main extends Sprite {
 				spriteSpine.play("daiji");
 				spriteSpine.scaleX = 0.6;
 				spriteSpine.scaleY = 0.6;
-				// Lib.setTimeout(function(){
-				// 	spriteSpine.shaderClass = FishSpineShader;
-				// },2000);
-				// Lib.setTimeout(function(){
-				// 	spriteSpine.shaderClass = SpineRenderShader;
-				// },4000);
-				// Lib.setTimeout(function(){
-				// 	spriteSpine.shaderClass = FishSpineShader;
-				// },6000);
 			}
 		}, function(error:String):Void {
 			trace("加载失败：", error);
