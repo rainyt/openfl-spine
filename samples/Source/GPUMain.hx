@@ -1,3 +1,4 @@
+import spine.openfl.SkeletonGPUAnimation;
 import zygame.utils.SpineManager;
 import zygame.utils.load.SpineTextureAtlasLoader;
 import openfl.utils.Assets;
@@ -11,7 +12,7 @@ class GPUMain extends Sprite {
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/sxkCenter.atlas", ["assets/sxkCenter.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// GPU
-			var spriteSpine = textureAtals.buildGPUSpriteSkeleton("sxkCenter", jsonData);
+			var spriteSpine:SkeletonGPUAnimation = textureAtals.buildGPUSpriteSkeleton("sxkCenter", jsonData);
 			this.addChild(spriteSpine);
 			spriteSpine.y = 200;
 			spriteSpine.x = 400;
