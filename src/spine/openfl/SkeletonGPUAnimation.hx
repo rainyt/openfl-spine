@@ -17,7 +17,7 @@ class SkeletonGPUAnimation extends SkeletonGPUSprite {
 	 */
 	private var _currentAnimation:Animation;
 
-	public var timeScale:Float = 0;
+	public var timeScale:Float = 1;
 
 	public var actionName:String = null;
 
@@ -58,6 +58,7 @@ class SkeletonGPUAnimation extends SkeletonGPUSprite {
 
 	private function _advanceTime(time:Float):Void {
 		state.update(time / timeScale);
+		skeleton.update(time / timeScale);
 		state.apply(skeleton);
 		skeleton.updateWorldTransform();
 	}
