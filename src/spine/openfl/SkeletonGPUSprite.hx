@@ -92,6 +92,8 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 
 	private var _isHidden:Bool = false;
 
+	private var _reset:Bool = false;
+
 	public function isHidden():Bool {
 		_isHidden = this.__worldAlpha == 0 || !this.__visible;
 		return _isHidden;
@@ -161,7 +163,16 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 					var bone:Bone = slot.bone;
 
 					// wrapper
-					var m4 = new Matrix4();
+					var tx:Float = bone.getWorldX();
+					var ty:Float = bone.getWorldY();
+					var a:Float = bone.getA();
+					var b:Float = bone.getB();
+					var c:Float = bone.getC();
+					var d:Float = bone.getD();
+
+					var m = new Matrix(a, b, c, d, tx, ty);
+					var m4 = Matrix4.fromMatrix3(@:privateAccess m.__toMatrix3());
+					// var m4 = new Matrix4();
 					// m4.appendRotation(bone.getWorldRotationX(), vector);
 					// m4.appendScale(bone.getWorldScaleX() * (bone.getScaleX() < 0 ? -1 : 1), bone.getWorldScaleY() * (bone.getScaleY() < 0 ? -1 : 1), 0);
 					// m4.appendTranslation(bone.getWorldX(), bone.getWorldY(), 0);
@@ -192,7 +203,8 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 		_shader.a_texcolor.value = allTrianglesColor;
 		_shader.a_darkcolor.value = allTrianglesDarkColor;
 		this.graphics.clear();
-		this.graphics.beginShaderFill(_shader);
+		this.graphics.begin
+		ShaderFill(_shader);
 		this.graphics.drawTriangles(allvertices, alltriangles, alluvs);
 		this.graphics.endFill();
 	}

@@ -39,12 +39,29 @@ class SoltData {
 			vertices = [];
 			var region:RegionAttachment = cast slot.attachment;
 			var atlas:AtlasRegion = cast region.getRegion();
-			vertices = region.getOffset();
+			var offest = region.getOffset();
+			vertices.push(offest[6]);
+			vertices.push(offest[7]);
+			vertices.push(offest[0]);
+			vertices.push(offest[1]);
+			vertices.push(offest[2]);
+			vertices.push(offest[3]);
+			vertices.push(offest[4]);
+			vertices.push(offest[5]);
+			
+
 			trace("vertices=", region.name, vertices);
 
 			// region.computeWorldVertices(slot.bone, vertices, 0, 2);
 			uvs = region.getUVs();
 			triangles = [];
+			// triangles[0] = 0;
+			// triangles[1] = 1;
+			// triangles[2] = 2;
+			// triangles[3] = 2;
+			// triangles[4] = 3;
+			// triangles[5] = 0;
+
 			triangles[0] = 0;
 			triangles[1] = 1;
 			triangles[2] = 2;

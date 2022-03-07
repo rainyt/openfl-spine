@@ -1,0 +1,48 @@
+
+btn_mianfeifuli.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+L_ribbon
+  rotate: false
+  xy: 228, 31
+  size: 47, 39
+  orig: 47, 39
+  offset: 0, 0
+  index: -1
+R_ribbon
+  rotate: false
+  xy: 220, 72
+  size: 48, 53
+  orig: 48, 53
+  offset: 0, 0
+  index: -1
+box
+  rotate: false
+  xy: 127, 37
+  size: 91, 88
+  orig: 91, 88
+  offset: 0, 0
+  index: -1
+btn_bg
+  rotate: false
+  xy: 2, 2
+  size: 123, 123
+  orig: 123, 123
+  offset: 0, 0
+  index: -1
+btn_txt
+  rotate: false
+  xy: 127, 5
+  size: 99, 30
+  orig: 99, 30
+  offset: 0, 0
+  index: -1
+btn_wenhao
+  rotate: false
+  xy: 270, 82
+  size: 26, 43
+  orig: 26, 43
+  offset: 0, 0
+  index: -1
