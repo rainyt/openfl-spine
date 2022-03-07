@@ -39,16 +39,7 @@ class SoltData {
 			vertices = [];
 			var region:RegionAttachment = cast slot.attachment;
 			var atlas:AtlasRegion = cast region.getRegion();
-			// todo 这里不应该解析成正确的坐标，应该为普通的0,0坐标，tile计算好的
-			vertices.push(0);
-			vertices.push(0);
-			vertices.push(atlas.width);
-			vertices.push(0);
-			vertices.push(atlas.width);
-			vertices.push(atlas.height);
-			vertices.push(0);
-			vertices.push(atlas.height);
-
+			vertices = region.getOffset();
 			trace("vertices=", region.name, vertices);
 
 			// region.computeWorldVertices(slot.bone, vertices, 0, 2);

@@ -13,25 +13,26 @@ class GPUMain extends Sprite {
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// GPU
 			// for (i in 0...1000) {
-			// 	var spriteSpine:SkeletonGPUAnimation = textureAtals.buildGPUSpriteSkeleton("sxkCenter", jsonData);
-			// 	this.addChild(spriteSpine);
-			// 	spriteSpine.y = 200;
-			// 	spriteSpine.x = 400;
-			// 	spriteSpine.play("daiji");
-			// 	spriteSpine.scaleX = 0.6;
-			// 	spriteSpine.scaleY = 0.6;
+			var spriteSpine:SkeletonGPUAnimation = textureAtals.buildGPUSpriteSkeleton("sxkCenter", jsonData);
+			this.addChild(spriteSpine);
+			spriteSpine.y = 200;
+			spriteSpine.x = 400;
+			spriteSpine.play("daiji");
+			spriteSpine.scaleX = 0.6;
+			spriteSpine.scaleY = 0.6;
 			// }
 
 			// CPU
 			// for (i in 0...1000) {
-			// 	var spriteSpine = textureAtals.buildSpriteSkeleton("sxkCenter", jsonData);
-			// 	this.addChild(spriteSpine);
-			// 	spriteSpine.y = 200;
-			// 	spriteSpine.x = 200;
-			// 	spriteSpine.play("daiji");
-			// 	spriteSpine.scaleX = 0.6;
-			// 	spriteSpine.scaleY = 0.6;
+			var spriteSpine = textureAtals.buildSpriteSkeleton("sxkCenter", jsonData);
+			this.addChild(spriteSpine);
+			spriteSpine.y = 200;
+			spriteSpine.x = 200;
+			spriteSpine.play("daiji");
+			spriteSpine.scaleX = 0.6;
+			spriteSpine.scaleY = 0.6;
 			// }
+
 		}, function(error:String):Void {
 			trace("加载失败：", error);
 		});

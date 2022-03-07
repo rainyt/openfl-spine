@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import openfl.geom.Matrix;
 import spine.support.graphics.TextureAtlas.AtlasRegion;
 import lime.utils.Float32Array;
 import openfl.Lib;
@@ -158,60 +159,17 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 					var attachment:RegionAttachment = cast slot.attachment;
 					var atlasRegion:AtlasRegion = cast attachment.getRegion();
 					var bone:Bone = slot.bone;
+
+					// wrapper
 					var m4 = new Matrix4();
-					// todo 这里需要实现矩阵实现
-					// tile
-					// var regionHeight:Float = atlasRegion.rotate ? atlasRegion.width : atlasRegion.height;
-					// m4.appendRotation(-attachment.getRotation(), vector);
-					// m4.appendScale(attachment.getScaleX() * (attachment.getWidth() / atlasRegion.width),
-					// 	attachment.getScaleY() * (attachment.getHeight() / atlasRegion.height), 0);
-					// var radians:Float = -attachment.getRotation() * Math.PI / 180;
-					// var cos:Float = Math.cos(radians);
-					// var sin:Float = Math.sin(radians);
-					// var shiftX:Float = -attachment.getWidth() / 2 * attachment.getScaleX();
-					// var shiftY:Float = -attachment.getHeight() / 2 * attachment.getScaleY();
-					// if (atlasRegion.rotate) {
-					// 	m4.appendRotation(90, vector);
-					// 	shiftX += regionHeight * (attachment.getWidth() / atlasRegion.width);
-					// }
-					// m4.appendTranslation(attachment.getX() + shiftX * cos - shiftY * sin, -attachment.getY() + shiftX * sin + shiftY * cos, 0);
+					// m4.appendRotation(bone.getWorldRotationX(), vector);
+					// m4.appendScale(bone.getWorldScaleX() * (bone.getScaleX() < 0 ? -1 : 1), bone.getWorldScaleY() * (bone.getScaleY() < 0 ? -1 : 1), 0);
+					// m4.appendTranslation(bone.getWorldX(), bone.getWorldY(), 0);
 
-					// new tile
-					// m4.appendTranslation(-atlasRegion.width / 2, -atlasRegion.height / 2, 0);
-					if (atlasRegion.rotate) {
-						m4.appendRotation(attachment.getRotation() + 90, vector);
-					} else {
-						m4.appendRotation(attachment.getRotation(), vector);
-					}
-
-					// wrapper
-					m4.appendScale(bone.getWorldScaleX() * (bone.getScaleX() < 0 ? -1 : 1), bone.getWorldScaleY() * (bone.getScaleY() < 0 ? -1 : 1), 0);
-					m4.appendRotation(bone.getWorldRotationX(), vector);
-
-					// new tile
-					m4.appendTranslation(attachment.getX(), attachment.getY(), 0);
-
-					// wrapper
-					m4.appendTranslation(bone.getWorldX(), bone.getWorldY(), 0);
-
-					// m4.appendScale(attachment.getScaleX(), attachment.getScaleY(), 0);
-					// m4.appendRotation(-attachment.getRotation(), new Vector4(0, 0, 1));
-					// if (atlasRegion.rotate) {
-					// 	m4.appendRotation(attachment.getRotation() + 90, new Vector4(0, 0, 1));
-					// } else {
-					// 	m4.appendRotation(attachment.getRotation(), new Vector4(0, 0, 1));
-					// }
-					// m4.appendRotation(slot.bone.getWorldRotationX(), new Vector4(0, 0, 1));
-					// m4.prependScale(slot.bone.getScaleX(), slot.bone.getScaleY(), 1);
-					// m4.appendRotation(slot.bone.getRotation(), vector);
-					// m4.appendTranslation(slot.bone.getX(), slot.bone.getY(), 0);
-					// m4.appendTranslation(slot.bone.getWorldX(), slot.bone.getWorldY(), 0);
 					for (i in 0...16) {
 						bonesMatrix.push(m4[i]);
 					}
 				}
-				// trace(m4);
-				// trace(slot.attachment.name);
 				bondIndex++;
 			}
 		}
