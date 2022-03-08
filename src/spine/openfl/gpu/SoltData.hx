@@ -35,8 +35,16 @@ class SoltData {
 
 	public function new(slot:Slot) {
 		this.slot = slot;
+		this.updateData();
+	}
+
+	/**
+	 * 更新数据
+	 */
+	public function updateData():Void {
+		vertices = [];
+		uvs = [];
 		if (Std.isOfType(slot.attachment, RegionAttachment)) {
-			vertices = [];
 			var region:RegionAttachment = cast slot.attachment;
 			var atlas:AtlasRegion = cast region.getRegion();
 			var offest = region.getOffset();
@@ -48,20 +56,18 @@ class SoltData {
 			vertices.push(offest[3]);
 			vertices.push(offest[4]);
 			vertices.push(offest[5]);
-			
-
-			trace("vertices=", region.name, vertices);
-
 			// region.computeWorldVertices(slot.bone, vertices, 0, 2);
-			uvs = region.getUVs();
-			triangles = [];
-			// triangles[0] = 0;
-			// triangles[1] = 1;
-			// triangles[2] = 2;
-			// triangles[3] = 2;
-			// triangles[4] = 3;
-			// triangles[5] = 0;
+			var u = region.getUVs();
+			uvs.push(u[0]);
+			uvs.push(u[1]);
+			uvs.push(u[2]);
+			uvs.push(u[3]);
+			uvs.push(u[4]);
+			uvs.push(u[5]);
+			uvs.push(u[6]);
+			uvs.push(u[7]);
 
+			triangles = [];
 			triangles[0] = 0;
 			triangles[1] = 1;
 			triangles[2] = 2;

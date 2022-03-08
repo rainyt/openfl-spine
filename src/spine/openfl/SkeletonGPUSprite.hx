@@ -92,7 +92,7 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 
 	private var _isHidden:Bool = false;
 
-	private var _reset:Bool = false;
+	private var _reset:Bool = true;
 
 	public function isHidden():Bool {
 		_isHidden = this.__worldAlpha == 0 || !this.__visible;
@@ -106,56 +106,73 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 
 	public function advanceTime(dt:Float) {}
 
+	var allvertices:Vector<Float>;
+	var alluvs:Vector<Float>;
+	var alltriangles:Vector<Int>;
+	var allTrianglesAlpha:Array<Float>;
+	var allTrianglesBlendMode:Array<Float>;
+	var allTrianglesColor:Array<Float>;
+	var allTrianglesDarkColor:Array<Float>;
+	var allBoneIndex:Array<Float>;
+	var bonesMatrix:Array<Float>;
+	var drawBitmapData:BitmapData = null;
+
 	private function renderGPUAnimate():Void {
 		// 渲染
 		var _shader = SpineGPURenderShader.shader;
 		// todo 这里应该需要处理一下drawOrder循序是否发生变化，如果没有变化，这4个变量都不需要发生变化
-		var allvertices:Vector<Float> = new Vector();
-		var alluvs:Vector<Float> = new Vector();
-		var alltriangles:Vector<Int> = new Vector();
-		var allTrianglesAlpha:Array<Float> = [];
-		var allTrianglesBlendMode:Array<Float> = [];
-		var allTrianglesColor:Array<Float> = [];
-		var allTrianglesDarkColor:Array<Float> = [];
-		var allBoneIndex:Array<Float> = [];
-		var bonesMatrix:Array<Float> = [];
-		var drawBitmapData:BitmapData = null;
+		// _reset = true;
+		if (_reset) {
+			allvertices = new Vector();
+			alluvs = new Vector();
+			alltriangles = new Vector();
+			allTrianglesAlpha = [];
+			allTrianglesBlendMode = [];
+			allTrianglesColor = [];
+			allTrianglesDarkColor = [];
+			allBoneIndex = [];
+			drawBitmapData = null;
+		}
+		bonesMatrix = [];
 		var t = 0;
 		var bondIndex = 0;
 		for (slot in skeleton.drawOrder) {
 			var boneData = _soltDataMaps.get(slot);
+			boneData.updateData();
 			if (boneData != null && boneData.vertices != null) {
-				var verticesCounts = Std.int(boneData.vertices.length / 2);
-				for (f in boneData.vertices) {
-					allvertices.push(f);
-				}
-				for (f in boneData.uvs) {
-					alluvs.push(f);
-				}
-				for (i in boneData.triangles) {
-					alltriangles.push(t + i);
-				}
-				if (drawBitmapData == null && boneData.bitmapData != null) {
-					drawBitmapData = boneData.bitmapData;
-				}
+				if (_reset) {
+					var verticesCounts = Std.int(boneData.vertices.length / 2);
+					for (f in boneData.vertices) {
+						allvertices.push(f);
+					}
+					for (f in boneData.uvs) {
+						alluvs.push(f);
+					}
+					for (i in boneData.triangles) {
+						alltriangles.push(t + i);
+					}
+					if (drawBitmapData == null && boneData.bitmapData != null) {
+						drawBitmapData = boneData.bitmapData;
+					}
 
-				for (i in 0...boneData.triangles.length) {
-					allTrianglesAlpha.push(1);
-					allTrianglesBlendMode.push(0);
+					for (i in 0...boneData.triangles.length) {
+						allTrianglesAlpha.push(1);
+						allTrianglesBlendMode.push(0);
 
-					allTrianglesColor.push(1);
-					allTrianglesColor.push(1);
-					allTrianglesColor.push(1);
-					allTrianglesColor.push(1);
+						allTrianglesColor.push(1);
+						allTrianglesColor.push(1);
+						allTrianglesColor.push(1);
+						allTrianglesColor.push(1);
 
-					allTrianglesDarkColor.push(0);
-					allTrianglesDarkColor.push(0);
-					allTrianglesDarkColor.push(0);
-					allTrianglesDarkColor.push(0);
+						allTrianglesDarkColor.push(0);
+						allTrianglesDarkColor.push(0);
+						allTrianglesDarkColor.push(0);
+						allTrianglesDarkColor.push(0);
 
-					allBoneIndex.push(bondIndex);
+						allBoneIndex.push(bondIndex);
+					}
+					t += Std.int(boneData.uvs.length / 2);
 				}
-				t += Std.int(boneData.uvs.length / 2);
 				// 骨骼数据
 				if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					var attachment:RegionAttachment = cast slot.attachment;
@@ -202,11 +219,14 @@ class SkeletonGPUSprite extends Sprite implements spine.base.SpineBaseDisplay {
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
 		_shader.a_darkcolor.value = allTrianglesDarkColor;
-		this.graphics.clear();
-		this.graphics.begin
-		ShaderFill(_shader);
-		this.graphics.drawTriangles(allvertices, alltriangles, alluvs);
-		this.graphics.endFill();
+		if (_reset) {
+			_reset = false;
+			this.graphics.clear();
+			this.graphics.beginShaderFill(_shader);
+			this.graphics.drawTriangles(allvertices, alltriangles, alluvs);
+			this.graphics.endFill();
+		}
+		this.invalidate();
 	}
 
 	private function onRender(e:RenderEvent):Void {

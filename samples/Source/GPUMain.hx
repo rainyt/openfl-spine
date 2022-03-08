@@ -14,7 +14,7 @@ class GPUMain extends Sprite {
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/" + id + ".atlas", ["assets/" + id + ".png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// GPU
-			for (i in 0...100) {
+			for (i in 0...1) {
 				var spriteSpine:SkeletonGPUAnimation = textureAtals.buildGPUSpriteSkeleton(id, jsonData);
 				this.addChild(spriteSpine);
 				spriteSpine.y = 200;
@@ -25,15 +25,15 @@ class GPUMain extends Sprite {
 			}
 
 			// CPU
-			// for (i in 0...100) {
-			// 	var spriteSpine = textureAtals.buildSpriteSkeleton(id, jsonData);
-			// 	this.addChild(spriteSpine);
-			// 	spriteSpine.y = 200;
-			// 	spriteSpine.x = 200;
-			// 	spriteSpine.play("daiji");
-			// 	spriteSpine.scaleX = 0.6;
-			// 	spriteSpine.scaleY = 0.6;
-			// }
+			for (i in 0...1) {
+				var spriteSpine = textureAtals.buildSpriteSkeleton(id, jsonData);
+				this.addChild(spriteSpine);
+				spriteSpine.y = 200;
+				spriteSpine.x = 200;
+				spriteSpine.play("daiji");
+				spriteSpine.scaleX = 0.6;
+				spriteSpine.scaleY = 0.6;
+			}
 		}, function(error:String):Void {
 			trace("加载失败：", error);
 		});
