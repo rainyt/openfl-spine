@@ -9,6 +9,8 @@ import zygame.utils.StringUtils;
 class BitmapDataTextureLoader implements TextureLoader {
 	private var _bitmapData:Map<String, BitmapData>;
 
+	private var _regions:Map<String, AtlasRegion> = [];
+
 	public function new(bitmapData:Map<String, BitmapData>) {
 		this._bitmapData = bitmapData;
 	}
@@ -22,7 +24,12 @@ class BitmapDataTextureLoader implements TextureLoader {
 		page.height = bitmapData.height;
 	}
 
+	public function getRegionByName(name:String):AtlasRegion {
+		return _regions.get(name);
+	}
+
 	public function loadRegion(region:AtlasRegion):Void {
+		_regions.set(region.name, region);
 		#if !spine4
 		if (region.offsetX == 0 && region.offsetY == 0)
 			return;

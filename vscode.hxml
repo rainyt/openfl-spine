@@ -23,4 +23,5 @@
 -lib KengSDK
 -cp src
 -cp openfl9-source
-# --js bin/main.js
+--js bin/main.js
+--no-output

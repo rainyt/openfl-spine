@@ -1,5 +1,6 @@
 # 1.8.4
 - 删除：删除`shaderClass`的支持，请直接使用shader扩展。
+- 删除：删除`getWidth`的内部实现。
 
 # 1.8.3
 - 新增：新增TintBlack支持。
