@@ -72,7 +72,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * SpriteSpine的平滑支持，默认为false，可设置为true开启平滑支持
 	 */
-	public var smoothing:Bool = false;
+	public var smoothing:Bool = #if !smoothing false #else true #end;
 
 	#if zygame
 	private var _img:ZImage;
