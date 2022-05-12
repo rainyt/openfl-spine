@@ -47,14 +47,19 @@ class SkeletonAnimation extends SkeletonSprite {
 	 */
 	private var _currentAnimation:Animation;
 
-	public function new(skeletonData:SkeletonData, stateData:AnimationStateData = null) {
+	/**
+	 * 构造一个SkeletonAnimation
+	 * @param skeletonData 
+	 * @param stateData 
+	 */
+	public function new(skeletonData:SkeletonData, stateData:AnimationState = null) {
 		super(skeletonData);
 		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
 		skeleton.setScaleY(-1);
 		#end
-		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData) : stateData);
+		state = stateData != null ? stateData : new AnimationState(new AnimationStateData(skeletonData));
 		_advanceTime(0);
 		setSkeletonData(skeletonData);
 	}
@@ -82,6 +87,11 @@ class SkeletonAnimation extends SkeletonSprite {
 		_advanceTime(time);
 	}
 
+	/**
+	 * 在updateWorldTransform调用之前发生
+	 */
+	dynamic public function onUpdateWorldTransformBefore():Void {}
+
 	private function _advanceTime(time:Float):Void {
 		state.update(time / timeScale);
 		// skeleton.update(time / timeScale);
@@ -89,6 +99,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		// skeleton.setTime(0);
 		// }
 		state.apply(skeleton);
+		this.onUpdateWorldTransformBefore();
 		skeleton.updateWorldTransform();
 		super.advanceTime(time);
 	}

@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import openfl.geom.ColorTransform;
 import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
@@ -634,6 +635,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			drawSprite(null, bitmapData);
 	}
 
+	dynamic public function onRenderBefore():Void {}
+
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
 		if (allVerticesArray.length == 0 || allTriangles.length == 0 || allUvs.length == 0) {
 			return;
@@ -699,11 +702,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		_shader.data.bitmap.input = bitmapData;
 		// Smoothing
-		_shader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
 		_shader.a_darkcolor.value = allTrianglesDarkColor;
+		onRenderBefore();
 		spr.graphics.beginShaderFill(_shader);
 		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		spr.graphics.endFill();
