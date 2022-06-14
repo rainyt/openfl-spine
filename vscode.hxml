@@ -23,5 +23,6 @@
 -lib KengSDK
 -cp src
 -cp openfl9-source
+-cp zygame-src
 --js bin/main.js
 --no-output

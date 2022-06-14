@@ -1,5 +1,6 @@
 package zygame.utils.load;
 
+import spine.SkeletonBinary;
 import spine.support.utils.JsonValue;
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
@@ -70,6 +71,8 @@ class SpineTextureAtlasLoader {
 class SpineTextureAtlas {
 	private var _tilemapSkeletonManager:SkeletonJson;
 	private var _spriteSkeletonManager:SkeletonJson;
+	private var _tilemapSkeletonManagerBytes:SkeletonBinary;
+	private var _spriteSkeletonManagerBytes:SkeletonBinary;
 
 	private var _bitmapDatas:Map<String, BitmapData>;
 
@@ -103,7 +106,7 @@ class SpineTextureAtlas {
 	 * 获取Tilemap骨骼管理器
 	 * @return SkeletonJson
 	 */
-	public function getTilemapSkeletonManager():SkeletonJson {
+	public function getTilemapSkeletonManager(isBytes:Bool = false):SkeletonJson {
 		if (_tilemapSkeletonManager == null) {
 			_loader = new spine.tilemap.BitmapDataTextureLoader(_bitmapDatas);
 			var atlas:TextureAtlas = new TextureAtlas(_data, loader);
@@ -116,7 +119,7 @@ class SpineTextureAtlas {
 	 * 获取Sprite骨骼管理器
 	 * @return SkeletonJson
 	 */
-	public function getSpriteSkeletonManager():SkeletonJson {
+	public function getSpriteSkeletonManager(isBytes:Bool = false):SkeletonJson {
 		if (_spriteSkeletonManager == null) {
 			var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader(_bitmapDatas);
 			var atlas:TextureAtlas = new TextureAtlas(_data, loader);
@@ -134,7 +137,7 @@ class SpineTextureAtlas {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
-		
+
 		#if spine4
 		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
 		#else
@@ -211,7 +214,7 @@ class SpineTextureAtlas {
 	 * 生成GPUSprite使用的骨骼动画
 	 * @return spine.openfl.SkeletonGPUAnimation
 	 */
-	 public function buildGPUSpriteSkeleton(id:String, data:String):spine.openfl.SkeletonGPUAnimation {
+	public function buildGPUSpriteSkeleton(id:String, data:String):spine.openfl.SkeletonGPUAnimation {
 		var skeletonData:SkeletonData = buildSpriteSkeletonData(id, data);
 		var skeleton:spine.openfl.SkeletonGPUAnimation = new spine.openfl.SkeletonGPUAnimation(skeletonData);
 		#if zygame

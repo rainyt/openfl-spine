@@ -702,6 +702,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		_shader.data.bitmap.input = bitmapData;
 		// Smoothing
+		_shader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
