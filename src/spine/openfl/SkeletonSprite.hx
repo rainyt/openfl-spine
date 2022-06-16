@@ -560,19 +560,28 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 					bitmapData = cast atlasRegion.page.rendererObject;
 
+					// 新增图片颜色更改支持
+					var tempLightColor = new Color(slot.color.r, slot.color.g, slot.color.b, slot.color.a);
+					if (slot.attachment is MeshAttachment) {
+						var slotAttachmentColor = cast(slot.attachment, MeshAttachment).getColor();
+						tempLightColor.mul(slotAttachmentColor.r, slotAttachmentColor.g, slotAttachmentColor.b, slotAttachmentColor.a);
+					} else if (slot.attachment is RegionAttachment) {
+						var slotAttachmentColor = cast(slot.attachment, RegionAttachment).getColor();
+						tempLightColor.mul(slotAttachmentColor.r, slotAttachmentColor.g, slotAttachmentColor.b, slotAttachmentColor.a);
+					}
+
+					var tempDarkColor = new Color(0, 0, 0, 1);
+					if (slot.data.darkColor != null) {
+						tempDarkColor = slot.darkColor;
+						// 	isBitmapBlendMode = true;
+					}
+
 					// 补充完毕后仍然需要记录
 					for (vi in 0...writeTriangles.length) {
 						// 追加顶点
 						allTriangles[_buffdataPoint] = writeTriangles[vi] + t;
 						// 添加顶点属性
 						allTrianglesAlpha[_buffdataPoint] = slot.color.a * @:privateAccess this.__worldAlpha; // Alpha
-
-						var tempLightColor = slot.color;
-						var tempDarkColor = new Color(0, 0, 0, 1);
-						if (slot.data.darkColor != null) {
-							tempDarkColor = slot.darkColor;
-							// 	isBitmapBlendMode = true;
-						}
 
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:
