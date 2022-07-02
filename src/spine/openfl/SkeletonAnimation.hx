@@ -36,9 +36,6 @@ import spine.SkeletonData;
 import spine.AnimationState;
 import spine.AnimationStateData;
 
-#if test
-@:build(zygame.macro.performance.PerformanceUtils.build())
-#end
 class SkeletonAnimation extends SkeletonSprite {
 	public var state:AnimationState;
 
