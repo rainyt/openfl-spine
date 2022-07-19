@@ -40,6 +40,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public var assetsId:String = null;
 
 	/**
+	 * 最后绘制时间
+	 */
+	public var lastDrawTime:Float = 0;
+
+	/**
 	 * 缓存ID
 	 */
 	public var cacheId(get, never):String;
@@ -237,7 +242,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 当从舞台移除时
 	 */
 	override public function onRemoveToStage():Void {
-		SpineManager.removeOnFrame(this);
+		if (!allowHiddenRender) {
+			SpineManager.removeOnFrame(this);
+		}
 	}
 
 	override public function onAddToStage():Void {
@@ -438,6 +445,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 渲染实现
 	 */
 	private function renderTriangles():Void {
+		if (!this.visible) {
+			return;
+		}
 		var clipper:SkeletonClipping = SkeletonSprite.clipper;
 		clipper.clipEnd(); // 清理遮罩数据
 		_buffdataPoint = 0;
@@ -786,9 +796,30 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return 0;
 	}
 
+	/**
+	 * 允许隐藏状态下渲染
+	 */
+	public var allowHiddenRender(default, set):Bool = false;
+
+	private function set_allowHiddenRender(bool:Bool):Bool {
+		if (this.allowHiddenRender == bool)
+			return bool;
+		this.allowHiddenRender = bool;
+		if (this.allowHiddenRender) {
+			SpineManager.addOnFrame(this);
+		} else {
+			if (this.parent == null) {
+				SpineManager.removeOnFrame(this);
+			}
+		}
+		return bool;
+	}
+
 	private var _isHidden:Bool = false;
 
 	public function isHidden():Bool {
+		if (allowHiddenRender)
+			return false;
 		_isHidden = this.__worldAlpha == 0 || !this.__visible;
 		return _isHidden;
 	}

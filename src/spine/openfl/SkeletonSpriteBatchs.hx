@@ -31,6 +31,11 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 	private var _shader:SpineRenderBatchShader;
 
 	/**
+	 * 最后绘制时间
+	 */
+	public var lastDrawTime:Float = 0;
+
+	/**
 	 * 所有顶点数据
 	 */
 	private var allVerticesArray:Vector<Float> = new Vector<Float>();

@@ -46,9 +46,14 @@ class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 	private var _actionName:String = "";
 
 	/**
+	 * 最后绘制时间
+	 */
+	public var lastDrawTime:Float = 0;
+
+	/**
 	 * 是否为独立运行，不受SpineManager的影响
 	 */
-	 public var independent:Bool = false;
+	public var independent:Bool = false;
 
 	public function isHidden():Bool {
 		return this.alpha == 0 || !this.visible;

@@ -27,4 +27,9 @@ interface SpineBaseDisplay {
 	 * 是否为独立运行，不受SpineManager的影响
 	 */
 	public var independent:Bool;
+
+	/**
+	 * 最后绘制时间
+	 */
+	public var lastDrawTime:Float;
 }
