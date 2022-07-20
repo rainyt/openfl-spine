@@ -145,7 +145,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		}
 		this._currentAnimation = getAnimation(action);
 		super.play(action);
-		_advanceTime(0);
+		// _advanceTime(0);
 	}
 
 	/**
