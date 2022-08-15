@@ -244,6 +244,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	override public function onRemoveToStage():Void {
 		if (!allowHiddenRender) {
 			SpineManager.removeOnFrame(this);
+		} else {
+			trace("Warring:allowHiddenRender is true, not call removeOnFrame.", this.assetsId);
 		}
 	}
 
@@ -512,6 +514,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				}
 				// 裁剪实现
 				if (clipper.isClipping()) {
+					if (triangles == null)
+						continue;
 					clipper.clipTriangles(_tempVerticesArray, _tempVerticesArray.length, triangles, triangles.length, uvs, 1, 1, true);
 					if (clipper.getClippedTriangles().length == 0) {
 						clipper.clipEndWithSlot(slot);
