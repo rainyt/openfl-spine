@@ -584,9 +584,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						tempLightColor.mul(slotAttachmentColor.r, slotAttachmentColor.g, slotAttachmentColor.b, slotAttachmentColor.a);
 					}
 
-					var tempDarkColor = new Color(0, 0, 0, 1);
+					var tempDarkColor = new Color(0, 0, 0, 0);
+					var isDark = false;
 					if (slot.data.darkColor != null) {
-						tempDarkColor = slot.darkColor;
+						tempDarkColor.add(slot.darkColor.r, slot.darkColor.g, slot.darkColor.b, slot.darkColor.a);
+						isDark = true;
 						// 	isBitmapBlendMode = true;
 					}
 
@@ -611,7 +613,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						allTrianglesDarkColor[_buffdataPoint * 4] = tempDarkColor.r;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 1] = tempDarkColor.g;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 2] = tempDarkColor.b;
-						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = 0;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = isDark ? 1 : 0;
 
 						allTrianglesColor[_buffdataPoint * 4] = tempLightColor.r;
 						allTrianglesColor[_buffdataPoint * 4 + 1] = tempLightColor.g;
