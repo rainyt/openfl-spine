@@ -447,7 +447,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 渲染实现
 	 */
 	private function renderTriangles():Void {
-		if (!this.visible) {
+		if (!this.visible || this.stage == null) {
 			return;
 		}
 		var clipper:SkeletonClipping = SkeletonSprite.clipper;
