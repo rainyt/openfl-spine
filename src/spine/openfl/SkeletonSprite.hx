@@ -242,11 +242,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 当从舞台移除时
 	 */
 	override public function onRemoveToStage():Void {
-		if (!allowHiddenRender) {
+		if (!allowHiddenRender)
 			SpineManager.removeOnFrame(this);
-		} else {
+		#if !final
+		else
 			trace("Warring:allowHiddenRender is true, not call removeOnFrame.", this.assetsId);
-		}
+		#end
 	}
 
 	override public function onAddToStage():Void {
