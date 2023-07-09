@@ -38,12 +38,12 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 	/**
 	 * 所有顶点数据
 	 */
-	private var allVerticesArray:Vector<Float> = new Vector<Float>();
+	private var allVerticesArray:Vector<Float> = new Vector<Float>(0, false);
 
 	/**
 	 * 所有三角形数据
 	 */
-	private var allTriangles:Vector<Int> = new Vector<Int>();
+	private var allTriangles:Vector<Int> = new Vector<Int>(0, false);
 
 	/**
 	 * 所有顶点透明属性
@@ -67,7 +67,7 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 	/**
 	 * 所有UV数据
 	 */
-	private var allUvs:Vector<Float> = new Vector<Float>();
+	private var allUvs:Vector<Float> = new Vector<Float>(0, false);
 
 	private var _bitmapData:BitmapData;
 	private var _setXBool:Bool = true;

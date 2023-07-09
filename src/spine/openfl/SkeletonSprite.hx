@@ -131,12 +131,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 所有顶点数据
 	 */
-	private var allVerticesArray:Vector<Float> = new Vector<Float>();
+	private var allVerticesArray:Vector<Float> = new Vector<Float>(0, false);
 
 	/**
 	 * 所有三角形数据
 	 */
-	private var allTriangles:Vector<Int> = new Vector<Int>();
+	private var allTriangles:Vector<Int> = new Vector<Int>(0, false);
 
 	/**
 	 * 所有顶点透明属性
@@ -158,7 +158,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 所有UV数据
 	 */
-	private var allUvs:Vector<Float> = new Vector<Float>();
+	private var allUvs:Vector<Float> = new Vector<Float>(0, false);
 
 	/**
 	 * 顶点数据索引
@@ -469,7 +469,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		this.clearSprite();
 
-		allTriangles = new Vector<Int>();
+		allTriangles = new Vector<Int>(0, false);
 		var t:Int = 0;
 
 		var writeVertices:Array<Float> = null;
@@ -560,12 +560,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						drawSprite(slot, bitmapData);
 
 						// 重置
-						allTriangles = new Vector();
+						allTriangles = new Vector(0, false);
 						allTrianglesAlpha = [];
 						allTrianglesColor = [];
 						allTrianglesDarkColor = [];
-						allVerticesArray = new Vector();
-						allUvs = new Vector();
+						allVerticesArray = new Vector(0, false);
+						allUvs = new Vector(0, false);
 						t = 0;
 						uindex = 0;
 						_buffdataPoint = 0;
@@ -637,12 +637,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					if (isBitmapBlendMode) {
 						drawSprite(slot, bitmapData, true);
 						// 重置
-						allTriangles = new Vector();
+						allTriangles = new Vector(0, false);
 						allTrianglesAlpha = [];
 						allTrianglesColor = [];
 						allTrianglesDarkColor = [];
-						allVerticesArray = new Vector();
-						allUvs = new Vector();
+						allVerticesArray = new Vector(0, false);
+						allUvs = new Vector(0, false);
 						t = 0;
 						uindex = 0;
 						_buffdataPoint = 0;
@@ -758,7 +758,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * @return Vector<Int>
 	 */
 	private function ofArrayInt(data:Array<Int>):Vector<Int> {
-		var v:Vector<Int> = new Vector<Int>();
+		var v:Vector<Int> = new Vector<Int>(0, false);
 		for (i in 0...data.length)
 			v.set(i, data[i]);
 		return v;
@@ -770,7 +770,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * @return Vector<Float>
 	 */
 	private function ofArrayFloat(data:Array<Float>):Vector<Float> {
-		var v:Vector<Float> = new Vector<Float>();
+		var v:Vector<Float> = new Vector<Float>(0, false);
 		for (i in 0...data.length)
 			v.set(i, data[i]);
 		return v;
@@ -827,7 +827,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function isHidden():Bool {
 		if (allowHiddenRender)
 			return false;
-		_isHidden = this.__worldAlpha == 0 || !this.__visible;
+		_isHidden = this.alpha == 0 || !this.visible || this.parent == null || !this.parent.visible || this.parent.parent == null
+			|| !this.parent.parent.visible || this.parent.parent.parent == null || !this.parent.parent.parent.visible;
 		return _isHidden;
 	}
 }
