@@ -1,6 +1,6 @@
 package zygame.utils.load;
 
-import spine.SkeletonBinary;
+// import spine.SkeletonBinary;
 import spine.support.utils.JsonValue;
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
@@ -71,8 +71,8 @@ class SpineTextureAtlasLoader {
 class SpineTextureAtlas {
 	private var _tilemapSkeletonManager:SkeletonJson;
 	private var _spriteSkeletonManager:SkeletonJson;
-	private var _tilemapSkeletonManagerBytes:SkeletonBinary;
-	private var _spriteSkeletonManagerBytes:SkeletonBinary;
+	// private var _tilemapSkeletonManagerBytes:SkeletonBinary;
+	// private var _spriteSkeletonManagerBytes:SkeletonBinary;
 
 	private var _bitmapDatas:Map<String, BitmapData>;
 
@@ -210,20 +210,20 @@ class SpineTextureAtlas {
 		return skeleton;
 	}
 
-	/**
-	 * 生成GPUSprite使用的骨骼动画
-	 * @return spine.openfl.SkeletonGPUAnimation
-	 */
-	public function buildGPUSpriteSkeleton(id:String, data:String):spine.openfl.SkeletonGPUAnimation {
-		var skeletonData:SkeletonData = buildSpriteSkeletonData(id, data);
-		var skeleton:spine.openfl.SkeletonGPUAnimation = new spine.openfl.SkeletonGPUAnimation(skeletonData);
-		#if zygame
-		skeleton.assetsId = this.id + ":" + id;
-		#else
-		// skeleton.assetsId = id + Md5.encode(data);
-		#end
-		return skeleton;
-	}
+	// /**
+	//  * 生成GPUSprite使用的骨骼动画
+	//  * @return spine.openfl.SkeletonGPUAnimation
+	//  */
+	// public function buildGPUSpriteSkeleton(id:String, data:String):spine.openfl.SkeletonGPUAnimation {
+	// 	var skeletonData:SkeletonData = buildSpriteSkeletonData(id, data);
+	// 	var skeleton:spine.openfl.SkeletonGPUAnimation = new spine.openfl.SkeletonGPUAnimation(skeletonData);
+	// 	#if zygame
+	// 	skeleton.assetsId = this.id + ":" + id;
+	// 	#else
+	// 	// skeleton.assetsId = id + Md5.encode(data);
+	// 	#end
+	// 	return skeleton;
+	// }
 
 	/**
 	 * 卸载
