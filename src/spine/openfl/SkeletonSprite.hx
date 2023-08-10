@@ -663,6 +663,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 	dynamic public function onRenderBefore():Void {}
 
+	/**
+	 * 是否启动颜色过渡期
+	 */
+	public var colorTransformEnable:Bool = false;
+
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
 		if (allVerticesArray.length == 0 || allTriangles.length == 0 || allUvs.length == 0) {
 			return;
@@ -716,6 +721,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.clear();
 		// todo 这里应该只需要一个Shader即可，无需使用过多的相同的Shader
 		var _shader:SpineRenderShader = this.shader == null ? SpineRenderShader.shader : cast this.shader;
+
 		#if zygame
 		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
 			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
@@ -733,6 +739,23 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
 		_shader.a_texcolor.value = allTrianglesColor;
 		_shader.a_darkcolor.value = allTrianglesDarkColor;
+		if (colorTransformEnable && this.transform.colorTransform != null) {
+			_shader.u_hasColorTransform.value = [true];
+			_shader.u_colorMultiplier.value = [
+				this.transform.colorTransform.redMultiplier,
+				this.transform.colorTransform.blueMultiplier,
+				this.transform.colorTransform.greenMultiplier,
+				1
+			];
+			_shader.u_colorOffset.value = [
+				this.transform.colorTransform.redOffset / 255,
+				this.transform.colorTransform.blueOffset / 255,
+				this.transform.colorTransform.greenOffset / 255,
+				this.transform.colorTransform.alphaOffset / 255
+			];
+		}else{
+			_shader.u_hasColorTransform.value = [false];
+		}
 		onRenderBefore();
 		spr.graphics.beginShaderFill(_shader);
 		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
