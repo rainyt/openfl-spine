@@ -53,11 +53,6 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 
 	@:varying public var muldarkcolor:Vec4;
 
-	/**
-	 * 透明度
-	 */
-	@:uniform public var malpha:Float;
-
 	@:uniform public var hasColorTransform:Bool;
 
 	@:uniform public var colorOffset:Vec4;
@@ -87,19 +82,17 @@ class SpineRenderShader extends OpenFLGraphicsShader {
 			color = clamp(colorOffset + (color * p_colorMultiplier), 0.0, 1.0);
 			if (color.a > 0.0) {
 				gl_FragColor = vec4(color.rgb * color.a * gl_openfl_Alphav, color.a * gl_openfl_Alphav);
+				gl_FragColor = gl_FragColor * alphaBlendMode.x;
+				gl_FragColor.a = gl_FragColor.a * (1. - alphaBlendMode.y);
+				gl_FragColor.rgb = (gl_FragColor.rgb * mulcolor.rgb + ((1. - gl_FragColor.rgb) * muldarkcolor.rgb * mulcolor.rgb) * gl_FragColor.a);
 			} else {
 				gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
 			}
 		} else {
 			gl_FragColor = color * gl_openfl_Alphav;
-		}
-		gl_FragColor = color * alphaBlendMode.x;
-		gl_FragColor.a = gl_FragColor.a * (1. - alphaBlendMode.y);
-		gl_FragColor.rgb = (gl_FragColor.rgb * mulcolor.rgb + ((1. - gl_FragColor.rgb) * muldarkcolor.rgb * mulcolor.rgb) * gl_FragColor.a);
-		if (gl_openfl_HasColorTransform) {
-			gl_FragColor = gl_FragColor * 0.5;
-		} else {
-			gl_FragColor = gl_FragColor * malpha;
+			gl_FragColor = gl_FragColor * alphaBlendMode.x;
+			gl_FragColor.a = gl_FragColor.a * (1. - alphaBlendMode.y);
+			gl_FragColor.rgb = (gl_FragColor.rgb * mulcolor.rgb + ((1. - gl_FragColor.rgb) * muldarkcolor.rgb * mulcolor.rgb) * gl_FragColor.a);
 		}
 	}
 

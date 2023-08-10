@@ -722,16 +722,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		// todo 这里应该只需要一个Shader即可，无需使用过多的相同的Shader
 		var _shader:SpineRenderShader = this.shader == null ? SpineRenderShader.shader : cast this.shader;
 
-		#if zygame
-		if (Std.isOfType(this.parent, zygame.components.ZSpine)) {
-			_shader.data.u_malpha.value = [this.parent.alpha * this.alpha];
-		} else {
-			_shader.data.u_malpha.value = [this.alpha];
-		}
-		#else
-		_shader.data.u_malpha.value = [this.alpha];
-		#end
-
 		_shader.data.bitmap.input = bitmapData;
 		// Smoothing
 		_shader.data.bitmap.filter = smoothing ? LINEAR : NEAREST;
