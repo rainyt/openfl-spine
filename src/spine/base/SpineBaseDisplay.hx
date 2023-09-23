@@ -32,4 +32,8 @@ interface SpineBaseDisplay {
 	 * 最后绘制时间
 	 */
 	public var lastDrawTime:Float;
+
+	#if zygame
+	public var customData:Dynamic;
+	#end
 }
