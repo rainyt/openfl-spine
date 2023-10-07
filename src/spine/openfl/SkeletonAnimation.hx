@@ -92,8 +92,9 @@ class SkeletonAnimation extends SkeletonSprite {
 	dynamic public function onUpdateWorldTransformBefore():Void {}
 
 	private function _advanceTime(time:Float):Void {
-		var outTime = getMaxTime() - skeleton.time;
-		state.update(Math.min(outTime, time / timeScale));
+		state.update(time / timeScale);
+		// var outTime = getMaxTime() - skeleton.time;
+		// state.update(Math.min(outTime, time / timeScale));
 		// skeleton.update(time / timeScale);
 		// if (skeleton.time > getMaxTime()) {
 		// skeleton.setTime(0);
