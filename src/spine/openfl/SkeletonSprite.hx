@@ -237,6 +237,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		advanceTime(dt);
 	}
 
+	/**
+	 * 自动启动帧事件更新
+	 */
+	public var autoOnFrame = true;
+
 	#if zygame
 	/**
 	 * 当从舞台移除时
@@ -251,7 +256,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	override public function onAddToStage():Void {
-		SpineManager.addOnFrame(this);
+		if (autoOnFrame)
+			SpineManager.addOnFrame(this);
 	}
 	#else
 
@@ -263,7 +269,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	public function onAddToStage(_):Void {
-		SpineManager.addOnFrame(this);
+		if (autoOnFrame)
+			SpineManager.addOnFrame(this);
 	}
 	#end
 
@@ -284,7 +291,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 播放
 	 */
 	public function play(action:String = null, loop:Bool = true):Void {
-		SpineManager.addOnFrame(this);
+		if (autoOnFrame)
+			SpineManager.addOnFrame(this);
 		_isPlay = true;
 		if (action != null)
 			_actionName = action;
@@ -733,17 +741,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			_shader.u_hasColorTransform.value = [true];
 			_shader.u_colorMultiplier.value = [
 				this.transform.colorTransform.redMultiplier,
-				this.transform.colorTransform.blueMultiplier,
 				this.transform.colorTransform.greenMultiplier,
+				this.transform.colorTransform.blueMultiplier,
 				1
 			];
 			_shader.u_colorOffset.value = [
 				this.transform.colorTransform.redOffset / 255,
-				this.transform.colorTransform.blueOffset / 255,
 				this.transform.colorTransform.greenOffset / 255,
+				this.transform.colorTransform.blueOffset / 255,
 				this.transform.colorTransform.alphaOffset / 255
 			];
-		}else{
+		} else {
 			_shader.u_hasColorTransform.value = [false];
 		}
 		onRenderBefore();
@@ -826,7 +834,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			return bool;
 		this.allowHiddenRender = bool;
 		if (this.allowHiddenRender) {
-			SpineManager.addOnFrame(this);
+			if (autoOnFrame)
+				SpineManager.addOnFrame(this);
 		} else {
 			if (this.parent == null) {
 				SpineManager.removeOnFrame(this);
