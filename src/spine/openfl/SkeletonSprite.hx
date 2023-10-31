@@ -1,14 +1,11 @@
 package spine.openfl;
 
-import openfl.geom.ColorTransform;
 import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
-import openfl.geom.Matrix;
 import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
-import openfl.display.Sprite;
 import openfl.display3D.Context3DTextureFilter;
 #if zygame
 import zygame.display.DisplayObjectContainer;
@@ -23,9 +20,7 @@ import spine.Slot;
 import spine.support.graphics.TextureAtlas;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.Color;
-import openfl.events.Event;
 import spine.openfl.SkeletonSpriteBatchs;
-import spine.utils.VectorUtils;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import zygame.utils.SpineManager;
