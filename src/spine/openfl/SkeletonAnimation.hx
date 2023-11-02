@@ -93,9 +93,6 @@ class SkeletonAnimation extends SkeletonSprite {
 
 	private function _advanceTime(time:Float):Void {
 		time = time / timeScale;
-		if (time == 0) {
-			return;
-		}
 		state.update(time);
 		state.apply(skeleton);
 		this.onUpdateWorldTransformBefore();
