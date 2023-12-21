@@ -614,9 +614,9 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 								allTrianglesBlendMode[_buffdataPoint] = 0;
 						}
 
-						allTrianglesDarkColor[_buffdataPoint * 4] = tempDarkColor.r;
-						allTrianglesDarkColor[_buffdataPoint * 4 + 1] = tempDarkColor.g;
-						allTrianglesDarkColor[_buffdataPoint * 4 + 2] = tempDarkColor.b;
+						allTrianglesDarkColor[_buffdataPoint * 4] = tempDarkColor.r * tempDarkColor.a;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 1] = tempDarkColor.g * tempDarkColor.a;
+						allTrianglesDarkColor[_buffdataPoint * 4 + 2] = tempDarkColor.b * tempDarkColor.a;
 						allTrianglesDarkColor[_buffdataPoint * 4 + 3] = isDark ? 1 : 0;
 
 						allTrianglesColor[_buffdataPoint * 4] = tempLightColor.r;
