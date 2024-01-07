@@ -1,3 +1,7 @@
+# 1.8.8
+- 修复：修复`drakColor`的表现；
+- 新增：新增`drakColor.a`透明度的支持；
+
 # 1.8.4
 - 删除：删除`shaderClass`的支持，请直接使用shader扩展。
 - 删除：删除`getWidth`的内部实现。

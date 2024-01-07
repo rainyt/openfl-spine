@@ -5,7 +5,7 @@
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
   "version": "1.8.8",
-  "releasenote": "New Spine4 support.",
+  "releasenote": "Improve darkColor.",
   "contributors": ["rainy"],
   "classPath": "src",
   "dependencies": {
