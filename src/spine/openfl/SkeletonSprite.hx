@@ -211,8 +211,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_colors = new Array<Int>();
 
 		#if !zygame
-		this.addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
-		this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoveToStage);
+		this.addEventListener(openfl.events.Event.ADDED_TO_STAGE, onAddToStage);
+		this.addEventListener(openfl.events.Event.Event.REMOVED_FROM_STAGE, onRemoveToStage);
 		#end
 
 		// this.addEventListener(Event.)

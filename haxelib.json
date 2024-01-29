@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
-  "version": "1.8.8",
+  "version": "1.8.9",
   "releasenote": "Improve darkColor.",
   "contributors": ["rainy"],
   "classPath": "src",
