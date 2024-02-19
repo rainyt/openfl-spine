@@ -174,8 +174,8 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 	/**
 	 * 缓存模式：
-	 * TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
-	 * GL_BITMAP：使用GL缓冲区位图的形式进行缓存，可能会提高一定的内存。(暂需要zygameui库支持)
+	 * - TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
+	 * - GL_BITMAP：使用GL缓冲区位图的形式进行缓存，可能会提高一定的内存。(暂需要zygameui库支持)
 	 */
 	public var cacheMode:CacheMode = TRIANGLES;
 
@@ -472,7 +472,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 		this.clearSprite();
 
-		allTriangles = new Vector<Int>(0, false);
+		allTriangles.length = 0;
 		var t:Int = 0;
 
 		var writeVertices:Array<Float> = null;
@@ -561,14 +561,13 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						if (_spritePool == null)
 							continue;
 						drawSprite(slot, bitmapData);
-
 						// 重置
-						allTriangles = new Vector(0, false);
-						allTrianglesAlpha = [];
-						allTrianglesColor = [];
-						allTrianglesDarkColor = [];
-						allVerticesArray = new Vector(0, false);
-						allUvs = new Vector(0, false);
+						allTriangles.length = 0;
+						allTrianglesAlpha.resize(0);
+						allTrianglesColor.resize(0);
+						allTrianglesDarkColor.resize(0);
+						allVerticesArray.length = 0;
+						allUvs.length = 0;
 						t = 0;
 						uindex = 0;
 						_buffdataPoint = 0;
@@ -640,12 +639,12 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					if (isBitmapBlendMode) {
 						drawSprite(slot, bitmapData, true);
 						// 重置
-						allTriangles = new Vector(0, false);
-						allTrianglesAlpha = [];
-						allTrianglesColor = [];
-						allTrianglesDarkColor = [];
-						allVerticesArray = new Vector(0, false);
-						allUvs = new Vector(0, false);
+						allTriangles.length = 0;
+						allTrianglesAlpha.resize(0);
+						allTrianglesColor.resize(0);
+						allTrianglesDarkColor.resize(0);
+						allVerticesArray.length = 0;
+						allUvs.length = 0;
 						t = 0;
 						uindex = 0;
 						_buffdataPoint = 0;
