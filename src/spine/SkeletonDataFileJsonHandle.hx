@@ -4,6 +4,7 @@ import spine.support.utils.JsonValue;
 import haxe.Json;
 import spine.support.utils.JsonValue.JsonDynamic;
 
+#if (spine_hx>='3.8.2')
 /**
  * 需要使用Github中的rainyt/spine-hx 3.8分支支持
  */
@@ -29,3 +30,4 @@ class SkeletonDataFileJsonHandle implements spine.support.files.JsonFileHandle {
 		return new JsonDynamic(_data);
 	}
 }
+#end

@@ -286,6 +286,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 播放
 	 */
 	public function play(action:String = null, loop:Bool = true):Void {
+		// TODO 是否有必要存在呢？
 		if (autoOnFrame)
 			SpineManager.addOnFrame(this);
 		_isPlay = true;
