@@ -84,22 +84,41 @@ class Main extends Sprite {
 		});
 		#else
 		// Sprite
-		var jsonData:String = Assets.getText("assets/test1.json");
-		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
+		// var jsonData:String = Assets.getText("assets/test1.json");
+		// var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
+		// spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
+		// 	// Sprite格式
+		// 	var batch = new SkeletonSpriteBatchs();
+		// 	this.addChild(batch);
+		// 	for (i in 0...100) {
+		// 		var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
+		// 		batch.addChild(spriteSpine);
+		// 		spriteSpine.isCache = true;
+		// 		trace("spriteSpine.isCache=", spriteSpine.isCache);
+		// 		spriteSpine.y = 400 * Math.random();
+		// 		spriteSpine.x = Math.random() * stage.stageWidth;
+		// 		spriteSpine.play("daiji");
+		// 		spriteSpine.scaleX = 0.6;
+		// 		spriteSpine.scaleY = 0.6;
+		// 	}
+		// }, function(error:String):Void {
+		// 	trace("加载失败：", error);
+		// });
+
+		var spineJsonData:String = Assets.getText("assets/unrote_cut/fx_saltCow2_skill.json");
+		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/unrote_cut/fx_saltCow2_skill.atlas", ["assets/unrote_cut/fx_saltCow2_skill.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite格式
-			var batch = new SkeletonSpriteBatchs();
-			this.addChild(batch);
-			for (i in 0...100) {
-				var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
-				batch.addChild(spriteSpine);
+			for (i in 0...30) {
+				var spriteSpine = textureAtals.buildSpriteSkeleton("fx_saltCow2_skill", spineJsonData);
 				spriteSpine.isCache = true;
 				trace("spriteSpine.isCache=", spriteSpine.isCache);
-				spriteSpine.y = 400 * Math.random();
-				spriteSpine.x = Math.random() * stage.stageWidth;
-				spriteSpine.play("daiji");
-				spriteSpine.scaleX = 0.6;
-				spriteSpine.scaleY = 0.6;
+				spriteSpine.y = Std.random(stage.stageWidth);
+				spriteSpine.x = Std.random(stage.stageWidth);
+				spriteSpine.play("idle");
+				spriteSpine.skeleton.setSkinByName("blue");
+				this.addChild(spriteSpine);
+				spriteSpine.scaleX = spriteSpine.scaleY = 0.5;
 			}
 		}, function(error:String):Void {
 			trace("加载失败：", error);

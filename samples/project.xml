@@ -3,15 +3,15 @@
 	
 	<meta title="ZYGameEngineHaxe" package="com.sample.zygameenginehaxe" version="1.0.0" company="Company Name" />
 	<!-- GPU -->
-	<app main="GPUMain" path="Export" file="ZYGameEngineHaxe" />
+	<!-- <app main="GPUMain" path="Export" file="ZYGameEngineHaxe" /> -->
 	<!-- CPU -->
-	<!-- <app main="Main" path="Export" file="ZYGameEngineHaxe" /> -->
+	<app main="Main" path="Export" file="ZYGameEngineHaxe" />
 	
 	<template path="templates"/>
 
 	<haxedef name="lime"/>
 
-	<!-- <define name="spine3.8"/> -->
+	<define name="spine3.8"/>
 
 	<!-- <define name="spine3.8" if="spine38"/> -->
 

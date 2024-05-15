@@ -449,10 +449,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	/**
+	 * 离屏渲染模式
+	 */
+	public var offscreenRender:Bool = false;
+
+	/**
 	 * 渲染实现
 	 */
 	private function renderTriangles():Void {
-		if (!this.visible || this.stage == null) {
+		if (!offscreenRender && (!this.visible || this.stage == null)) {
 			return;
 		}
 		var clipper:SkeletonClipping = SkeletonSprite.clipper;

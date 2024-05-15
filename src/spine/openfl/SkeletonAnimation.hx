@@ -96,6 +96,8 @@ class SkeletonAnimation extends SkeletonSprite {
 		if (time > 0) {
 			state.update(time);
 		}
+		// 避免没有事件回调
+		// @:privateAccess state.queue.drainDisabled = false;
 		state.apply(skeleton);
 		this.onUpdateWorldTransformBefore();
 		skeleton.updateWorldTransform();
