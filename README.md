@@ -1,3 +1,6 @@
+# V2.0.0
+从2.0.0版本开始，将重构整个Spine的缓存机制，可能会产生一定的API变更。
+
 # openfl-spine
 - 可在OpenFL引擎中渲染Spine动画的使用库，可通过Sprite、Tilemap实现渲染处理。
 - The library can be used to render Spine animation in the OpenFL engine, and the rendering processing can be achieved through Sprite and Tilemap.
