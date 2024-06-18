@@ -1,22 +1,17 @@
 package spine.openfl;
 
+import openfl.display.Sprite;
+import openfl.display.Shape;
 import openfl.Vector;
 
 /**
  * Spine的动画数据缓存
  */
 class SpineCacheData {
+	/**
+	 * 已缓存的精灵数据
+	 */
 	private var _cache:Map<String, Array<SpineCacheFrameData>> = [];
-
-	#if zygame
-	public var glBitmapData:zygame.utils.load.DynamicTextureLoader.DynamicTextureAtlas;
-
-	public function getGLBitmapData():zygame.utils.load.DynamicTextureLoader.DynamicTextureAtlas {
-		if (glBitmapData == null)
-			glBitmapData = new zygame.utils.load.DynamicTextureLoader.DynamicTextureAtlas();
-		return glBitmapData;
-	}
-	#end
 
 	public function new() {}
 

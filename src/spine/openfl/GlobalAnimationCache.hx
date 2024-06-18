@@ -25,11 +25,6 @@ class GlobalAnimationCache {
 	public static function clearCacheByID(id:String):Void {
 		if (cacheMaps.exists(id)) {
 			var cacheData = cacheMaps.get(id);
-			#if zygame
-			if (cacheData.glBitmapData != null) {
-				cacheData.glBitmapData.dispose();
-			}
-			#end
 			cacheMaps.remove(id);
 		}
 	}

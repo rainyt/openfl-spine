@@ -355,26 +355,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 							return;
 						}
 					} else {
-						// GLBITMAP缓存
-						#if zygame
-						if (_img == null) {
-							_img = new ZImage();
-						}
-						var glBitmaps = cacheData.getGLBitmapData();
-						var cacheData2 = glBitmaps.getBitmapDataFrame("f" + id);
-						if (cacheData2 != null) {
-							clearSprite();
-							this.addChild(_img);
-							_img.visible = true;
-							_img.dataProvider = cacheData2;
-							_img.scale(1 / glBitmaps.scale);
-							// _img.alpha = 0.5;
-							return;
-						}
-						// _img.visible = false;
-						#else
-						throw "Not support GL_BITMAP, need use `zygameui` engine lib.";
-						#end
+						throw "Not support GL_BITMAP, this is deprecated.";
 					}
 				}
 			}
@@ -681,27 +662,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			return;
 		}
 
-		// 缓存
-		var datas:SpineCacheData = null;
-		var frameid:Null<Int> = null;
-		if (isCache) {
-			frameid = __getCurrentFrameId();
-			datas = GlobalAnimationCache.getCacheByID(this.cacheId);
-			if (cacheMode == TRIANGLES) {
-				if (datas.getFrame(actionName, frameid) == null) {
-					var frame = new SpineCacheFrameData();
-					frame.allTriangles = allTriangles.copy();
-					frame.allUvs = allUvs.copy();
-					frame.allVerticesArray = allVerticesArray.copy();
-					frame.allTrianglesAlpha = allTrianglesAlpha.copy();
-					frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
-					frame.allTrianglesColor = allTrianglesColor.copy();
-					frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
-					datas.addFrame(actionName, frameid, frame);
-				}
-			}
-		}
-
 		// 往批处理上传数据
 		if (batchs != null) {
 			batchs.uploadBuffData(this, allVerticesArray, this.allTriangles, this.allUvs, this.allTrianglesColor, this.allTrianglesBlendMode,
@@ -761,16 +721,24 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shape.addChild(spr);
 		spr.visible = true;
 
-		#if zygame
-		if (isCache && cacheMode == GL_BITMAP) {
-			// GLBITMAP缓存
-			var glBitmaps = datas.getGLBitmapData();
-			if (glBitmaps.getBitmapDataFrame("f" + frameid) == null) {
-				// 进行缓存
-				glBitmaps.putSprite("f" + frameid, this);
+		// 缓存
+		if (isCache) {
+			var frameid = __getCurrentFrameId();
+			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
+			if (cacheMode == TRIANGLES) {
+				if (datas.getFrame(actionName, frameid) == null) {
+					var frame = new SpineCacheFrameData();
+					frame.allTriangles = allTriangles.copy();
+					frame.allUvs = allUvs.copy();
+					frame.allVerticesArray = allVerticesArray.copy();
+					frame.allTrianglesAlpha = allTrianglesAlpha.copy();
+					frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
+					frame.allTrianglesColor = allTrianglesColor.copy();
+					frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
+					datas.addFrame(actionName, frameid, frame);
+				}
 			}
 		}
-		#end
 	}
 
 	/**

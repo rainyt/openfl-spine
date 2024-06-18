@@ -182,6 +182,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		var current = state.getCurrent(0);
 		if (current == null || state.tracks.length > 1)
 			return -1;
-		return Std.int(current.trackTime % _currentAnimation.duration / _currentAnimation.duration * Std.int(_currentAnimation.duration * 60));
+		// 缓存仅保留12帧
+		return Std.int(current.trackTime % _currentAnimation.duration / _currentAnimation.duration * Std.int(_currentAnimation.duration * 12));
 	}
 }
