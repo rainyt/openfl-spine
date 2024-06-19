@@ -76,5 +76,10 @@ class SpineCacheFrameData {
 	 */
 	public var allUvs:Vector<Float>;
 
+	/**
+	 * 缓存图形
+	 */
+	public var shape:Shape;
+
 	public function new() {}
 }
