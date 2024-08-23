@@ -66,7 +66,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		}
 		#if zygame
 		// 批渲染帧
-		var frame = new Frame();
+		var frame = new Frame(null);
 		frame.x = rect.x;
 		frame.y = rect.y;
 		frame.width = rect.width;
