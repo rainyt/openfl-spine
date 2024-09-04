@@ -1,6 +1,7 @@
 package spine.tilemap;
 
 #if zygame
+import zygame.utils.load.Atlas;
 import zygame.utils.load.Frame;
 #end
 import spine.support.graphics.TextureAtlas;
@@ -16,6 +17,10 @@ class BitmapDataTextureLoader implements TextureLoader {
 	private var _bitmapData:Map<String, BitmapData>;
 
 	private var _tileset:Tileset;
+
+	#if zygame
+	private var _atlas:Atlas;
+	#end
 
 	private var _atlasRegionMaps:Map<String, AtlasRegion>;
 
@@ -41,6 +46,9 @@ class BitmapDataTextureLoader implements TextureLoader {
 		if (bitmapData == null)
 			throw("BitmapData not found with name: " + path);
 		_tileset = new Tileset(bitmapData);
+		#if zygame
+		_atlas = new Atlas(_tileset);
+		#end
 		_ids = new Map<AtlasRegion, Int>();
 		_atlasRegionMaps = [];
 		// _widths = [];
@@ -66,7 +74,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		}
 		#if zygame
 		// 批渲染帧
-		var frame = new Frame(null);
+		var frame = new Frame(_atlas);
 		frame.x = rect.x;
 		frame.y = rect.y;
 		frame.width = rect.width;
