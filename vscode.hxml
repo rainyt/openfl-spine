@@ -3,7 +3,8 @@
 --library zygameui-api
 --library openfl
 --library lime
---library spine-hx
+# --library spine-hx
+--library spine-haxe
 --library castle
 --library hscript
 --library tweenxcore

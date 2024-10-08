@@ -1,7 +1,6 @@
 package spine.events;
 
-import spine.AnimationState.AnimationStateListener;
-import spine.AnimationState.TrackEntry;
+import spine.animation.TrackEntry;
 import spine.Event;
 import openfl.events.EventDispatcher;
 import openfl.events.Event in OpenFLEvent;

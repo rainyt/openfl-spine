@@ -1,7 +1,6 @@
 package spine.events;
 
-import spine.AnimationState.AnimationStateListener;
-import spine.AnimationState.TrackEntry;
+import spine.animation.TrackEntry;
 import spine.Event;
 import openfl.events.EventDispatcher;
 import openfl.events.Event in OpenFLEvent;
@@ -9,7 +8,7 @@ import openfl.events.Event in OpenFLEvent;
 /**
  * 动画事件实现
  */
-class AnimationEvent extends EventDispatcher implements AnimationStateListener{
+class AnimationEvent extends EventDispatcher {
 
     /** Invoked when this entry has been set as the current entry. */
     public function start(entry:TrackEntry):Void

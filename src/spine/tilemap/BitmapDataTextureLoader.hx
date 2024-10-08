@@ -4,9 +4,9 @@ package spine.tilemap;
 import zygame.utils.load.Atlas;
 import zygame.utils.load.Frame;
 #end
-import spine.support.graphics.TextureAtlas;
+import spine.atlas.TextureAtlas;
+import spine.atlas.TextureLoader;
 import openfl.display.BitmapData;
-import spine.support.graphics.TextureLoader;
 import openfl.display.Tileset;
 import openfl.geom.Rectangle;
 import zygame.utils.StringUtils;

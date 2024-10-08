@@ -2,7 +2,7 @@ package spine.openfl;
 
 import openfl.display.Shape;
 import spine.openfl.SpineCacheData.SpineCacheFrameData;
-import spine.utils.SkeletonClipping;
+import spine.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
 import openfl.display.TriangleCulling;
@@ -18,10 +18,9 @@ import spine.attachments.MeshAttachment;
 import spine.Skeleton;
 import spine.SkeletonData;
 import spine.Slot;
-import spine.support.graphics.TextureAtlas;
+import spine.atlas.TextureAtlas;
 import spine.attachments.RegionAttachment;
-import spine.support.graphics.Color;
-import spine.openfl.SkeletonSpriteBatchs;
+import spine.Color;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import zygame.utils.SpineManager;
@@ -79,11 +78,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	#if zygame
 	private var _img:ZImage;
 	#end
-
-	/**
-	 * 批渲染对象
-	 */
-	public var batchs:SkeletonSpriteBatchs;
 
 	/**
 	 * 坐标数组

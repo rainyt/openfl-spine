@@ -32,8 +32,8 @@ package spine.tilemap;
 
 import spine.events.AnimationEvent;
 import spine.SkeletonData;
-import spine.AnimationState;
-import spine.AnimationStateData;
+import spine.animation.AnimationState;
+import spine.animation.AnimationStateData;
 
 class SkeletonAnimation extends SkeletonSprite {
 	#if zygame

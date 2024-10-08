@@ -10,9 +10,9 @@ import openfl.geom.ColorTransform;
 import openfl.display.Tile;
 import openfl.display.TileContainer;
 import spine.attachments.RegionAttachment;
-import spine.support.graphics.Color;
+import spine.Color;
 import openfl.display.BitmapData;
-import spine.support.graphics.TextureAtlas.AtlasRegion;
+import spine.atlas.TextureAtlas.AtlasRegion;
 import spine.base.SpineBaseDisplay;
 
 /**

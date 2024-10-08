@@ -1,8 +1,8 @@
 package spine.openfl;
 
-import spine.support.graphics.TextureAtlas;
+import spine.atlas.TextureAtlas;
 import openfl.display.BitmapData;
-import spine.support.graphics.TextureLoader;
+import spine.atlas.TextureLoader;
 import zygame.utils.StringUtils;
 
 @:keep
