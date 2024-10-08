@@ -6,7 +6,6 @@ import zygame.utils.load.Frame;
 #end
 import spine.support.graphics.TextureAtlas;
 import openfl.display.BitmapData;
-import openfl.Assets;
 import spine.support.graphics.TextureLoader;
 import openfl.display.Tileset;
 import openfl.geom.Rectangle;
