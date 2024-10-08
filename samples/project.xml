@@ -11,15 +11,6 @@
 
 	<haxedef name="lime"/>
 
-	<define name="spine3.8"/>
-
-	<!-- <define name="spine3.8" if="spine38"/> -->
-
-	<!-- Spine4 -->
-	<!-- <define name="spine4"/> -->
-
-	
-
 	<assets path="Assets" rename="assets"/>
 	
 	<haxelib name="openfl"/>

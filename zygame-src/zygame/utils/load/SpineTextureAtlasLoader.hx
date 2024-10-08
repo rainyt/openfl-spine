@@ -1,16 +1,12 @@
 package zygame.utils.load;
 
-// import spine.SkeletonBinary;
-import spine.support.utils.JsonValue;
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
 import openfl.Assets;
-// import zygame.utils.AssetsUtils in Assets;
 import spine.SkeletonJson;
 import spine.attachments.AtlasAttachmentLoader;
-import spine.support.graphics.TextureAtlas;
+import spine.atlas.TextureAtlas;
 import spine.SkeletonData;
-import spine.SkeletonDataFileHandle;
 import zygame.utils.StringUtils;
 
 /**
@@ -71,8 +67,6 @@ class SpineTextureAtlasLoader {
 class SpineTextureAtlas {
 	private var _tilemapSkeletonManager:SkeletonJson;
 	private var _spriteSkeletonManager:SkeletonJson;
-	// private var _tilemapSkeletonManagerBytes:SkeletonBinary;
-	// private var _spriteSkeletonManagerBytes:SkeletonBinary;
 
 	private var _bitmapDatas:Map<String, BitmapData>;
 
@@ -137,12 +131,7 @@ class SpineTextureAtlas {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
-
-		#if spine4
-		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
-		#else
-		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(new SkeletonDataFileHandle(null, data));
-		#end
+		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(data);
 		_skeletonData.set(id, skeletonData);
 		return skeletonData;
 	}
@@ -157,11 +146,7 @@ class SpineTextureAtlas {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
-		#if spine4
-		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
-		#else
-		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(new SkeletonDataFileHandle(null, data));
-		#end
+		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(data);
 		_skeletonData.set(id, skeletonData);
 		return skeletonData;
 	}

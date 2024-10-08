@@ -8,7 +8,6 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.utils.Assets;
 import zygame.utils.load.SpineTextureAtlasLoader;
-import spine.openfl.SkeletonSpriteBatchs;
 
 /**
  * SpineDemo
@@ -83,28 +82,6 @@ class Main extends Sprite {
 			trace("加载失败：", error);
 		});
 		#else
-		// Sprite
-		// var jsonData:String = Assets.getText("assets/test1.json");
-		// var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
-		// spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
-		// 	// Sprite格式
-		// 	var batch = new SkeletonSpriteBatchs();
-		// 	this.addChild(batch);
-		// 	for (i in 0...100) {
-		// 		var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
-		// 		batch.addChild(spriteSpine);
-		// 		spriteSpine.isCache = true;
-		// 		trace("spriteSpine.isCache=", spriteSpine.isCache);
-		// 		spriteSpine.y = 400 * Math.random();
-		// 		spriteSpine.x = Math.random() * stage.stageWidth;
-		// 		spriteSpine.play("daiji");
-		// 		spriteSpine.scaleX = 0.6;
-		// 		spriteSpine.scaleY = 0.6;
-		// 	}
-		// }, function(error:String):Void {
-		// 	trace("加载失败：", error);
-		// });
-
 		var spineJsonData:String = Assets.getText("assets/unrote_cut/fx_saltCow2_skill.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/unrote_cut/fx_saltCow2_skill.atlas", ["assets/unrote_cut/fx_saltCow2_skill.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {

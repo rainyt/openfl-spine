@@ -4,11 +4,7 @@
 	<source path="src" />
 	<source path="zygame-src" unless="zygame"/>
 	<!-- Spine锁定版本3.8.1 -->
-	<haxelib name="spine-hx" version="3.8.2" if="spine3.8" unless="spine4" />
-	<haxelib name="spine-hx" version="3.6.0" unless="spine3.8 || spine4" />
-	<haxelib name="spine-hx" version="4.0.2" if="spine4" />
+	<haxelib name="spine-haxe" />
 	<haxelib name="openfl-glsl" />
-	<haxedef name="spine38" if="spine3.8" unless="spine4" />
-	<haxedef name="spine4" if="spine4" />
 
 </project>

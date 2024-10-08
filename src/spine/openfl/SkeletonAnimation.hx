@@ -30,6 +30,7 @@
 
 package spine.openfl;
 
+import spine.animation.Animation;
 import spine.events.SpineEvent;
 import spine.events.AnimationEvent;
 import spine.SkeletonData;

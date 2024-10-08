@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import spine.atlas.TextureAtlasRegion;
 import openfl.display.Shape;
 import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.SkeletonClipping;
@@ -109,7 +110,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 顶点缓存
 	 */
-	private var _trianglesVector:Map<AtlasRegion, Vector<Int>>;
+	private var _trianglesVector:Map<TextureAtlasRegion, Vector<Int>>;
 
 	/**
 	 * 精灵表垃圾池
@@ -163,6 +164,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 是否使用缓存渲染，如果使用缓存渲染，如果使用换成渲染，则无法正常使用过渡动画
 	 */
+	@:deprecated("Spine4.2后不再支持isCache属性")
 	public var isCache(get, set):Bool;
 
 	private var _isCache:Bool = false;
@@ -172,6 +174,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * - TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
 	 * - SHAPE：将每个Sprite的形象进行缓存，使用时直接使用图形数据
 	 */
+	@:deprecated("Spine4.2后不再支持cacheMode属性")
 	public var cacheMode:CacheMode = TRIANGLES;
 
 	private function set_isCache(value:Bool):Bool {
@@ -193,7 +196,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		super();
 
 		skeleton = new Skeleton(skeletonData);
-		skeleton.updateWorldTransform();
+		skeleton.updateWorldTransform(Physics.update);
 
 		_tempVerticesArray = new Array<Float>();
 		_quadTriangles = new Array<Int>();
@@ -215,7 +218,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shape = new Sprite();
 		this.addChild(_shape);
 
-		_trianglesVector = new Map<AtlasRegion, Vector<Int>>();
+		_trianglesVector = new Map<TextureAtlasRegion, Vector<Int>>();
 
 		this.mouseChildren = false;
 	}
@@ -334,33 +337,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		if (isCache) {
-			if (__getChange()) {
-				GlobalAnimationCache.clearCacheByID(this.cacheId);
-				_lastAlpha = @:privateAccess this.__worldAlpha;
-			} else {
-				var id = __getCurrentFrameId();
-				if (id != -1) {
-					// 检查是否存在缓存
-					var cacheData = GlobalAnimationCache.getCacheByID(cacheId);
-					switch cacheMode {
-						case TRIANGLES:
-							var cacheData2 = cacheData.getFrame(this.actionName, id);
-							if (cacheData2 != null) {
-								this.renderCacheTriangles(cacheData2);
-								return;
-							}
-						case SHAPE:
-							var cacheData2 = cacheData.getFrame(this.actionName, id);
-							if (cacheData2 != null) {
-								this.renderCacheShape(cacheData2);
-								return;
-							}
-					}
-				}
-			}
-		}
-
 		renderTriangles();
 	}
 
@@ -370,52 +346,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.copyFrom(data.shape.graphics);
 		_shape.addChild(spr);
 		spr.visible = true;
-	}
-
-	/**
-	 * 渲染缓存三角形，使用isCache=true时可正常使用
-	 */
-	private function renderCacheTriangles(data:SpineCacheFrameData):Void {
-		clearSprite();
-		if (_cacheBitmapData == null) {
-			for (slot in skeleton.drawOrder) {
-				var region:AtlasRegion = null;
-				if (Std.isOfType(slot.attachment, RegionAttachment)) {
-					region = cast cast(slot.attachment, RegionAttachment).getRegion();
-				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
-					region = cast cast(slot.attachment, MeshAttachment).getRegion();
-				}
-				if (region != null)
-					_cacheBitmapData = region.page.rendererObject;
-				if (_cacheBitmapData != null)
-					break;
-			}
-		}
-		var oldTriangles = this.allTriangles;
-		var oldTrianglesAlpha = this.allTrianglesAlpha;
-		var oldTrianglesBlendMode = this.allTrianglesBlendMode;
-		var oldTrianglesColor = this.allTrianglesColor;
-		var oldTrianglesDarkColor = this.allTrianglesDarkColor;
-		var oldUvs = this.allUvs;
-		var oldVerticesArray = this.allVerticesArray;
-
-		this.allTriangles = data.allTriangles;
-		this.allTrianglesAlpha = data.allTrianglesAlpha;
-		this.allTrianglesBlendMode = data.allTrianglesBlendMode;
-		this.allTrianglesColor = data.allTrianglesColor;
-		this.allTrianglesDarkColor = data.allTrianglesDarkColor;
-		this.allUvs = data.allUvs;
-		this.allVerticesArray = data.allVerticesArray;
-
-		drawSprite(null, _cacheBitmapData);
-
-		this.allTriangles = oldTriangles;
-		this.allTrianglesAlpha = oldTrianglesAlpha;
-		this.allTrianglesBlendMode = oldTrianglesBlendMode;
-		this.allTrianglesColor = oldTrianglesColor;
-		this.allTrianglesDarkColor = oldTrianglesDarkColor;
-		this.allUvs = oldUvs;
-		this.allVerticesArray = oldVerticesArray;
 	}
 
 	private var _lastAlpha:Float = 1;
@@ -458,7 +388,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		var triangles:Array<Int> = null;
 		var uvs:Array<Float> = null;
 		var verticesLength:Int = 0;
-		var atlasRegion:AtlasRegion;
+		var atlasRegion:TextureAtlasRegion;
 		var slot:Slot;
 		// var r:Float = 0, g:Float = 0, b:Float = 0, a:Float = 0;
 		var bitmapData:BitmapData = null;
@@ -498,29 +428,29 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
 					verticesLength = 8;
-					region.computeWorldVertices(slot.bone, _tempVerticesArray, 0, 2);
-					uvs = region.getUVs();
+					region.computeWorldVertices(slot, _tempVerticesArray, 0, 2);
+					uvs = region.uvs;
 					triangles = _quadTriangles;
-					atlasRegion = cast region.getRegion();
+					atlasRegion = cast region.region;
 				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
 					verticesLength = 8;
-					region.computeWorldVertices(slot, 0, region.getWorldVerticesLength(), _tempVerticesArray, 0, 2);
-					uvs = region.getUVs();
-					triangles = region.getTriangles();
-					atlasRegion = cast region.getRegion();
+					region.computeWorldVertices(slot, 0, region.worldVerticesLength, _tempVerticesArray, 0, 2);
+					uvs = region.uvs;
+					triangles = region.triangles;
+					atlasRegion = cast region.region;
 				}
 				// 裁剪实现
 				if (clipper.isClipping()) {
 					if (triangles == null)
 						continue;
-					clipper.clipTriangles(_tempVerticesArray, _tempVerticesArray.length, triangles, triangles.length, uvs, 1, 1, true);
-					if (clipper.getClippedTriangles().length == 0) {
+					clipper.clipTriangles(_tempVerticesArray, triangles, triangles.length, uvs);
+					if (clipper.clippedTriangles.length == 0) {
 						clipper.clipEndWithSlot(slot);
 						continue;
 					} else {
-						var clippedVertices = clipper.getClippedVertices();
+						var clippedVertices = clipper.clippedVertices;
 						writeVertices = [];
 						uvs = [];
 						var i = 0;
@@ -533,7 +463,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 							if (i >= clippedVertices.length)
 								break;
 						}
-						writeTriangles = clipper.getClippedTriangles();
+						writeTriangles = clipper.clippedTriangles;
 					}
 				} else {
 					writeVertices = _tempVerticesArray;
@@ -542,13 +472,13 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 				// 矩形绘制
 				if (atlasRegion != null) {
-					if (bitmapData != null && (bitmapData != atlasRegion.page.rendererObject)) {
+					if (bitmapData != null && (bitmapData != atlasRegion.page.texture)) {
 						isFill = true;
 					} else if ((slot.data.blendMode != BlendMode.additive && slot.data.blendMode != BlendMode.normal)) {
 						isBitmapBlendMode = true;
 						isFill = true;
 					} else {
-						bitmapData = cast atlasRegion.page.rendererObject;
+						bitmapData = cast atlasRegion.page.texture;
 					}
 
 					// 如果是可以填充
@@ -570,16 +500,18 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 						isFill = false;
 					}
 
-					bitmapData = cast atlasRegion.page.rendererObject;
+					bitmapData = cast atlasRegion.page.texture;
 
 					// 新增图片颜色更改支持
 					var tempLightColor = new Color(slot.color.r, slot.color.g, slot.color.b, slot.color.a);
 					if (slot.attachment is MeshAttachment) {
-						var slotAttachmentColor = cast(slot.attachment, MeshAttachment).getColor();
-						tempLightColor.mul(slotAttachmentColor.r, slotAttachmentColor.g, slotAttachmentColor.b, slotAttachmentColor.a);
+						var slotAttachmentColor = cast(slot.attachment, MeshAttachment).color;
+						tempLightColor.set(tempLightColor.r * slotAttachmentColor.r, tempLightColor.g * slotAttachmentColor.g,
+							tempLightColor.b * slotAttachmentColor.b, tempLightColor.a * slotAttachmentColor.a);
 					} else if (slot.attachment is RegionAttachment) {
-						var slotAttachmentColor = cast(slot.attachment, RegionAttachment).getColor();
-						tempLightColor.mul(slotAttachmentColor.r, slotAttachmentColor.g, slotAttachmentColor.b, slotAttachmentColor.a);
+						var slotAttachmentColor = cast(slot.attachment, RegionAttachment).color;
+						tempLightColor.set(tempLightColor.r * slotAttachmentColor.r, tempLightColor.g * slotAttachmentColor.g,
+							tempLightColor.b * slotAttachmentColor.b, tempLightColor.a * slotAttachmentColor.a);
 					}
 
 					var tempDarkColor = new Color(0, 0, 0, 0);
@@ -667,13 +599,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
 		if (allVerticesArray.length == 0 || allTriangles.length == 0 || allUvs.length == 0) {
-			return;
-		}
-
-		// 往批处理上传数据
-		if (batchs != null) {
-			batchs.uploadBuffData(this, allVerticesArray, this.allTriangles, this.allUvs, this.allTrianglesColor, this.allTrianglesBlendMode,
-				this.allTrianglesAlpha);
 			return;
 		}
 

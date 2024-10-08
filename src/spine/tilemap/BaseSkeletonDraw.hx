@@ -12,7 +12,7 @@ import openfl.display.TileContainer;
 import spine.attachments.RegionAttachment;
 import spine.Color;
 import openfl.display.BitmapData;
-import spine.atlas.TextureAtlas.AtlasRegion;
+import spine.atlas.TextureAtlasRegion;
 import spine.base.SpineBaseDisplay;
 
 /**
@@ -54,7 +54,7 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 
 		var drawOrder:Array<Slot> = skeleton.drawOrder;
 		var n:Int = drawOrder.length;
-		var atlasRegion:AtlasRegion;
+		var atlasRegion:TextureAtlasRegion;
 		var bitmapData:BitmapData = null;
 		var slot:Slot;
 		var skeletonColor:Color;
@@ -73,8 +73,8 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 				if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
-					regionColor = region.getColor();
-					atlasRegion = cast region.getRegion();
+					regionColor = region.color;
+					atlasRegion = cast region.region;
 
 					// 矩形绘制
 					if (atlasRegion != null) {
@@ -101,42 +101,42 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 
 						var regionHeight:Float = atlasRegion.rotate ? atlasRegion.width : atlasRegion.height;
 
-						tile.rotation = -region.getRotation();
-						tile.scaleX = region.getScaleX() * (region.getWidth() / atlasRegion.width);
-						tile.scaleY = region.getScaleY() * (region.getHeight() / atlasRegion.height);
+						tile.rotation = -region.rotation;
+						tile.scaleX = region.scaleX * (region.width / atlasRegion.width);
+						tile.scaleY = region.scaleY * (region.height / atlasRegion.height);
 
-						var radians:Float = -region.getRotation() * Math.PI / 180;
+						var radians:Float = -region.rotation * Math.PI / 180;
 						var cos:Float = Math.cos(radians);
 						var sin:Float = Math.sin(radians);
-						var shiftX:Float = -region.getWidth() / 2 * region.getScaleX();
-						var shiftY:Float = -region.getHeight() / 2 * region.getScaleY();
+						var shiftX:Float = -region.width / 2 * region.scaleX;
+						var shiftY:Float = -region.height / 2 * region.scaleY;
 						if (atlasRegion.rotate) {
 							tile.rotation += 90;
-							shiftX += regionHeight * (region.getWidth() / atlasRegion.width);
+							shiftX += regionHeight * (region.width / atlasRegion.width);
 						}
 
-						tile.x = region.getX() + shiftX * cos - shiftY * sin;
-						tile.y = -region.getY() + shiftX * sin + shiftY * cos;
+						tile.x = region.x + shiftX * cos - shiftY * sin;
+						tile.y = -region.y + shiftX * sin + shiftY * cos;
 
 						var bone:Bone = slot.bone;
-						wrapper.x = bone.getWorldX();
-						wrapper.y = bone.getWorldY();
-						wrapper.rotation = bone.getWorldRotationX();
-						if (bone.getScaleX() < 0)
+						wrapper.x = bone.worldX;
+						wrapper.y = bone.worldY;
+						wrapper.rotation = bone.worldRotationX;
+						if (bone.scaleX < 0)
 							wrapper.rotation -= 180;
-						wrapper.scaleX = bone.getWorldScaleX() * (bone.getScaleX() < 0 ? -1 : 1);
-						wrapper.scaleY = bone.getWorldScaleY() * (bone.getScaleY() < 0 ? -1 : 1);
+						wrapper.scaleX = bone.worldScaleX * (bone.scaleX < 0 ? -1 : 1);
+						wrapper.scaleY = bone.worldScaleY * (bone.scaleY < 0 ? -1 : 1);
 						this.addTile(wrapper);
 
 						// 色值处理
 						if (!disableColor) {
-							wrapper.alpha = slot.color.a * skeleton.color.a * region.getColor().a;
+							wrapper.alpha = slot.color.a * skeleton.color.a * region.color.a;
 							if (wrapper.colorTransform == null) {
 								wrapper.colorTransform = new ColorTransform();
 							}
-							wrapper.colorTransform.greenMultiplier = slot.color.r * skeleton.color.r * region.getColor().r;
-							wrapper.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * region.getColor().g;
-							wrapper.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * region.getColor().b;
+							wrapper.colorTransform.greenMultiplier = slot.color.r * skeleton.color.r * region.color.r;
+							wrapper.colorTransform.greenMultiplier = slot.color.g * skeleton.color.g * region.color.g;
+							wrapper.colorTransform.blueMultiplier = slot.color.b * skeleton.color.b * region.color.b;
 						}
 						switch (slot.data.blendMode) {
 							case BlendMode.additive:

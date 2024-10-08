@@ -1,5 +1,7 @@
 package spine.tilemap;
 
+import spine.atlas.TextureAtlasPage;
+import spine.atlas.TextureAtlasRegion;
 #if zygame
 import zygame.utils.load.Atlas;
 import zygame.utils.load.Frame;
@@ -21,9 +23,9 @@ class BitmapDataTextureLoader implements TextureLoader {
 	private var _atlas:Atlas;
 	#end
 
-	private var _atlasRegionMaps:Map<String, AtlasRegion>;
+	private var _atlasRegionMaps:Map<String, TextureAtlasRegion>;
 
-	private var _ids:Map<AtlasRegion, Int>;
+	private var _ids:Map<TextureAtlasRegion, Int>;
 
 	// private var _widths:Map<AtlasRegion, Float>;
 
@@ -40,7 +42,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		this._bitmapData = bitmapDatas;
 	}
 
-	public function loadPage(page:AtlasPage, path:String):Void {
+	public function loadPage(page:TextureAtlasPage, path:String):Void {
 		var bitmapData:BitmapData = this._bitmapData.get(StringUtils.getName(path));
 		if (bitmapData == null)
 			throw("BitmapData not found with name: " + path);
@@ -48,7 +50,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		#if zygame
 		_atlas = new Atlas(_tileset);
 		#end
-		_ids = new Map<AtlasRegion, Int>();
+		_ids = new Map<TextureAtlasRegion, Int>();
 		_atlasRegionMaps = [];
 		// _widths = [];
 		page.rendererObject = this;
@@ -56,7 +58,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		page.height = bitmapData.height;
 	}
 
-	public function loadRegion(region:AtlasRegion):Void {
+	public function loadRegion(region:TextureAtlasRegion):Void {
 		var regionWidth:Int = region.rotate ? region.height : region.width;
 		var regionHeight:Int = region.rotate ? region.width : region.height;
 		// _widths.set(region, region.width);
@@ -90,12 +92,12 @@ class BitmapDataTextureLoader implements TextureLoader {
 		#end
 	}
 
-	public function getRegionByName(name:String):AtlasRegion {
+	public function getRegionByName(name:String):TextureAtlasRegion {
 		return _atlasRegionMaps.get(name);
 	}
 
 	#if zygame
-	public function getFrameByRegion(region:AtlasRegion):Dynamic {
+	public function getFrameByRegion(region:TextureAtlasRegion):Dynamic {
 		return frameMapsIds.get(getID(region));
 	}
 	#end
@@ -106,15 +108,11 @@ class BitmapDataTextureLoader implements TextureLoader {
 	 * @return Int
 	 */
 	@:keep
-	public function getID(region:AtlasRegion):Int {
+	public function getID(region:TextureAtlasRegion):Int {
 		return _ids.get(region);
 	}
 
-	// public function getWidth(region:AtlasRegion):Float {
-	// 	return _widths.get(region);
-	// }
-
-	public function getRectByID(id:Int):Rectangle {
+	public function getRectByID(id:Int):TextureAtlasRegion {
 		return _tileset.getRect(id);
 	}
 
@@ -122,7 +120,7 @@ class BitmapDataTextureLoader implements TextureLoader {
 		return _tileset;
 	}
 
-	public function unloadPage(page:AtlasPage):Void {
+	public function unloadPage(page:TextureAtlasPage):Void {
 		_tileset.bitmapData.dispose();
 		#if zygame
 		frameMapsIds = null;
