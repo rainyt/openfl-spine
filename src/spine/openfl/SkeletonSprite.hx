@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import openfl.display.Bitmap;
 import spine.atlas.TextureAtlasRegion;
 import openfl.display.Shape;
 import spine.openfl.SpineCacheData.SpineCacheFrameData;
@@ -426,16 +427,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 				} else if (Std.isOfType(slot.attachment, RegionAttachment)) {
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
+					_tempVerticesArray = [];
 					region.computeWorldVertices(slot, _tempVerticesArray, 0, 2);
 					uvs = region.uvs;
-					triangles = _quadTriangles;
+					triangles = _quadTriangles.copy();
 					atlasRegion = cast region.region;
 				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
 					region.computeWorldVertices(slot, 0, region.worldVerticesLength, _tempVerticesArray, 0, 2);
 					uvs = region.uvs;
-					triangles = region.triangles;
+					triangles = region.triangles.copy();
 					atlasRegion = cast region.region;
 				}
 				// 裁剪实现
@@ -654,21 +656,59 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		spr.graphics.endFill();
 		_shape.addChild(spr);
 		spr.visible = true;
-		if (spr.numChildren == 0) {
-			var s = new Sprite();
-			s.graphics.beginFill(0xff0000, 1);
-			s.graphics.drawCircle(0, 0, 10);
-			// trace("draw", allVerticesArray, allTriangles);
-			// s.graphics.drawTriangles(allVerticesArray, allTriangles);
-			s.graphics.endFill();
-			spr.addChild(s);
-			s.x = slot.bone.worldX;
-			s.y = slot.bone.worldY;
-		} else {
-			var s = spr.getChildAt(0);
-			s.x = slot.bone.worldX;
-			s.y = slot.bone.worldY;
+		spr.removeChildren();
+		var counts = Std.int(allVerticesArray.length / 2);
+		// for (i in 0...counts) {
+		// 	var s = new Sprite();
+		// 	s.graphics.beginFill(0xff0000);
+		// 	s.graphics.drawRect(allVerticesArray[i * 2], allVerticesArray[i * 2 + 1], 10, 10);
+		// 	s.graphics.endFill();
+		// 	spr.addChild(s);
+		// 	break;
+		// }
+		// if (counts == 4) {
+		var quad = new Sprite();
+		quad.graphics.beginShaderFill(_shader);
+		// quad.graphics.beginFill(0xff0000,0.5);
+		// quad.graphics.beginBitmapFill(bitmapData);
+		var t = new Vector<Float>();
+		for (f in allVerticesArray) {
+			t.push(f);
 		}
+		// t.push(allVerticesArray[0]);
+		// t.push(allVerticesArray[1]);
+		// t.push(allVerticesArray[2]);
+		// t.push(allVerticesArray[3]);
+		// t.push(allVerticesArray[4]);
+		// t.push(allVerticesArray[5]);
+		// t.push(allVerticesArray[6]);
+		// t.push(allVerticesArray[7]);
+		var t2 = new Vector();
+		// t2.push(allTriangles[0]);
+		// t2.push(allTriangles[1]);
+		// t2.push(allTriangles[2]);
+		// t2.push(allTriangles[3]);
+		// t2.push(allTriangles[4]);
+		// t2.push(allTriangles[5]);
+		for (i in allTriangles) {
+			t2.push(i);
+		}
+		var u3 = new Vector();
+		// u3.push(allUvs[0]);
+		// u3.push(allUvs[1]);
+		// u3.push(allUvs[2]);
+		// u3.push(allUvs[3]);
+		// u3.push(allUvs[4]);
+		// u3.push(allUvs[5]);
+		// u3.push(allUvs[6]);
+		// u3.push(allUvs[7]);
+		for (f in allUvs) {
+			u3.push(f);
+		}
+		quad.graphics.drawTriangles(t, t2, u3);
+		quad.graphics.endFill();
+		spr.addChild(quad);
+		// }
 	}
 
 	/**
