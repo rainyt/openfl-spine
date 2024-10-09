@@ -17,7 +17,7 @@
 	<haxelib name="openfl-spine"/>
 	<source path="Source" />
 
-	<!-- <window allow-high-dpi="true" /> -->
+	<window allow-high-dpi="true" />
 	<haxedef name="gl_stats"/>
 
 	<!-- <haxelib name="qqplaycore"/> -->

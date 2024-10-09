@@ -65,7 +65,6 @@ class SkeletonAnimation extends SkeletonSprite {
 	private function _advanceTime(time:Float) {
 		state.update(time / timeScale);
 		state.apply(skeleton);
-		skeleton.updateWorldTransform(Physics.update);
 		super.advanceTime(time);
 	}
 

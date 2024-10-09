@@ -122,6 +122,7 @@ class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 		if (!_isPlay)
 			return;
 		skeleton.update(delta * timeScale);
+		skeleton.updateWorldTransform(Physics.update);
 		renderTriangles();
 	}
 

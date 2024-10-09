@@ -1,5 +1,6 @@
 package;
 
+import spine.Physics;
 import openfl.Vector;
 import openfl.display.Bitmap;
 import spine.shader.SpineRenderShader;
@@ -24,17 +25,20 @@ class Main extends Sprite {
 		stage.color = 0xbbbbbb;
 		SpineManager.init(stage);
 
-		var jsonData:String = Assets.getText("assets/snowglobe-pro.json");
-		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/snowglobe-pro.atlas", ["assets/snowglobe-pro.png"]);
+		var spineName = "snowglobe-pro";
+		// var spineName = "ORole";
+		var jsonData:String = Assets.getText('assets/$spineName.json');
+		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader('assets/$spineName.atlas', ['assets/$spineName.png']);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite
 			var bmd = new Bitmap(@:privateAccess textureAtals._bitmapDatas.iterator().next());
 			// this.addChild(bmd);
-			var spine = textureAtals.buildSpriteSkeleton("snowglobe-pro", jsonData);
+			var spine = textureAtals.buildSpriteSkeleton(spineName, jsonData);
 			this.addChild(spine);
 			spine.y = stage.stageHeight / 2;
 			spine.x = stage.stageWidth / 2;
-			spine.play("idle");
+			// spine.play("eyeblink");
+			spine.play("shake");
 			spine.scaleX = 0.2;
 			spine.scaleY = 0.2;
 
