@@ -53,25 +53,26 @@ class BitmapDataTextureLoader implements TextureLoader {
 		_ids = new Map<TextureAtlasRegion, Int>();
 		_atlasRegionMaps = [];
 		// _widths = [];
-		page.rendererObject = this;
+		page.texture = this;
 		page.width = bitmapData.width;
 		page.height = bitmapData.height;
 	}
 
 	public function loadRegion(region:TextureAtlasRegion):Void {
-		var regionWidth:Int = region.rotate ? region.height : region.width;
-		var regionHeight:Int = region.rotate ? region.width : region.height;
+		var rotate = region.degrees != 0;
+		var regionWidth:Int = rotate ? region.height : region.width;
+		var regionHeight:Int = rotate ? region.width : region.height;
 		// _widths.set(region, region.width);
 		_atlasRegionMaps.set(region.name, region);
 		var rect = new Rectangle(region.x, region.y, regionWidth, regionHeight);
 		var id:Int = _tileset.addRect(rect);
 		_ids.set(region, id);
-		if (!region.rotate) {
-			region.width = region.packedWidth;
-			region.height = region.packedHeight;
+		if (!rotate) {
+			region.width = region.originalWidth;
+			region.height = region.originalHeight;
 		} else {
-			region.height = region.packedWidth;
-			region.width = region.packedHeight;
+			region.height = region.originalWidth;
+			region.width = region.originalHeight;
 		}
 		#if zygame
 		// 批渲染帧
@@ -80,12 +81,12 @@ class BitmapDataTextureLoader implements TextureLoader {
 		frame.y = rect.y;
 		frame.width = rect.width;
 		frame.height = rect.height;
-		if (region.rotate) {
+		if (rotate) {
 			frame.width = rect.height;
 			frame.height = rect.width;
 		}
 		frame.name = region.name;
-		frame.rotate = region.rotate;
+		frame.rotate = rotate;
 		frame.id = id;
 		frameMaps.set(region.name, frame);
 		frameMapsIds.set(id, frame);
@@ -113,7 +114,9 @@ class BitmapDataTextureLoader implements TextureLoader {
 	}
 
 	public function getRectByID(id:Int):TextureAtlasRegion {
-		return _tileset.getRect(id);
+		// return _tileset.getRect(id);
+		// TODO 这里丢失了类？
+		return null;
 	}
 
 	public function getTileset():Tileset {

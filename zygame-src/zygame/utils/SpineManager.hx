@@ -83,10 +83,7 @@ class SpineManager {
 	 */
 	public static function addOnFrame(s:SpineBaseDisplay):Void {
 		if (spineOnFrames.indexOf(s) == -1)
-			if (Std.isOfType(s, spine.openfl.SkeletonSpriteBatchs))
-				spineOnFrames.push(s);
-			else
-				spineOnFrames.insert(0, s);
+			spineOnFrames.insert(0, s);
 	}
 
 	/**

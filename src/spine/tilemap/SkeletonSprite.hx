@@ -61,7 +61,7 @@ class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 
 	public function new(skeletonData:SkeletonData) {
 		super(new Skeleton(skeletonData));
-		this.skeleton.updateWorldTransform();
+		this.skeleton.updateWorldTransform(Physics.update);
 		#if zygame
 		this.mouseChildren = false;
 		#end

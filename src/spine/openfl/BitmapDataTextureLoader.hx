@@ -21,21 +21,22 @@ class BitmapDataTextureLoader implements TextureLoader {
 		var bitmapData:BitmapData = this._bitmapData.get(StringUtils.getName(path));
 		if (bitmapData == null)
 			throw("BitmapData not found with name: " + path);
-		page.rendererObject = bitmapData;
+		page.texture = bitmapData;
 		page.width = bitmapData.width;
 		page.height = bitmapData.height;
 	}
 
-	public function getRegionByName(name:String):AtlasRegion {
+	public function getRegionByName(name:String):TextureAtlasRegion {
 		return _regions.get(name);
 	}
 
-	public function loadRegion(region:AtlasRegion):Void {
+	public function loadRegion(region:TextureAtlasRegion):Void {
 		_regions.set(region.name, region);
 		#if !spine4
 		if (region.offsetX == 0 && region.offsetY == 0)
 			return;
-		if (region.rotate) {
+		var rotate = region.degrees != 0;
+		if (rotate) {
 			var v1:Int = region.width;
 			region.width = region.height;
 			region.height = v1;
@@ -44,31 +45,31 @@ class BitmapDataTextureLoader implements TextureLoader {
 			region.originalHeight = region.originalWidth;
 			region.originalWidth = v1;
 
-			v1 = region.packedHeight;
-			region.packedHeight = region.packedWidth;
-			region.packedWidth = v1;
+			v1 = region.originalHeight;
+			region.originalHeight = region.originalWidth;
+			region.originalWidth = v1;
 		}
-		if (region.originalWidth == region.packedWidth
-			&& region.originalHeight == region.packedHeight
-			|| (region.width < region.packedWidth && region.height < region.packedHeight)) {
+		if (region.originalWidth == region.originalWidth
+			&& region.originalHeight == region.originalHeight
+			|| (region.width < region.originalWidth && region.height < region.originalHeight)) {
 			if (region.width < region.originalWidth) {
-				region.packedWidth = region.width;
+				region.originalWidth = region.width;
 			}
 			if (region.height < region.originalHeight) {
-				region.packedHeight = region.height;
+				region.originalHeight = region.height;
 			}
 		} else {
 			if (region.height < region.originalWidth) {
-				region.packedWidth = region.height;
+				region.originalWidth = region.height;
 			}
 			if (region.width < region.originalHeight) {
-				region.packedHeight = region.width;
+				region.originalHeight = region.width;
 			}
 		}
 		#end
 	}
 
-	public function unloadPage(page:AtlasPage):Void {
-		page.rendererObject.dispose();
+	public function unloadPage(page:TextureAtlasPage):Void {
+		page.texture.dispose();
 	}
 }

@@ -50,7 +50,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
-		skeleton.setScaleY(-1);
+		skeleton.scaleY = -1;
 		#end
 		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData) : stateData);
 		_advanceTime(0);
@@ -65,7 +65,7 @@ class SkeletonAnimation extends SkeletonSprite {
 	private function _advanceTime(time:Float) {
 		state.update(time / timeScale);
 		state.apply(skeleton);
-		skeleton.updateWorldTransform();
+		skeleton.updateWorldTransform(Physics.update);
 		super.advanceTime(time);
 	}
 
@@ -80,7 +80,6 @@ class SkeletonAnimation extends SkeletonSprite {
 	}
 
 	#if zygame
-
 	private var _event:AnimationEvent;
 
 	override function addEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false, priority:Int = 0,
@@ -99,6 +98,5 @@ class SkeletonAnimation extends SkeletonSprite {
 		if (_event != null)
 			_event.addEventListener(type, listener);
 	}
-
 	#end
 }

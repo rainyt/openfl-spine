@@ -55,7 +55,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
-		skeleton.setScaleY(-1);
+		skeleton.scaleY = -1;
 		#end
 		state = stateData != null ? stateData : new AnimationState(new AnimationStateData(skeletonData));
 		_advanceTime(0);
@@ -67,16 +67,16 @@ class SkeletonAnimation extends SkeletonSprite {
 	 * @param skeletonData 
 	 */
 	public function setSkeletonData(skeletonData:SkeletonData):Void {
-		if (skeleton.getData() == skeletonData)
+		if (skeleton.data == skeletonData)
 			return;
 		skeleton = new Skeleton(skeletonData);
 		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
-		skeleton.setScaleY(-1);
+		skeleton.scaleY = -1;
 		#end
-		state.getData().skeletonData = skeletonData;
-		skeleton.updateWorldTransform();
+		@:privateAccess state.data._skeletonData = skeletonData;
+		skeleton.updateWorldTransform(Physics.update);
 	}
 
 	override public function advanceTime(time:Float):Void {
@@ -101,7 +101,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		// @:privateAccess state.queue.drainDisabled = false;
 		state.apply(skeleton);
 		this.onUpdateWorldTransformBefore();
-		skeleton.updateWorldTransform();
+		skeleton.updateWorldTransform(Physics.update);
 		super.advanceTime(time);
 	}
 
@@ -128,7 +128,7 @@ class SkeletonAnimation extends SkeletonSprite {
 	}
 
 	public function getAnimation(name:String):Animation {
-		for (animation in this.state.getData().getSkeletonData().animations) {
+		for (animation in this.state.data.skeletonData.animations) {
 			if (animation.name == name)
 				return animation;
 		}
@@ -156,7 +156,7 @@ class SkeletonAnimation extends SkeletonSprite {
 	 */
 	override function getMaxTime():Float {
 		if (_currentAnimation != null)
-			return _currentAnimation.getDuration();
+			return _currentAnimation.duration;
 		return super.getMaxTime();
 	}
 
@@ -166,7 +166,8 @@ class SkeletonAnimation extends SkeletonSprite {
 			useWeakReference:Bool = false) {
 		if (_event == null && state != null) {
 			_event = new AnimationEvent();
-			this.state.addListener(_event);
+			// TODO 添加事件侦听处理
+			// this.state.addListener(_event);
 		}
 		if (_event != null)
 			_event.addEventListener(type, listener);

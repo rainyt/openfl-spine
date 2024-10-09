@@ -87,19 +87,19 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 								#else
 								TileContainer
 								#end();
-							tile = new #if zygame BImage(atlasRegion.page.rendererObject.getFrameByRegion(atlasRegion)) #else Tile(atlasRegion.page.rendererObject.getID(atlasRegion)) #end;
+							tile = new #if zygame BImage(atlasRegion.page.texture.getFrameByRegion(atlasRegion)) #else Tile(atlasRegion.page.texture.getID(atlasRegion)) #end;
 							wrapper.addTile(tile);
 							_map.set(slot, wrapper);
 						} else {
 							tile = cast wrapper.getTileAt(0);
 							#if zygame
-							tile.setFrame(atlasRegion.page.rendererObject.getFrameByRegion(atlasRegion));
+							tile.setFrame(atlasRegion.page.texture.getFrameByRegion(atlasRegion));
 							#else
-							tile.id = atlasRegion.page.rendererObject.getID(atlasRegion);
+							tile.id = atlasRegion.page.texture.getID(atlasRegion);
 							#end
 						}
 
-						var regionHeight:Float = atlasRegion.rotate ? atlasRegion.width : atlasRegion.height;
+						var regionHeight:Float = atlasRegion.degrees != 0 ? atlasRegion.width : atlasRegion.height;
 
 						tile.rotation = -region.rotation;
 						tile.scaleX = region.scaleX * (region.width / atlasRegion.width);
@@ -110,7 +110,7 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 						var sin:Float = Math.sin(radians);
 						var shiftX:Float = -region.width / 2 * region.scaleX;
 						var shiftY:Float = -region.height / 2 * region.scaleY;
-						if (atlasRegion.rotate) {
+						if (atlasRegion.degrees != 0) {
 							tile.rotation += 90;
 							shiftX += regionHeight * (region.width / atlasRegion.width);
 						}
