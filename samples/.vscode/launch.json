@@ -5,10 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flash",
-            "type": "fdb",
+            "type": "chrome",
             "request": "launch",
-            "program": "${workspaceRoot}/Export/flash/bin/ZYGameEngineHaxe.swf"
-        }
+            "name": "HTML5(PC测试模式/)",
+            "url": "http://localhost:3003",
+            "webRoot": "${workspaceFolder}",
+        },
+        
+        
     ]
 }

@@ -23,5 +23,7 @@
 	<!-- <haxelib name="qqplaycore"/> -->
 	<set name="VIEW_MODE" value="1"/>
 
+	<define name="debug"/>
+
 
 </project>
