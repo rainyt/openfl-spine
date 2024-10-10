@@ -345,10 +345,6 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 	 * @param delta
 	 */
 	public function advanceTime(delta:Float):Void {
-		if (!allowHiddenRender) {
-			if (!this.visible || !isPlay)
-				return;
-		}
 		if (_isPlay == false || _isDipose)
 			return;
 		this.onUpdateWorldTransformBefore();
@@ -358,6 +354,10 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		state.apply(skeleton);
 		skeleton.updateWorldTransform(Physics.update);
 		this.onUpdateWorldTransformAfter();
+		if (!allowHiddenRender) {
+			if (!this.visible || !isPlay)
+				return;
+		}
 		renderTriangles();
 	}
 

@@ -31,7 +31,7 @@ class Main extends Sprite {
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader('assets/$spineName.atlas', ['assets/$spineName.png']);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite
-			var bmd = new Bitmap(@:privateAccess textureAtals._bitmapDatas.iterator().next());
+			// var bmd = new Bitmap(@:privateAccess textureAtals._bitmapDatas.iterator().next());
 			// this.addChild(bmd);
 			var spine = textureAtals.buildSpriteSkeleton(spineName, jsonData);
 			this.addChild(spine);
