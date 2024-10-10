@@ -31,6 +31,11 @@ import zygame.utils.SpineManager;
  */
 class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
 	/**
+	 * 切割器
+	 */
+	private static var clipper:SkeletonClipping = new SkeletonClipping();
+
+	/**
 	 * 资源索引
 	 */
 	public var assetsId:String = null;
@@ -39,22 +44,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 最后绘制时间
 	 */
 	public var lastDrawTime:Float = 0;
-
-	/**
-	 * 缓存ID
-	 */
-	public var cacheId(get, never):String;
-
-	private function get_cacheId():String {
-		if (this.skeleton.skin != null)
-			return assetsId + ":" + this.skeleton.skin.name;
-		return assetsId;
-	}
-
-	/**
-	 * 切割器
-	 */
-	private static var clipper:SkeletonClipping = new SkeletonClipping();
 
 	/**
 	 * 是否为独立运行，不受SpineManager的影响
@@ -76,10 +65,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 */
 	public var smoothing:Bool = #if !smoothing false #else true #end;
 
-	#if zygame
-	private var _img:ZImage;
-	#end
-
 	/**
 	 * 坐标数组
 	 */
@@ -98,7 +83,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 是否正在播放
 	 */
-	private var _isPlay:Bool = true;
+	private var _isPlay:Bool = false;
 
 	private var _isDipose:Bool = false;
 
@@ -751,8 +736,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function isHidden():Bool {
 		if (allowHiddenRender)
 			return false;
-		_isHidden = this.alpha == 0 || !this.visible || this.parent == null || !this.parent.visible || this.parent.parent == null
-			|| !this.parent.parent.visible || this.parent.parent.parent == null || !this.parent.parent.parent.visible;
+		_isHidden = this.alpha == 0 || !this.visible || this.stage == null;
 		return _isHidden;
 	}
 }

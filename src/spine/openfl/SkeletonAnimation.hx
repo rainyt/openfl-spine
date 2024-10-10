@@ -37,6 +37,9 @@ import spine.SkeletonData;
 import spine.animation.AnimationState;
 import spine.animation.AnimationStateData;
 
+/**
+ * 支持官方Spine-Haxe 4.2+版本的骨骼动画组件
+ */
 class SkeletonAnimation extends SkeletonSprite {
 	public var state:AnimationState;
 
@@ -52,11 +55,7 @@ class SkeletonAnimation extends SkeletonSprite {
 	 */
 	public function new(skeletonData:SkeletonData, stateData:AnimationState = null) {
 		super(skeletonData);
-		#if (spine_hx <= "3.6.0")
-		skeleton.setFlipY(true);
-		#else
 		skeleton.scaleY = -1;
-		#end
 		state = stateData != null ? stateData : new AnimationState(new AnimationStateData(skeletonData));
 		_advanceTime(0);
 		setSkeletonData(skeletonData);
@@ -70,11 +69,7 @@ class SkeletonAnimation extends SkeletonSprite {
 		if (skeleton.data == skeletonData)
 			return;
 		skeleton = new Skeleton(skeletonData);
-		#if (spine_hx <= "3.6.0")
-		skeleton.setFlipY(true);
-		#else
 		skeleton.scaleY = -1;
-		#end
 		@:privateAccess state.data._skeletonData = skeletonData;
 		skeleton.updateWorldTransform(Physics.update);
 	}
