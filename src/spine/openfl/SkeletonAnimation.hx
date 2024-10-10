@@ -76,7 +76,16 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 	/**
 	 * 时间轴缩放
 	 */
-	public var timeScale:Float = 1;
+	public var timeScale(get, set):Float;
+
+	private function set_timeScale(v:Float):Float {
+		this.state.timeScale = v;
+		return v;
+	}
+
+	private function get_timeScale():Float {
+		return this.state.timeScale;
+	}
 
 	/**
 	 * SpriteSpine的平滑支持，默认为false，可设置为true开启平滑支持
