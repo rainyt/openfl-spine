@@ -673,63 +673,22 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		// 缓存
 		// spr.graphics.beginFill(0xff0000);
 		spr.graphics.beginShaderFill(_shader);
-		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
-		spr.graphics.endFill();
-		_shape.addChild(spr);
-		spr.visible = true;
-		spr.removeChildren();
-		var counts = Std.int(allVerticesArray.length / 2);
-		// for (i in 0...counts) {
-		// 	var s = new Sprite();
-		// 	s.graphics.beginFill(0xff0000);
-		// 	s.graphics.drawRect(allVerticesArray[i * 2], allVerticesArray[i * 2 + 1], 10, 10);
-		// 	s.graphics.endFill();
-		// 	spr.addChild(s);
-		// 	break;
-		// }
-		// if (counts == 4) {
-		var quad = new Sprite();
-		quad.graphics.beginShaderFill(_shader);
-		// quad.graphics.beginFill(0xff0000,0.5);
-		// quad.graphics.beginBitmapFill(bitmapData);
 		var t = new Vector<Float>();
 		for (f in allVerticesArray) {
 			t.push(f);
 		}
-		// t.push(allVerticesArray[0]);
-		// t.push(allVerticesArray[1]);
-		// t.push(allVerticesArray[2]);
-		// t.push(allVerticesArray[3]);
-		// t.push(allVerticesArray[4]);
-		// t.push(allVerticesArray[5]);
-		// t.push(allVerticesArray[6]);
-		// t.push(allVerticesArray[7]);
 		var t2 = new Vector();
-		// t2.push(allTriangles[0]);
-		// t2.push(allTriangles[1]);
-		// t2.push(allTriangles[2]);
-		// t2.push(allTriangles[3]);
-		// t2.push(allTriangles[4]);
-		// t2.push(allTriangles[5]);
 		for (i in allTriangles) {
 			t2.push(i);
 		}
 		var u3 = new Vector();
-		// u3.push(allUvs[0]);
-		// u3.push(allUvs[1]);
-		// u3.push(allUvs[2]);
-		// u3.push(allUvs[3]);
-		// u3.push(allUvs[4]);
-		// u3.push(allUvs[5]);
-		// u3.push(allUvs[6]);
-		// u3.push(allUvs[7]);
 		for (f in allUvs) {
 			u3.push(f);
 		}
-		quad.graphics.drawTriangles(t, t2, u3);
-		quad.graphics.endFill();
-		spr.addChild(quad);
-		// }
+		spr.graphics.drawTriangles(t, t2, u3, TriangleCulling.NONE);
+		spr.graphics.endFill();
+		_shape.addChild(spr);
+		spr.visible = true;
 	}
 
 	/**

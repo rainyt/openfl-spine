@@ -31,8 +31,6 @@ class Main extends Sprite {
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader('assets/$spineName.atlas', ['assets/$spineName.png']);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite
-			// var bmd = new Bitmap(@:privateAccess textureAtals._bitmapDatas.iterator().next());
-			// this.addChild(bmd);
 			var spine = textureAtals.buildSpriteSkeleton(spineName, jsonData);
 			this.addChild(spine);
 			spine.y = stage.stageHeight / 2;
@@ -45,28 +43,6 @@ class Main extends Sprite {
 			var fps:openfl.display.FPS = new openfl.display.FPS();
 			fps.textColor = 0xffffff;
 			this.addChild(fps);
-
-			// var quad = new Sprite();
-			// quad.graphics.beginFill(0xff0000);
-			// var t = new Vector();
-			// t.push(0.);
-			// t.push(100);
-			// t.push(0);
-			// t.push(0);
-			// t.push(100);
-			// t.push(0);
-			// t.push(100);
-			// t.push(100);
-			// var t2 = new Vector();
-			// t2.push(0);
-			// t2.push(1);
-			// t2.push(2);
-			// t2.push(2);
-			// t2.push(3);
-			// t2.push(0);
-			// quad.graphics.drawTriangles(t, t2);
-			// quad.graphics.endFill();
-			// this.addChild(quad);
 		}, function(error:String):Void {
 			trace("加载失败：", error);
 		});
