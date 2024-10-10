@@ -36,6 +36,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private static var clipper:SkeletonClipping = new SkeletonClipping();
 
 	/**
+	 * 矩形顶点
+	 */
+	private static var quadTriangles:Array<Int> = [0, 1, 2, 2, 3, 0];
+
+	/**
 	 * 资源索引
 	 */
 	public var assetsId:String = null;
@@ -69,11 +74,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 坐标数组
 	 */
 	private var _tempVerticesArray:Array<Float>;
-
-	/**
-	 * 矩形三角形
-	 */
-	private var _quadTriangles:Array<Int>;
 
 	/**
 	 * 颜色数组（未实现）
@@ -157,13 +157,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		skeleton.updateWorldTransform(Physics.update);
 
 		_tempVerticesArray = new Array<Float>();
-		_quadTriangles = new Array<Int>();
-		_quadTriangles[0] = 0;
-		_quadTriangles[1] = 1;
-		_quadTriangles[2] = 2;
-		_quadTriangles[3] = 2;
-		_quadTriangles[4] = 3;
-		_quadTriangles[5] = 0;
 		_colors = new Array<Int>();
 
 		#if !zygame
@@ -379,7 +372,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					_tempVerticesArray = [];
 					region.computeWorldVertices(slot, _tempVerticesArray, 0, 2);
 					uvs = region.uvs;
-					triangles = _quadTriangles.copy();
+					triangles = quadTriangles.copy();
 					atlasRegion = cast region.region;
 				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
 					// 如果是网格
