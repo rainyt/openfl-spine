@@ -358,9 +358,8 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 			return;
 		this.onUpdateWorldTransformBefore();
 		state.update(delta);
-		// 避免没有事件回调
-		// @:privateAccess state.queue.drainDisabled = false;
 		state.apply(skeleton);
+		skeleton.update(delta);
 		skeleton.updateWorldTransform(Physics.update);
 		this.onUpdateWorldTransformAfter();
 		if (!allowHiddenRender) {
