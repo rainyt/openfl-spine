@@ -3,7 +3,6 @@ package spine.openfl;
 import openfl.display.Bitmap;
 import spine.atlas.TextureAtlasRegion;
 import openfl.display.Shape;
-import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
@@ -312,14 +311,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		if (_isPlay == false || _isDipose)
 			return;
 		renderTriangles();
-	}
-
-	private function renderCacheShape(data:SpineCacheFrameData):Void {
-		clearSprite();
-		var spr:Sprite = _spritePool.get();
-		spr.graphics.copyFrom(data.shape.graphics);
-		_shape.addChild(spr);
-		spr.visible = true;
 	}
 
 	private var _lastAlpha:Float = 1;
