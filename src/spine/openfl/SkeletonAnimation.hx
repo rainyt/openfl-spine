@@ -120,13 +120,6 @@ class SkeletonAnimation extends SkeletonSprite {
 		super.play(action);
 	}
 
-	override function get_isCache():Bool {
-		if (state.tracks.length > 2) {
-			return false;
-		}
-		return super.get_isCache();
-	}
-
 	public function getAnimation(name:String):Animation {
 		for (animation in this.state.data.skeletonData.animations) {
 			if (animation.name == name)

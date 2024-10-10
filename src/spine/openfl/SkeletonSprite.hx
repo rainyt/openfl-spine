@@ -163,33 +163,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	private var _shape:Sprite;
 
 	/**
-	 * 是否使用缓存渲染，如果使用缓存渲染，如果使用换成渲染，则无法正常使用过渡动画
-	 */
-	@:deprecated("Spine4.2后不再支持isCache属性")
-	public var isCache(get, set):Bool;
-
-	private var _isCache:Bool = false;
-
-	/**
-	 * 缓存模式：
-	 * - TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
-	 * - SHAPE：将每个Sprite的形象进行缓存，使用时直接使用图形数据
-	 */
-	@:deprecated("Spine4.2后不再支持cacheMode属性")
-	public var cacheMode:CacheMode = TRIANGLES;
-
-	private function set_isCache(value:Bool):Bool {
-		_isCache = value;
-		return value;
-	}
-
-	private function get_isCache():Bool {
-		return _isCache;
-	}
-
-	private var _cacheBitmapData:BitmapData;
-
-	/**
 	 * 创建一个Spine对象
 	 * @param skeletonData 骨骼数据
 	 */
