@@ -1,5 +1,7 @@
 package spine.openfl;
 
+import spine.animation.AnimationStateData;
+import spine.animation.AnimationState;
 import openfl.display.Bitmap;
 import spine.atlas.TextureAtlasRegion;
 import openfl.display.Shape;
@@ -27,9 +29,9 @@ import openfl.display.Sprite;
 import zygame.utils.SpineManager;
 
 /**
- * Sprite渲染器，单个Sprite会进行单次渲染
+ * 支持官方Spine-Haxe 4.2+版本的骨骼动画组件
  */
-class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
+class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
 	/**
 	 * 切割器
 	 */
@@ -59,6 +61,16 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 骨架对象
 	 */
 	public var skeleton:Skeleton;
+
+	/**
+	 * 骨骼动画状态
+	 */
+	public var state:AnimationState;
+
+	/**
+	 * 当前动画数据
+	 */
+	private var _currentAnimation:Animation;
 
 	/**
 	 * 时间轴缩放
@@ -150,10 +162,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 创建一个Spine对象
 	 * @param skeletonData 骨骼数据
 	 */
-	public function new(skeletonData:SkeletonData) {
+	public function new(skeletonData:SkeletonData, stateData:AnimationState = null) {
 		super();
-
 		skeleton = new Skeleton(skeletonData);
+		skeleton.scaleY = -1;
+		state = stateData != null ? stateData : new AnimationState(new AnimationStateData(skeletonData));
 		skeleton.updateWorldTransform(Physics.update);
 
 		_tempVerticesArray = new Array<Float>();
@@ -164,14 +177,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		this.addEventListener(openfl.events.Event.Event.REMOVED_FROM_STAGE, onRemoveToStage);
 		#end
 
-		// this.addEventListener(Event.)
-
 		_shape = new Sprite();
 		this.addChild(_shape);
-
 		_trianglesVector = new Map<TextureAtlasRegion, Vector<Int>>();
-
 		this.mouseChildren = false;
+		this.advanceTime(0);
 	}
 
 	/**
@@ -235,13 +245,55 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	 * 播放
 	 */
 	public function play(action:String = null, loop:Bool = true):Void {
-		// TODO 是否有必要存在呢？
+		if (action != this.actionName) {
+			if (action != null && action != "") {
+				this.state.setAnimationByName(0, action, loop);
+			}
+			this._currentAnimation = getAnimation(action);
+		}
 		if (autoOnFrame)
 			SpineManager.addOnFrame(this);
 		_isPlay = true;
 		if (action != null)
 			_actionName = action;
 		this.advanceTime(0);
+	}
+
+	/**
+	 * 强制播放切换
+	 * @param action 动作名
+	 * @param loop 是否循环
+	 */
+	public function playForce(action:String, loop:Bool = true):Void {
+		isPlay = true;
+		if (action != null && action != "") {
+			this.state.setAnimationByName(0, action, loop);
+		}
+		this._currentAnimation = getAnimation(action);
+		this.play(action);
+	}
+
+	/**
+	 * 获取最大持续时间
+	 * @return Float
+	 */
+	public function getMaxTime():Float {
+		if (_currentAnimation != null)
+			return _currentAnimation.duration;
+		return 0;
+	}
+
+	/**
+	 * 获得动画对象数据
+	 * @param name 
+	 * @return Animation
+	 */
+	public function getAnimation(name:String):Animation {
+		for (animation in this.state.data.skeletonData.animations) {
+			if (animation.name == name)
+				return animation;
+		}
+		return null;
 	}
 
 	/**
@@ -277,17 +329,37 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_isPlay = false;
 	}
 
-	private function __getCurrentFrameId():Int {
-		return -1;
-	}
+	/**
+	 * 在updateWorldTransform调用之前发生
+	 */
+	dynamic public function onUpdateWorldTransformBefore():Void {}
+
+	/**
+	 * 在updateWorldTransform调用之后发生
+	 */
+	dynamic public function onUpdateWorldTransformAfter():Void {}
 
 	/**
 	 * 激活渲染
 	 * @param delta
 	 */
 	public function advanceTime(delta:Float):Void {
+		if (!allowHiddenRender) {
+			if (!this.visible || !isPlay)
+				return;
+		}
 		if (_isPlay == false || _isDipose)
 			return;
+		this.onUpdateWorldTransformBefore();
+		time = time / timeScale;
+		if (time > 0) {
+			state.update(time);
+		}
+		// 避免没有事件回调
+		// @:privateAccess state.queue.drainDisabled = false;
+		state.apply(skeleton);
+		skeleton.updateWorldTransform(Physics.update);
+		this.onUpdateWorldTransformAfter();
 		renderTriangles();
 	}
 
@@ -700,10 +772,6 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 	#end
 
-	public function getMaxTime():Float {
-		return 0;
-	}
-
 	/**
 	 * 允许隐藏状态下渲染
 	 */
@@ -731,5 +799,25 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			return false;
 		_isHidden = this.alpha == 0 || !this.visible || this.stage == null;
 		return _isHidden;
+	}
+
+	private var _event:AnimationEvent;
+
+	override function addEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false, priority:Int = 0,
+			useWeakReference:Bool = false) {
+		if (_event == null && state != null) {
+			_event = new AnimationEvent();
+			// TODO 添加事件侦听处理
+			// this.state.addListener(_event);
+		}
+		if (_event != null)
+			_event.addEventListener(type, listener);
+		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+	}
+
+	override function removeEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false) {
+		super.removeEventListener(type, listener, useCapture);
+		if (_event != null)
+			_event.removeEventListener(type, listener);
 	}
 }
