@@ -1,3 +1,4 @@
+#if !zygame
 package zygame.utils;
 
 /**
@@ -33,3 +34,4 @@ class StringUtils {
     }
 
 }
+#end

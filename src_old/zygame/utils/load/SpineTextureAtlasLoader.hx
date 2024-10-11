@@ -1,4 +1,4 @@
-#if zygame
+#if !zygame
 package zygame.utils.load;
 
 // import spine.SkeletonBinary;
