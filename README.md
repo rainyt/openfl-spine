@@ -1,7 +1,11 @@
-# V2.0.0
-从2.0.0版本开始，将重构整个Spine的缓存机制，可能会产生一定的API变更。
-- 1、为Spine新增一个高性能的缓存机制，注重提升性能。
-- 2、删除GPU渲染模式，该模式不够完善，无法落实；
+# OpenFL-Spine v4.2.0
+该版本兼容了3.8~4.2的Spine运行时版本，他们运行时关系请参考下述说明：
+This version is compatible with Spine runtime versions 3.8~4.2. Please refer to the following instructions for their runtime relationships:
+| Spine版本 | Spine运行时库 | 支持情况 |
+| --- | --- | --- |
+| 3.8 | spine-hx 3.8.0+ | Sprite + Tilemap render |
+| 4.0 | spine-hx 4.0+ | Sprite + Tilemap render |
+| 4.2 | spine-haxe git | Sprite render |
 
 # openfl-spine
 - 可在OpenFL引擎中渲染Spine动画的使用库，可通过Sprite、Tilemap实现渲染处理。
