@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<source path="src" />
-	<source path="zygame-src" unless="zygame"/>
+	<source path="src" if="spine4.2" />
+	<source path="src_old" unless="spine4.2" />
+	<source path="src_utils" unless="zygame" />
 	<!-- Spine锁定版本3.8.1 -->
-	<haxelib name="spine-haxe" />
+	<haxelib name="spine-hx" version="3.8.2" if="spine3.8" unless="spine4 || spine4.2" />
+	<haxelib name="spine-hx" version="3.6.0" unless="spine3.8 || spine4 || spine4.2" />
+	<haxelib name="spine-hx" version="4.0.2" if="spine4" />
+	<haxelib name="spine-haxe" if="spine4.2" />
 	<haxelib name="openfl-glsl" />
+	<haxedef name="spine38" if="spine3.8" unless="spine4" />
+	<haxedef name="spine4" if="spine4" />
 
 </project>

@@ -1,4 +1,3 @@
-#if !zygame
 package zygame.utils;
 
 import openfl.events.Event;
@@ -98,4 +97,3 @@ class SpineManager {
 		spineOnFrames.remove(spine);
 	}
 }
-#end

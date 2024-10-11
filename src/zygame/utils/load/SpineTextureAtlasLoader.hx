@@ -1,6 +1,6 @@
-#if !zygame
 package zygame.utils.load;
 
+#if !zygame
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
 import openfl.Assets;

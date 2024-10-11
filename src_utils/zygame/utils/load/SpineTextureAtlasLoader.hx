@@ -1,4 +1,3 @@
-#if !zygame
 package zygame.utils.load;
 
 // import spine.SkeletonBinary;
@@ -243,4 +242,3 @@ class SpineTextureAtlas {
 		this._bitmapDatas = null;
 	}
 }
-#end
