@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="ZYGameEngineHaxe" package="com.sample.zygameenginehaxe" version="1.0.0" company="Company Name" />
+	<!-- GPU -->
+	<!-- <app main="GPUMain" path="Export" file="ZYGameEngineHaxe" /> -->
+	<!-- CPU -->
+	<app main="Main" path="Export" file="ZYGameEngineHaxe" />
+	
+	<template path="templates"/>
+
+	<haxedef name="lime"/>
+
+	<define name="spine3.8"/>
+
+	<!-- <define name="spine3.8" if="spine38"/> -->
+
+	<!-- Spine4 -->
+	<!-- <define name="spine4"/> -->
+
+	
+
+	<assets path="Assets" rename="assets"/>
+	
+	<haxelib name="openfl"/>
+	<haxelib name="openfl-spine"/>
+	<source path="Source" />
+
+	<!-- <window allow-high-dpi="true" /> -->
+	<haxedef name="gl_stats"/>
+
+	<!-- <haxelib name="qqplaycore"/> -->
+	<set name="VIEW_MODE" value="1"/>
+
+
+</project>

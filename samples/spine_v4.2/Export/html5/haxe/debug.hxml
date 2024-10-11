@@ -1,0 +1,45 @@
+-main ApplicationMain 
+--macro openfl.utils._internal.ExtraParamsMacro.include()
+-cp /Users/rainy/Documents/haxelib-self/openfl/src
+-D openfl=9.2.8
+--macro lime._internal.macros.DefineMacro.run()
+-cp /Users/rainy/Documents/haxelib-self/lime/src
+-D lime=8.0.2
+-cp /Users/rainy/Documents/haxelib/openfl-spine/src
+-D openfl-spine=4.2.0
+-cp /Users/rainy/Documents/haxelib/spine-haxe/4,2,0/spine-haxe
+-D spine-haxe=4.2.0
+-cp /Users/rainy/Documents/haxelib-self/openfl-glsl/Source
+-D openfl-glsl=0.2.0
+-cp /Users/rainy/Documents/haxelib/vector-math/2,1,2
+-D vector-math=2.1.2
+-cp /Users/rainy/Documents/haxelib/openfl-spine/src
+-cp /Users/rainy/Documents/haxelib/openfl-spine/zygame-src
+-cp /Users/rainy/Documents/haxelib-self/openfl-glsl/Source
+-cp Source
+-D ANDROID_SETUP=true
+-D ANDROID_NDK_ROOT=/Users/rainy/Documents/SDK/android-ndk-r15c
+-D howlerjs
+-D lime
+-D lime-webgl
+-D lime-dom
+-D lime-howlerjs
+-D lime-html5
+-D openfl-disable-handle-error
+-D MAC_USE_CURRENT_SDK=1
+-D gl_stats
+-D tools=8.0.2
+-D ANDROID_SDK=/Users/rainy/Library/Android/sdk
+-D lime-canvas
+-D no-compilation
+-D openfl-html5
+-D debug
+-D html5
+-D web
+--remap flash:openfl
+--connect
+6006
+-js Export/html5/bin/ZYGameEngineHaxe.js
+-cp Export/html5/haxe
+-D html5
+-debug
