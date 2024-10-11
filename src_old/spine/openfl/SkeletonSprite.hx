@@ -420,6 +420,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					// 如果是矩形
 					var region:RegionAttachment = cast slot.attachment;
 					verticesLength = 8;
+					_tempVerticesArray = [];
 					region.computeWorldVertices(slot.bone, _tempVerticesArray, 0, 2);
 					uvs = region.getUVs();
 					triangles = _quadTriangles;
@@ -428,6 +429,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
 					verticesLength = 8;
+					_tempVerticesArray = [];
 					region.computeWorldVertices(slot, 0, region.getWorldVerticesLength(), _tempVerticesArray, 0, 2);
 					uvs = region.getUVs();
 					triangles = region.getTriangles();
