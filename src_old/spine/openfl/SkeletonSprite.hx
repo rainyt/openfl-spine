@@ -708,7 +708,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function isHidden():Bool {
 		if (allowHiddenRender)
 			return false;
-		_isHidden = this.alpha == 0 || !this.visible || this.parent == null || !this.parent.visible || this.parent.parent == null
+		_isHidden = this.alpha == 0 || !this.visible || this.stage == null || !this.parent.visible || this.parent.parent == null
 			|| !this.parent.parent.visible || this.parent.parent.parent == null || !this.parent.parent.parent.visible;
 		return _isHidden;
 	}
