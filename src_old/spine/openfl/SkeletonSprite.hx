@@ -1,7 +1,5 @@
 package spine.openfl;
 
-import openfl.display.Shape;
-import spine.openfl.SpineCacheData.SpineCacheFrameData;
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
@@ -649,45 +647,11 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		onRenderBefore();
 
 		// 缓存
-		if (isCache) {
-			var frameid = __getCurrentFrameId();
-			var datas = GlobalAnimationCache.getCacheByID(this.cacheId);
-			if (datas.getFrame(actionName, frameid) == null) {
-				switch cacheMode {
-					case TRIANGLES:
-						spr.graphics.beginShaderFill(_shader);
-						spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
-						spr.graphics.endFill();
-						_shape.addChild(spr);
-						spr.visible = true;
-						var frame = new SpineCacheFrameData();
-						frame.allTriangles = allTriangles.copy();
-						frame.allUvs = allUvs.copy();
-						frame.allVerticesArray = allVerticesArray.copy();
-						frame.allTrianglesAlpha = allTrianglesAlpha.copy();
-						frame.allTrianglesBlendMode = allTrianglesBlendMode.copy();
-						frame.allTrianglesColor = allTrianglesColor.copy();
-						frame.allTrianglesDarkColor = allTrianglesDarkColor.copy();
-						datas.addFrame(actionName, frameid, frame);
-					case SHAPE:
-						var frame = new SpineCacheFrameData();
-						frame.shape = new Shape();
-						frame.shape.graphics.beginShaderFill(_shader);
-						frame.shape.graphics.drawTriangles(allVerticesArray.copy(), allTriangles.copy(), allUvs.copy(), TriangleCulling.NONE);
-						frame.shape.graphics.endFill();
-						datas.addFrame(actionName, frameid, frame);
-						spr.graphics.copyFrom(frame.shape.graphics);
-						_shape.addChild(spr);
-						spr.visible = true;
-				}
-			}
-		} else {
-			spr.graphics.beginShaderFill(_shader);
-			spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
-			spr.graphics.endFill();
-			_shape.addChild(spr);
-			spr.visible = true;
-		}
+		spr.graphics.beginShaderFill(_shader);
+		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
+		spr.graphics.endFill();
+		_shape.addChild(spr);
+		spr.visible = true;
 	}
 
 	#if !flash
