@@ -725,30 +725,6 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		// }
 	}
 
-	/**
-	 * 渲染数组转换
-	 * @param data
-	 * @return Vector<Int>
-	 */
-	private function ofArrayInt(data:Array<Int>):Vector<Int> {
-		var v:Vector<Int> = new Vector<Int>(0, false);
-		for (i in 0...data.length)
-			v.set(i, data[i]);
-		return v;
-	}
-
-	/**
-	 * 渲染数组转换
-	 * @param data
-	 * @return Vector<Float>
-	 */
-	private function ofArrayFloat(data:Array<Float>):Vector<Float> {
-		var v:Vector<Float> = new Vector<Float>(0, false);
-		for (i in 0...data.length)
-			v.set(i, data[i]);
-		return v;
-	}
-
 	#if !flash
 	/**
 	 * 重构触摸事件，无法触发触摸的问题

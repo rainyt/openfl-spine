@@ -7,17 +7,13 @@ import spine.attachments.MeshAttachment;
 import spine.attachments.RegionAttachment;
 import spine.support.graphics.TextureAtlas.AtlasRegion;
 import spine.base.SpineBaseDisplay;
-import openfl.display.Sprite;
 import openfl.Vector;
 import openfl.display.DisplayObject;
 import spine.openfl.SkeletonSprite;
-import openfl.events.Event;
 import openfl.display.TriangleCulling;
 import openfl.display.BitmapData;
-import spine.utils.VectorUtils;
 import zygame.utils.SpineManager;
 import spine.shader.SpineRenderBatchShader;
-import spine.shader.SpineRenderShader;
 import openfl.display3D.Context3DTextureFilter;
 
 /**
