@@ -6,4 +6,4 @@
 
 ### 文档
 [中文](README_zh.md)
-[英文](README_en.md)
+[English](README_en.md)
