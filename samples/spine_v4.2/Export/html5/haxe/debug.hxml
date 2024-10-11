@@ -14,9 +14,10 @@
 -cp /Users/rainy/Documents/haxelib/vector-math/2,1,2
 -D vector-math=2.1.2
 -cp /Users/rainy/Documents/haxelib/openfl-spine/src
--cp /Users/rainy/Documents/haxelib/openfl-spine/zygame-src
+-cp /Users/rainy/Documents/haxelib/openfl-spine/src_utils
 -cp /Users/rainy/Documents/haxelib-self/openfl-glsl/Source
 -cp Source
+-D spine4_2
 -D ANDROID_SETUP=true
 -D ANDROID_NDK_ROOT=/Users/rainy/Documents/SDK/android-ndk-r15c
 -D howlerjs
@@ -25,7 +26,7 @@
 -D lime-dom
 -D lime-howlerjs
 -D lime-html5
--D openfl-disable-handle-error
+-D spine4.2
 -D MAC_USE_CURRENT_SDK=1
 -D gl_stats
 -D tools=8.0.2
@@ -38,7 +39,7 @@
 -D web
 --remap flash:openfl
 --connect
-6006
+6009
 -js Export/html5/bin/ZYGameEngineHaxe.js
 -cp Export/html5/haxe
 -D html5

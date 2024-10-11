@@ -38,7 +38,7 @@ class ApplicationMain
 		ManifestResources.init(config);
 		#end
 
-		app.meta["build"] = "225";
+		app.meta["build"] = "234";
 		app.meta["company"] = "Company Name";
 		app.meta["file"] = "ZYGameEngineHaxe";
 		app.meta["name"] = "ZYGameEngineHaxe";

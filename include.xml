@@ -12,5 +12,6 @@
 	<haxelib name="openfl-glsl" />
 	<haxedef name="spine38" if="spine3.8" unless="spine4" />
 	<haxedef name="spine4" if="spine4" />
+	<haxedef name="spine4_2" if="spine4.2"/>
 
 </project>

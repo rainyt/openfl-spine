@@ -82,11 +82,16 @@ class SpineManager {
 	 * @param spine
 	 */
 	public static function addOnFrame(s:SpineBaseDisplay):Void {
-		if (spineOnFrames.indexOf(s) == -1)
+		if (spineOnFrames.indexOf(s) == -1){
+			#if spine4_2
+			spineOnFrames.insert(0, s);
+			#else
 			if (Std.isOfType(s, spine.openfl.SkeletonSpriteBatchs))
 				spineOnFrames.push(s);
 			else
 				spineOnFrames.insert(0, s);
+			#end
+		}
 	}
 
 	/**

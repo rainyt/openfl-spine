@@ -14,6 +14,7 @@
 	<assets path="Assets" rename="assets"/>
 	
 	<haxelib name="openfl"/>
+	<define name="spine4.2"/>
 	<haxelib name="openfl-spine"/>
 	<source path="Source" />
 
