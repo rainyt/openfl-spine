@@ -1,7 +1,6 @@
 
 .dev
-samples/Export
-samples/Export/bin
+Export
 samples/.vscode
 samples/Assets/symZ_expand.atlas
 samples/Assets/symZ_expand.json
