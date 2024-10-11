@@ -169,24 +169,23 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	/**
 	 * 是否使用缓存渲染，如果使用缓存渲染，如果使用换成渲染，则无法正常使用过渡动画
 	 */
+	@:deprecated("isCache is deprecated. Because it no longer has significant performance optimization improvements. Using it no longer produces any effect.")
 	public var isCache(get, set):Bool;
-
-	private var _isCache:Bool = false;
 
 	/**
 	 * 缓存模式：
 	 * - TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
 	 * - SHAPE：将每个Sprite的形象进行缓存，使用时直接使用图形数据
 	 */
+	@:deprecated("cacheMode is deprecated. Because it no longer has significant performance optimization improvements. Using it no longer produces any effect.")
 	public var cacheMode:CacheMode = TRIANGLES;
 
 	private function set_isCache(value:Bool):Bool {
-		_isCache = value;
 		return value;
 	}
 
 	private function get_isCache():Bool {
-		return _isCache;
+		return false;
 	}
 
 	private var _cacheBitmapData:BitmapData;
@@ -340,88 +339,7 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
-		if (isCache) {
-			if (__getChange()) {
-				GlobalAnimationCache.clearCacheByID(this.cacheId);
-				_lastAlpha = @:privateAccess this.__worldAlpha;
-			} else {
-				var id = __getCurrentFrameId();
-				if (id != -1) {
-					// 检查是否存在缓存
-					var cacheData = GlobalAnimationCache.getCacheByID(cacheId);
-					switch cacheMode {
-						case TRIANGLES:
-							var cacheData2 = cacheData.getFrame(this.actionName, id);
-							if (cacheData2 != null) {
-								this.renderCacheTriangles(cacheData2);
-								return;
-							}
-						case SHAPE:
-							var cacheData2 = cacheData.getFrame(this.actionName, id);
-							if (cacheData2 != null) {
-								this.renderCacheShape(cacheData2);
-								return;
-							}
-					}
-				}
-			}
-		}
-
 		renderTriangles();
-	}
-
-	private function renderCacheShape(data:SpineCacheFrameData):Void {
-		clearSprite();
-		var spr:Sprite = _spritePool.get();
-		spr.graphics.copyFrom(data.shape.graphics);
-		_shape.addChild(spr);
-		spr.visible = true;
-	}
-
-	/**
-	 * 渲染缓存三角形，使用isCache=true时可正常使用
-	 */
-	private function renderCacheTriangles(data:SpineCacheFrameData):Void {
-		clearSprite();
-		if (_cacheBitmapData == null) {
-			for (slot in skeleton.drawOrder) {
-				var region:AtlasRegion = null;
-				if (Std.isOfType(slot.attachment, RegionAttachment)) {
-					region = cast cast(slot.attachment, RegionAttachment).getRegion();
-				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
-					region = cast cast(slot.attachment, MeshAttachment).getRegion();
-				}
-				if (region != null)
-					_cacheBitmapData = region.page.rendererObject;
-				if (_cacheBitmapData != null)
-					break;
-			}
-		}
-		var oldTriangles = this.allTriangles;
-		var oldTrianglesAlpha = this.allTrianglesAlpha;
-		var oldTrianglesBlendMode = this.allTrianglesBlendMode;
-		var oldTrianglesColor = this.allTrianglesColor;
-		var oldTrianglesDarkColor = this.allTrianglesDarkColor;
-		var oldUvs = this.allUvs;
-		var oldVerticesArray = this.allVerticesArray;
-
-		this.allTriangles = data.allTriangles;
-		this.allTrianglesAlpha = data.allTrianglesAlpha;
-		this.allTrianglesBlendMode = data.allTrianglesBlendMode;
-		this.allTrianglesColor = data.allTrianglesColor;
-		this.allTrianglesDarkColor = data.allTrianglesDarkColor;
-		this.allUvs = data.allUvs;
-		this.allVerticesArray = data.allVerticesArray;
-
-		drawSprite(null, _cacheBitmapData);
-
-		this.allTriangles = oldTriangles;
-		this.allTrianglesAlpha = oldTrianglesAlpha;
-		this.allTrianglesBlendMode = oldTrianglesBlendMode;
-		this.allTrianglesColor = oldTrianglesColor;
-		this.allTrianglesDarkColor = oldTrianglesDarkColor;
-		this.allUvs = oldUvs;
-		this.allVerticesArray = oldVerticesArray;
 	}
 
 	private var _lastAlpha:Float = 1;
