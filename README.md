@@ -1,6 +1,6 @@
 # OpenFL-Spine v4.2.0
-该版本兼容了3.8~4.2的Spine运行时版本，他们运行时关系请参考下述说明：
-This version is compatible with Spine runtime versions 3.8~4.2. Please refer to the following instructions for their runtime relationships:
+该版本兼容了3.8到4.2的Spine运行时版本，他们运行时关系请参考下述说明：
+This version is compatible with Spine runtime versions 3.8 to 4.2. Please refer to the following instructions for their runtime relationships:
 | Spine版本 | Spine运行时库 | 支持情况 |
 | --- | --- | --- |
 | 3.8 | spine-hx 3.8.0+ | Sprite + Tilemap render |
