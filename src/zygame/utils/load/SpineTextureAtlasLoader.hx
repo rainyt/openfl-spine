@@ -1,3 +1,4 @@
+#if zygame
 package zygame.utils.load;
 
 import haxe.crypto.Md5;
@@ -227,3 +228,4 @@ class SpineTextureAtlas {
 		this._bitmapDatas = null;
 	}
 }
+#end

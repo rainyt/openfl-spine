@@ -1,3 +1,4 @@
+#if zygame
 package zygame.utils.load;
 
 // import spine.SkeletonBinary;
@@ -71,9 +72,9 @@ class SpineTextureAtlasLoader {
 class SpineTextureAtlas {
 	private var _tilemapSkeletonManager:SkeletonJson;
 	private var _spriteSkeletonManager:SkeletonJson;
+
 	// private var _tilemapSkeletonManagerBytes:SkeletonBinary;
 	// private var _spriteSkeletonManagerBytes:SkeletonBinary;
-
 	private var _bitmapDatas:Map<String, BitmapData>;
 
 	private var _data:String;
@@ -242,3 +243,4 @@ class SpineTextureAtlas {
 		this._bitmapDatas = null;
 	}
 }
+#end
