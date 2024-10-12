@@ -455,6 +455,7 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 				} else if (Std.isOfType(slot.attachment, MeshAttachment)) {
 					// 如果是网格
 					var region:MeshAttachment = cast slot.attachment;
+					_tempVerticesArray = [];
 					region.computeWorldVertices(slot, 0, region.worldVerticesLength, _tempVerticesArray, 0, 2);
 					uvs = region.uvs;
 					triangles = region.triangles.copy();
@@ -506,12 +507,12 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 							continue;
 						drawSprite(slot, bitmapData);
 						// 重置
-						allTriangles.length = 0;
-						allTrianglesAlpha.resize(0);
-						allTrianglesColor.resize(0);
-						allTrianglesDarkColor.resize(0);
-						allVerticesArray.length = 0;
-						allUvs.length = 0;
+						allTriangles = new Vector();
+						allTrianglesAlpha = [];
+						allTrianglesColor = [];
+						allTrianglesDarkColor = [];
+						allVerticesArray = new Vector();
+						allUvs = new Vector();
 						t = 0;
 						uindex = 0;
 						_buffdataPoint = 0;
@@ -585,13 +586,13 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 					if (isBitmapBlendMode) {
 						drawSprite(slot, bitmapData, true);
 						// 重置
-						allTriangles.length = 0;
-						allTrianglesAlpha.resize(0);
-						allTrianglesColor.resize(0);
-						allTrianglesDarkColor.resize(0);
-						allTrianglesBlendMode.resize(0);
-						allVerticesArray.length = 0;
-						allUvs.length = 0;
+						allTriangles = new Vector();
+						allTrianglesAlpha = [];
+						allTrianglesColor = [];
+						allTrianglesDarkColor = [];
+						allTrianglesBlendMode = [];
+						allVerticesArray = new Vector();
+						allUvs = new Vector();
 						t = 0;
 						uindex = 0;
 						_buffdataPoint = 0;
@@ -669,22 +670,8 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		}
 		onRenderBefore();
 
-		// 缓存
-		// spr.graphics.beginFill(0xff0000);
 		spr.graphics.beginShaderFill(_shader);
-		var t = new Vector<Float>();
-		for (f in allVerticesArray) {
-			t.push(f);
-		}
-		var t2 = new Vector();
-		for (i in allTriangles) {
-			t2.push(i);
-		}
-		var u3 = new Vector();
-		for (f in allUvs) {
-			u3.push(f);
-		}
-		spr.graphics.drawTriangles(t, t2, u3, TriangleCulling.NONE);
+		spr.graphics.drawTriangles(allVerticesArray, allTriangles, allUvs, TriangleCulling.NONE);
 		spr.graphics.endFill();
 		_shape.addChild(spr);
 		spr.visible = true;
