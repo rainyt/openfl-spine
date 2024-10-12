@@ -1,0 +1,328 @@
+
+magicThunder.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BG_FX
+  rotate: false
+  xy: 2, 350
+  size: 179, 160
+  orig: 179, 160
+  offset: 0, 0
+  index: -1
+Chest
+  rotate: false
+  xy: 2, 5
+  size: 78, 51
+  orig: 78, 51
+  offset: 0, 0
+  index: -1
+DummyItem
+  rotate: false
+  xy: 2, 2
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+Eye
+  rotate: false
+  xy: 82, 3
+  size: 21, 5
+  orig: 21, 5
+  offset: 0, 0
+  index: -1
+Eye_e1
+  rotate: false
+  xy: 105, 3
+  size: 21, 5
+  orig: 21, 5
+  offset: 0, 0
+  index: -1
+Eye_e3
+  rotate: false
+  xy: 248, 2
+  size: 19, 9
+  orig: 19, 9
+  offset: 0, 0
+  index: -1
+Eye_e5
+  rotate: false
+  xy: 269, 2
+  size: 19, 9
+  orig: 19, 9
+  offset: 0, 0
+  index: -1
+Hair
+  rotate: false
+  xy: 312, 122
+  size: 155, 109
+  orig: 155, 109
+  offset: 0, 0
+  index: -1
+HairPiao
+  rotate: false
+  xy: 82, 10
+  size: 65, 46
+  orig: 65, 46
+  offset: 0, 0
+  index: -1
+Head
+  rotate: false
+  xy: 149, 12
+  size: 57, 44
+  orig: 57, 44
+  offset: 0, 0
+  index: -1
+L_mei
+  rotate: false
+  xy: 359, 356
+  size: 14, 32
+  orig: 14, 32
+  offset: 0, 0
+  index: -1
+Left_Foot
+  rotate: false
+  xy: 308, 2
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Left_Hand
+  rotate: false
+  xy: 208, 12
+  size: 38, 44
+  orig: 38, 44
+  offset: 0, 0
+  index: -1
+Left_Hand_Weapon_B_Drop
+  rotate: false
+  xy: 316, 355
+  size: 41, 23
+  orig: 41, 23
+  offset: 0, 0
+  index: -1
+Left_Lower_Arm
+  rotate: false
+  xy: 375, 359
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1
+Left_Lower_Leg
+  rotate: false
+  xy: 372, 11
+  size: 18, 23
+  orig: 18, 23
+  offset: 0, 0
+  index: -1
+Left_Upper_Arm
+  rotate: false
+  xy: 406, 359
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1
+Left_Upper_Leg
+  rotate: false
+  xy: 564, 38
+  size: 58, 58
+  orig: 58, 58
+  offset: 0, 0
+  index: -1
+Mouth
+  rotate: false
+  xy: 324, 2
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Mouth_e1
+  rotate: false
+  xy: 402, 49
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+R_mei
+  rotate: false
+  xy: 341, 25
+  size: 17, 34
+  orig: 17, 34
+  offset: 0, 0
+  index: -1
+Right_Foot
+  rotate: false
+  xy: 340, 2
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+Right_Hand
+  rotate: false
+  xy: 183, 350
+  size: 43, 28
+  orig: 43, 28
+  offset: 0, 0
+  index: -1
+Right_Hand_Weapon_F_Axe
+  rotate: false
+  xy: 564, 98
+  size: 105, 64
+  orig: 105, 64
+  offset: 0, 0
+  index: -1
+Right_Hand_Weapon_F_Drop
+  rotate: false
+  xy: 499, 365
+  size: 41, 23
+  orig: 41, 23
+  offset: 0, 0
+  index: -1
+Right_Hand_Weapon_F_Sickle
+  rotate: false
+  xy: 312, 61
+  size: 107, 59
+  orig: 107, 59
+  offset: 0, 0
+  index: -1
+Right_Hand_Weapon_F_pickAxe
+  rotate: false
+  xy: 469, 164
+  size: 95, 67
+  orig: 95, 67
+  offset: 0, 0
+  index: -1
+Right_Hand_ZD
+  rotate: false
+  xy: 356, 13
+  size: 14, 10
+  orig: 14, 10
+  offset: 0, 0
+  index: -1
+Right_Lower_Arm
+  rotate: false
+  xy: 437, 359
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1
+Right_Lower_Leg
+  rotate: false
+  xy: 392, 12
+  size: 21, 22
+  orig: 21, 22
+  offset: 0, 0
+  index: -1
+Right_Upper_Arm
+  rotate: false
+  xy: 468, 359
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1
+Right_Upper_Leg
+  rotate: false
+  xy: 624, 38
+  size: 58, 58
+  orig: 58, 58
+  offset: 0, 0
+  index: -1
+beard
+  rotate: false
+  xy: 248, 13
+  size: 58, 43
+  orig: 58, 43
+  offset: 0, 0
+  index: -1
+dg_002
+  rotate: false
+  xy: 312, 233
+  size: 264, 120
+  orig: 264, 120
+  offset: 0, 0
+  index: -1
+dg_004
+  rotate: false
+  xy: 321, 390
+  size: 264, 120
+  orig: 264, 120
+  offset: 0, 0
+  index: -1
+fu
+  rotate: false
+  xy: 542, 365
+  size: 41, 23
+  orig: 41, 23
+  offset: 0, 0
+  index: -1
+pf2/p2_BG_FX
+  rotate: false
+  xy: 183, 380
+  size: 136, 130
+  orig: 136, 130
+  offset: 0, 0
+  index: -1
+pf2/p2_Chest
+  rotate: false
+  xy: 566, 172
+  size: 82, 59
+  orig: 82, 59
+  offset: 0, 0
+  index: -1
+pf2/p2_Hair
+  rotate: false
+  xy: 421, 34
+  size: 141, 86
+  orig: 141, 86
+  offset: 0, 0
+  index: -1
+pf2/p2_HairPiao
+  rotate: false
+  xy: 308, 18
+  size: 31, 38
+  orig: 31, 38
+  offset: 0, 0
+  index: -1
+pf2/p2_Right_Hand_Weapon_F_Drop
+  rotate: false
+  xy: 360, 36
+  size: 40, 23
+  orig: 40, 23
+  offset: 0, 0
+  index: -1
+shadow_get
+  rotate: false
+  xy: 228, 355
+  size: 86, 23
+  orig: 86, 23
+  offset: 0, 0
+  index: -1
+shandian0001
+  rotate: false
+  xy: 2, 204
+  size: 153, 144
+  orig: 153, 144
+  offset: 0, 0
+  index: -1
+shandian0002
+  rotate: false
+  xy: 2, 58
+  size: 153, 144
+  orig: 153, 144
+  offset: 0, 0
+  index: -1
+shandian0003
+  rotate: false
+  xy: 157, 204
+  size: 153, 144
+  orig: 153, 144
+  offset: 0, 0
+  index: -1
+shandian0004
+  rotate: false
+  xy: 157, 58
+  size: 153, 144
+  orig: 153, 144
+  offset: 0, 0
+  index: -1

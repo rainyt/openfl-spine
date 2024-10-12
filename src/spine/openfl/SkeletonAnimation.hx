@@ -1,5 +1,6 @@
 package spine.openfl;
 
+import spine.attachments.Attachment;
 import spine.events.AnimationEvent;
 import spine.animation.Animation;
 import spine.animation.AnimationStateData;
