@@ -85,7 +85,13 @@ class SkeletonAnimation extends SkeletonSprite {
 			useWeakReference:Bool = false) {
 		if (_event == null && state != null) {
 			_event = new AnimationEvent();
-			this.state.addListener(_event);
+			// 添加事件侦听处理
+			this.state.onStart.add(_event.start);
+			this.state.onComplete.add(_event.complete);
+			this.state.onDispose.add(_event.dispose);
+			this.state.onEnd.add(_event.end);
+			this.state.onInterrupt.add(_event.interrupt);
+			this.state.onEvent.add(_event.event);
 		}
 		if (_event != null)
 			_event.addEventListener(type, listener);
