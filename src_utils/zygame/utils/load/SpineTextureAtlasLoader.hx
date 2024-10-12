@@ -1,5 +1,7 @@
 package zygame.utils.load;
 
+import haxe.io.Bytes;
+import spine.SkeletonBinary;
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
 import openfl.Assets;
@@ -73,6 +75,10 @@ class SpineTextureAtlasLoader {
 class SpineTextureAtlas {
 	private var _tilemapSkeletonManager:SkeletonJson;
 	private var _spriteSkeletonManager:SkeletonJson;
+	#if spine_haxe
+	private var _tilemapSkeletonBytesManager:SkeletonBinary;
+	private var _spriteSkeletonBytesManager:SkeletonBinary;
+	#end
 
 	private var _bitmapDatas:Map<String, BitmapData>;
 
@@ -106,7 +112,7 @@ class SpineTextureAtlas {
 	 * 获取Tilemap骨骼管理器
 	 * @return SkeletonJson
 	 */
-	public function getTilemapSkeletonManager(isBytes:Bool = false):SkeletonJson {
+	public function getTilemapSkeletonManager():SkeletonJson {
 		if (_tilemapSkeletonManager == null) {
 			_loader = new spine.tilemap.BitmapDataTextureLoader(_bitmapDatas);
 			var atlas:TextureAtlas = new TextureAtlas(_data, loader);
@@ -119,7 +125,7 @@ class SpineTextureAtlas {
 	 * 获取Sprite骨骼管理器
 	 * @return SkeletonJson
 	 */
-	public function getSpriteSkeletonManager(isBytes:Bool = false):SkeletonJson {
+	public function getSpriteSkeletonManager():SkeletonJson {
 		if (_spriteSkeletonManager == null) {
 			var loader:spine.openfl.BitmapDataTextureLoader = new spine.openfl.BitmapDataTextureLoader(_bitmapDatas);
 			var atlas:TextureAtlas = new TextureAtlas(_data, loader);
@@ -128,18 +134,47 @@ class SpineTextureAtlas {
 		return _spriteSkeletonManager;
 	}
 
+	#if spine_haxe
+	/**
+	 * 获取Sprite骨骼管理器
+	 * @return SkeletonJson
+	 */
+	public function getSpriteSkeletonBytesManager():SkeletonBinary {
+		if (_spriteSkeletonBytesManager == null) {
+			var loader = new spine.openfl.BitmapDataTextureLoader(_bitmapDatas);
+			var atlas:TextureAtlas = new TextureAtlas(_data, loader);
+			_spriteSkeletonBytesManager = new SkeletonBinary(new AtlasAttachmentLoader(atlas));
+		}
+		return _spriteSkeletonBytesManager;
+	}
+
+	/**
+	 * 获取Tilemap骨骼管理器
+	 * @return SkeletonJson
+	 */
+	public function getTilemapSkeletonBytesManager():SkeletonBinary {
+		if (_tilemapSkeletonBytesManager == null) {
+			var loader = new spine.tilemap.BitmapDataTextureLoader(_bitmapDatas);
+			var atlas:TextureAtlas = new TextureAtlas(_data, loader);
+			_tilemapSkeletonBytesManager = new SkeletonBinary(new AtlasAttachmentLoader(atlas));
+		}
+		return _tilemapSkeletonBytesManager;
+	}
+	#end
+
 	/**
 	 * 生成龙骨数据
 	 * @param json 
 	 * @return SkeletonData
 	 */
-	public function buildSpriteSkeletonData(id:String, data:String):SkeletonData {
+	public function buildSpriteSkeletonData(id:String, data:Dynamic):SkeletonData {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
 
 		#if spine_haxe
-		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(data);
+		var skeletonData:SkeletonData = data is Bytes ? getSpriteSkeletonBytesManager().readSkeletonData(data) : getSpriteSkeletonManager()
+			.readSkeletonData(data);
 		#elseif spine4
 		var skeletonData:SkeletonData = getSpriteSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
 		#else
@@ -155,12 +190,13 @@ class SpineTextureAtlas {
 	 * @param data 
 	 * @return SkeletonData
 	 */
-	public function buildTilemapSkeletonData(id:String, data:String):SkeletonData {
+	public function buildTilemapSkeletonData(id:String, data:Dynamic):SkeletonData {
 		if (_skeletonData.exists(id)) {
 			return _skeletonData.get(id);
 		}
 		#if spine_haxe
-		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(data);
+		var skeletonData:SkeletonData = data is Bytes ? getTilemapSkeletonBytesManager().readSkeletonData(data) : getTilemapSkeletonManager()
+			.readSkeletonData(data);
 		#elseif spine4
 		var skeletonData:SkeletonData = getTilemapSkeletonManager().readSkeletonData(new JsonDynamic(haxe.Json.parse(data)));
 		#else
@@ -203,7 +239,7 @@ class SpineTextureAtlas {
 	 * 生成CPUSprite使用的骨骼动画
 	 * @return spine.openfl.SkeletonAnimation
 	 */
-	public function buildSpriteSkeleton(id:String, data:String):spine.openfl.SkeletonAnimation {
+	public function buildSpriteSkeleton(id:String, data:Dynamic):spine.openfl.SkeletonAnimation {
 		var skeletonData:SkeletonData = buildSpriteSkeletonData(id, data);
 		var skeleton:spine.openfl.SkeletonAnimation = new spine.openfl.SkeletonAnimation(skeletonData);
 		#if zygame

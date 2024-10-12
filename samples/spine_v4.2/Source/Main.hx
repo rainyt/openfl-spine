@@ -33,6 +33,7 @@ class Main extends Sprite {
 		// var spineName = "3.8/ORole";
 		// var spineName = "ORole";
 		var jsonData:String = Assets.getText('assets/$spineName.json');
+		// var bytesData = Assets.getBytes('assets/$spineName.skel');
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader('assets/$spineName.atlas', ['assets/$spineName.png']);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite
