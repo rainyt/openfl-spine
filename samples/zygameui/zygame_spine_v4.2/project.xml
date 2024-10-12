@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project><define name="zybuild"/><define name="html5-platform"/>
+<project><define name="debug"/><define name="zybuild"/><define name="html5-platform"/>
 	
 	<meta title="Spine42" package="com.sample.spine42" version="1.0.0" company="Company Name"/>
 	<app main="Main" path="Export" file="Spine42"/>
@@ -11,5 +11,7 @@
 	<haxelib name="zygameui"/>
 	
 	<assets path="Assets" rename="assets"/>
+
+	<haxedef name="gl_stats"/>
 	
 </project>

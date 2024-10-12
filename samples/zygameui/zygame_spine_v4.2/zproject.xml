@@ -11,5 +11,7 @@
 	<haxelib name="zygameui" />
 	
 	<assets path="Assets" rename="assets" />
+
+	<haxedef name="gl_stats"/>
 	
 </project>
