@@ -250,21 +250,6 @@ class SpineTextureAtlas {
 		return skeleton;
 	}
 
-	// /**
-	//  * 生成GPUSprite使用的骨骼动画
-	//  * @return spine.openfl.SkeletonGPUAnimation
-	//  */
-	// public function buildGPUSpriteSkeleton(id:String, data:String):spine.openfl.SkeletonGPUAnimation {
-	// 	var skeletonData:SkeletonData = buildSpriteSkeletonData(id, data);
-	// 	var skeleton:spine.openfl.SkeletonGPUAnimation = new spine.openfl.SkeletonGPUAnimation(skeletonData);
-	// 	#if zygame
-	// 	skeleton.assetsId = this.id + ":" + id;
-	// 	#else
-	// 	// skeleton.assetsId = id + Md5.encode(data);
-	// 	#end
-	// 	return skeleton;
-	// }
-
 	/**
 	 * 卸载
 	 */
