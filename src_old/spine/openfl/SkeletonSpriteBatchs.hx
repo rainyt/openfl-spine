@@ -2,6 +2,8 @@ package spine.openfl;
 
 #if zygame
 import zygame.components.ZBox;
+#else
+import openfl.display.Sprite;
 #end
 import spine.attachments.MeshAttachment;
 import spine.attachments.RegionAttachment;
