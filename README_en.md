@@ -9,7 +9,7 @@ This version is compatible with Spine runtime versions 3.8 to 4.2. Please refer 
 | 3.6 | spine-hx 3.6.0+ | Sprite + Tilemap render | / |
 | 3.8 | spine-hx 3.8.0+ | Sprite + Tilemap render | spine3.8 |
 | 4.0 | spine-hx 4.0+ | Sprite + Tilemap render | spine4 |
-| 4.2 | spine-haxe git | Sprite render | spine4.2 |
+| 4.2 | spine-haxe git | Sprite + Tilemap render | spine4.2 |
 
 # Dependent library
 - spine-hx：https://github.com/jeremyfa/spine-hx

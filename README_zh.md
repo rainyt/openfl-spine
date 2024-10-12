@@ -9,7 +9,7 @@
 | 3.6 | spine-hx 3.6.0+ | Sprite + Tilemap渲染器 | / |
 | 3.8 | spine-hx 3.8.0+ | Sprite + Tilemap渲染器 | spine3.8 |
 | 4.0 | spine-hx 4.0+ | Sprite + Tilemap渲染器 | spine4 |
-| 4.2 | spine-haxe git | Sprite渲染器 | spine4.2 |
+| 4.2 | spine-haxe git | Sprite + Tilemap渲染器 | spine4.2 |
 
 # 依赖库（Dependent library）
 - spine-hx：https://github.com/jeremyfa/spine-hx
