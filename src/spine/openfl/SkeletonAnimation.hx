@@ -368,6 +368,8 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 				return;
 		}
 		renderTriangles();
+		if (delta != 0 && onRootBoneAnimateChange != null)
+			onRootBoneAnimateChange(delta);
 	}
 
 	private var _lastAlpha:Float = 1;
@@ -393,6 +395,12 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 	 * 离屏渲染模式
 	 */
 	public var offscreenRender:Bool = false;
+
+	/**
+	 * 应用根骨骼动画
+	 * @return Bool 如果返回`false`，则不再应用根骨骼动画
+	 */
+	public var onRootBoneAnimateChange:Float->Bool;
 
 	/**
 	 * 渲染实现
@@ -676,7 +684,16 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		spr.graphics.endFill();
 		_shape.addChild(spr);
 		spr.visible = true;
+
+		if (onRootBoneAnimateChange != null) {
+			spr.x = -this.skeleton.rootBone.worldX;
+			spr.y = -this.skeleton.rootBone.worldY;
+		}
 	}
+
+	private var __lastApplyRootX:Float = 0.;
+
+	private var __lastApplyRootY:Float = 0.;
 
 	#if !flash
 	/**
