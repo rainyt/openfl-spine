@@ -1,3 +1,13 @@
+#if api_lang_en
+/**
+ * Skeleton animation component
+ * Supports official Spine-Haxe 4.2+ version
+ */
+#else
+/**
+ * 支持官方Spine-Haxe 4.2+版本的骨骼动画组件
+ */
+#end
 package spine.openfl;
 
 #if spine4_2
@@ -31,149 +41,341 @@ import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import zygame.utils.SpineManager;
 
-/**
- * 支持官方Spine-Haxe 4.2+版本的骨骼动画组件
- */
 class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
+	#if api_lang_en
+	/**
+	 * Skeleton clipping instance
+	 */
+	#else
 	/**
 	 * 切割器
 	 */
+	#end
 	private static var clipper:SkeletonClipping = new SkeletonClipping();
 
+	#if api_lang_en
+	/**
+	 * Quad triangles indices
+	 */
+	#else
 	/**
 	 * 矩形顶点
 	 */
+	#end
 	private static var quadTriangles:Array<Int> = [0, 1, 2, 2, 3, 0];
 
+	#if api_lang_en
+	/**
+	 * Asset index
+	 */
+	#else
 	/**
 	 * 资源索引
 	 */
+	#end
 	public var assetsId:String = null;
 
+	#if api_lang_en
+	/**
+	 * Last draw time
+	 */
+	#else
 	/**
 	 * 最后绘制时间
 	 */
+	#end
 	public var lastDrawTime:Float = 0;
 
+	#if api_lang_en
+	/**
+	 * Whether to run independently, not affected by SpineManager
+	 */
+	#else
 	/**
 	 * 是否为独立运行，不受SpineManager的影响
 	 */
+	#end
 	public var independent:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Skeleton object
+	 */
+	#else
 	/**
 	 * 骨架对象
 	 */
+	#end
 	public var skeleton:Skeleton;
 
+	#if api_lang_en
+	/**
+	 * Animation state
+	 */
+	#else
 	/**
 	 * 骨骼动画状态
 	 */
+	#end
 	public var state:AnimationState;
 
+	#if api_lang_en
+	/**
+	 * Current animation data
+	 */
+	#else
 	/**
 	 * 当前动画数据
 	 */
+	#end
 	private var _currentAnimation:Animation;
 
+	#if api_lang_en
+	/**
+	 * Time scale
+	 */
+	#else
 	/**
 	 * 时间轴缩放
 	 */
+	#end
 	public var timeScale(get, set):Float;
 
+	#if api_lang_en
+	/**
+	 * Sets the time scale
+	 * @param v Time scale value
+	 * @return Time scale value
+	 */
+	#else
+	/**
+	 * 设置时间缩放
+	 * @param v 时间缩放值
+	 * @return 时间缩放值
+	 */
+	#end
 	private function set_timeScale(v:Float):Float {
 		this.state.timeScale = v;
 		return v;
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets the time scale
+	 * @return Time scale value
+	 */
+	#else
+	/**
+	 * 获取时间缩放
+	 * @return 时间缩放值
+	 */
+	#end
 	private function get_timeScale():Float {
 		return this.state.timeScale;
 	}
 
+	#if api_lang_en
+	/**
+	 * Smoothing support for SpriteSpine, default is false
+	 */
+	#else
 	/**
 	 * SpriteSpine的平滑支持，默认为false，可设置为true开启平滑支持
 	 */
+	#end
 	public var smoothing:Bool = #if !smoothing false #else true #end;
 
+	#if api_lang_en
+	/**
+	 * Temporary vertices array
+	 */
+	#else
 	/**
 	 * 坐标数组
 	 */
+	#end
 	private var _tempVerticesArray:Array<Float>;
 
+	#if api_lang_en
+	/**
+	 * Colors array (not implemented)
+	 */
+	#else
 	/**
 	 * 颜色数组（未实现）
 	 */
+	#end
 	private var _colors:Array<Int>;
 
+	#if api_lang_en
+	/**
+	 * Whether animation is playing
+	 */
+	#else
 	/**
 	 * 是否正在播放
 	 */
+	#end
 	private var _isPlay:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Whether the object is disposed
+	 */
+	#else
+	/**
+	 * 是否已释放
+	 */
+	#end
 	private var _isDipose:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Current action name
+	 */
+	#else
 	/**
 	 * 当前播放的动作名
 	 */
+	#end
 	private var _actionName:String = "";
 
+	#if api_lang_en
+	/**
+	 * Triangles vector cache
+	 */
+	#else
 	/**
 	 * 顶点缓存
 	 */
+	#end
 	private var _trianglesVector:Map<TextureAtlasRegion, Vector<Int>>;
 
+	#if api_lang_en
+	/**
+	 * Sprite pool
+	 */
+	#else
 	/**
 	 * 精灵表垃圾池
 	 */
+	#end
 	private var _spritePool:ObjectPool<Sprite> = new ObjectPool(() -> {
 		return new Sprite();
 	});
 
+	#if api_lang_en
+	/**
+	 * All vertices data
+	 */
+	#else
 	/**
 	 * 所有顶点数据
 	 */
+	#end
 	private var allVerticesArray:Vector<Float> = new Vector<Float>(0, false);
 
+	#if api_lang_en
+	/**
+	 * All triangles data
+	 */
+	#else
 	/**
 	 * 所有三角形数据
 	 */
+	#end
 	private var allTriangles:Vector<Int> = new Vector<Int>(0, false);
 
+	#if api_lang_en
+	/**
+	 * All triangles alpha properties
+	 */
+	#else
 	/**
 	 * 所有顶点透明属性
 	 */
+	#end
 	private var allTrianglesAlpha:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles blend mode properties
+	 */
+	#else
 	/**
 	 * 所有顶点BlendMode属性
 	 */
+	#end
 	private var allTrianglesBlendMode:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles color multiplication
+	 */
+	#else
 	/**
 	 * 所有顶点的颜色相乘
 	 */
+	#end
 	private var allTrianglesColor:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles dark color
+	 */
+	#else
+	/**
+	 * 所有顶点的暗色
+	 */
+	#end
 	private var allTrianglesDarkColor:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All UV data
+	 */
+	#else
 	/**
 	 * 所有UV数据
 	 */
+	#end
 	private var allUvs:Vector<Float> = new Vector<Float>(0, false);
 
+	#if api_lang_en
+	/**
+	 * Vertex data index
+	 */
+	#else
 	/**
 	 * 顶点数据索引
 	 */
+	#end
 	private var _buffdataPoint:Int = 0;
 
+	#if api_lang_en
+	/**
+	 * Rendered sprite object
+	 */
+	#else
 	/**
 	 * 渲染的精灵对象
 	 */
+	#end
 	private var _shape:Sprite;
 
+	#if api_lang_en
+	/**
+	 * Creates a new Spine object
+	 * @param skeletonData Skeleton data
+	 * @param stateData Animation state data (optional)
+	 */
+	#else
 	/**
 	 * 创建一个Spine对象
 	 * @param skeletonData 骨骼数据
+	 * @param stateData 动画状态数据（可选）
 	 */
+	#end
 	public function new(skeletonData:SkeletonData, stateData:AnimationState = null) {
 		super();
 		skeleton = new Skeleton(skeletonData);

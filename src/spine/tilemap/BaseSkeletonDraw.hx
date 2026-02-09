@@ -1,3 +1,13 @@
+#if api_lang_en
+/**
+ * Base tilemap render for Spine
+ * Only contains skeleton rendering functionality
+ */
+#else
+/**
+ * 基础的瓦片渲染Spine对象，只含骨骼渲染
+ */
+#end
 package spine.tilemap;
 
 #if zygame
@@ -13,42 +23,88 @@ import spine.attachments.RegionAttachment;
 #if spine4_2
 import spine.Color;
 import spine.atlas.TextureAtlasRegion;
+import spine.Bone;
+import spine.Slot;
+import spine.Skeleton;
+import spine.BlendMode;
 #else
 import spine.support.graphics.Color;
 import spine.support.graphics.TextureAtlas.AtlasRegion as TextureAtlasRegion;
+import spine.Bone;
+import spine.Slot;
+import spine.Skeleton;
+import spine.BlendMode;
 #end
 import openfl.display.BitmapData;
 import spine.base.SpineBaseDisplay;
 
-/**
- * 基础的瓦片渲染Spine对象，只含骨骼渲染
- */
 class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
+	#if api_lang_en
+	/**
+	 * Creates a new BaseSkeletonDraw
+	 * @param skeleton Skeleton to render
+	 */
+	#else
+	/**
+	 * 创建一个新的BaseSkeletonDraw
+	 * @param skeleton 要渲染的骨骼
+	 */
+	#end
 	public function new(skeleton:Skeleton) {
 		super();
 		this.skeleton = skeleton;
 	}
 
+	#if api_lang_en
+	/**
+	 * Skeleton object to render
+	 */
+	#else
+	/**
+	 * 要渲染的骨骼对象
+	 */
+	#end
 	public var skeleton:Skeleton;
 
+	#if api_lang_en
+	/**
+	 * Mapping of slots to tile containers for rendering
+	 */
+	#else
 	/**
 	 * 渲染骨骼对应关系
 	 */
+	#end
 	private var _map:Map<Slot, TileContainer> = [];
 
+	#if api_lang_en
+	/**
+	 * Whether to disable color processing
+	 */
+	#else
 	/**
 	 * 禁用颜色
 	 */
+	#end
 	public var disableColor:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Renders the skeleton using tiles
+	 */
+	#else
+	/**
+	 * 使用瓦片渲染骨骼
+	 */
+	#end
 	private function renderTriangles():Void {
-		// removeTiles性能比较差，不适合频繁调用
+		// removeTiles has poor performance, not suitable for frequent calls
 		// this.removeTiles();
 		for (key => value in _map) {
 			this.removeTile(value);
 		}
 
-		// 不可见以及骨骼数据为null时，则不再渲染
+		// Don't render if not visible or skeleton is null
 		if (!this.visible || skeleton == null) {
 			return;
 		}
@@ -68,20 +124,20 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 		// var blend:Int;
 		#if spine4_2
 		for (i in 0...n) {
-			// 获取骨骼
+			// Get slot
 			slot = drawOrder[i];
-			// 初始化参数
+			// Initialize parameters
 			atlasRegion = null;
 			bitmapData = null;
-			// 如果骨骼的渲染物件存在
+			// If slot has attachment
 			if (slot.attachment != null) {
 				if (Std.isOfType(slot.attachment, RegionAttachment)) {
-					// 如果是矩形
+					// If it's a region attachment
 					var region:RegionAttachment = cast slot.attachment;
 					regionColor = region.color;
 					atlasRegion = cast region.region;
 
-					// 矩形绘制
+					// Draw region
 					if (atlasRegion != null) {
 						var wrapper:#if zygame BSprite #else TileContainer #end = cast _map.get(slot);
 						var tile:#if zygame BImage #else Tile #end = null;
@@ -133,7 +189,7 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 						wrapper.scaleY = bone.worldScaleY * (bone.scaleY < 0 ? -1 : 1);
 						this.addTile(wrapper);
 
-						// 色值处理
+						// Color processing
 						if (!disableColor) {
 							wrapper.alpha = slot.color.a * skeleton.color.a * region.color.a;
 							if (wrapper.colorTransform == null) {
@@ -161,20 +217,20 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 		}
 		#else
 		for (i in 0...n) {
-			// 获取骨骼
+			// Get slot
 			slot = drawOrder[i];
-			// 初始化参数
+			// Initialize parameters
 			atlasRegion = null;
 			bitmapData = null;
-			// 如果骨骼的渲染物件存在
+			// If slot has attachment
 			if (slot.attachment != null) {
 				if (Std.isOfType(slot.attachment, RegionAttachment)) {
-					// 如果是矩形
+					// If it's a region attachment
 					var region:RegionAttachment = cast slot.attachment;
 					regionColor = region.getColor();
 					atlasRegion = cast region.getRegion();
 
-					// 矩形绘制
+					// Draw region
 					if (atlasRegion != null) {
 						var wrapper:#if zygame BSprite #else TileContainer #end = cast _map.get(slot);
 						var tile:#if zygame BImage #else Tile #end = null;
@@ -226,7 +282,7 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 						wrapper.scaleY = bone.getWorldScaleY() * (bone.getScaleY() < 0 ? -1 : 1);
 						this.addTile(wrapper);
 
-						// 色值处理
+						// Color processing
 						if (!disableColor) {
 							wrapper.alpha = slot.color.a * skeleton.color.a * region.getColor().a;
 							if (wrapper.colorTransform == null) {
@@ -255,6 +311,25 @@ class BaseSkeletonDraw extends #if zygame BSprite #else TileContainer #end {
 		#end
 	}
 
+	#if api_lang_en
+	/**
+	 * Converts ARGB color values to a single number
+	 * @param a Alpha component
+	 * @param r Red component
+	 * @param g Green component
+	 * @param b Blue component
+	 * @return ARGB color as a single number
+	 */
+	#else
+	/**
+	 * 将ARGB颜色值转换为单个数字
+	 * @param a  alpha分量
+	 * @param r  红色分量
+	 * @param g  绿色分量
+	 * @param b  蓝色分量
+	 * @return 单个数字表示的ARGB颜色
+	 */
+	#end
 	public function argbToNumber(a:Int, r:Int, g:Int, b:Int):UInt {
 		return a << 24 | r << 16 | g << 8 | b;
 	}

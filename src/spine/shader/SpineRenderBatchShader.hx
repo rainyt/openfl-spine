@@ -1,31 +1,71 @@
 #if !spine4_2
+#if api_lang_en
+/**
+ * Batch render shader for Spine
+ * Implements support for position, scale, and rotation for batch rendering
+ */
+#else
+/**
+ * 为批渲染对象实现XY/SCALE等支持
+ */
+#end
 package spine.shader;
 
 import VectorMath;
 
-/**
- * 为批渲染对象实现XY/SCALE等支持
- */
 class SpineRenderBatchShader extends SpineRenderShader {
+	#if api_lang_en
+	/**
+	 * Vertex position offset
+	 */
+	#else
 	/**
 	 * 顶点位移
 	 */
+	#end
 	@:attribute public var xy:Vec2;
 
+	#if api_lang_en
+	/**
+	 * Vertex scale and rotation
+	 * x: scale X, y: scale Y, z: rotation degrees
+	 */
+	#else
 	/**
 	 * 顶点缩放、旋转
+	 * x: 缩放X, y: 缩放Y, z: 旋转角度
 	 */
+	#end
 	@:attribute public var scaleAndRotation:Vec3;
 
+	#if api_lang_en
+	/**
+	 * Size uniform
+	 */
+	#else
 	/**
 	 * 尺寸
 	 */
+	#end
 	@:uniform public var size:Vec2;
 
+	#if api_lang_en
+	/**
+	 * Rotation implementation
+	 * @param degrees Rotation degrees
+	 * @param axis Rotation axis
+	 * @param ts Translation vector
+	 * @return Rotation matrix
+	 */
+	#else
 	/**
 	 * 旋转实现
-	 * @return Mat4
+	 * @param degrees 旋转角度
+	 * @param axis 旋转轴
+	 * @param ts 平移向量
+	 * @return 旋转矩阵
 	 */
+	#end
 	@:vertexglsl public function rotaion(degrees:Float, axis:Vec3, ts:Vec3):Mat4 {
 		var tx:Float = ts.x;
 		var ty:Float = ts.y;
@@ -67,27 +107,53 @@ class SpineRenderBatchShader extends SpineRenderShader {
 		return d;
 	}
 
+	#if api_lang_en
+	/**
+	 * Scale implementation
+	 * @param xScale Scale factor for X axis
+	 * @param yScale Scale factor for Y axis
+	 * @return Scale matrix
+	 */
+	#else
 	/**
 	 * 比例缩放
-	 * @param scaleX 
-	 * @param scaleY 
+	 * @param xScale X轴缩放因子
+	 * @param yScale Y轴缩放因子
+	 * @return 缩放矩阵
 	 */
+	#end
 	@:vertexglsl public function scaleXY(xScale:Float, yScale:Float):Mat4 {
 		return mat4(xScale, 0.0, 0.0, 0.0, 0.0, yScale, 0.0, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 1.0);
 	}
 
+	#if api_lang_en
+	/**
+	 * Translation implementation
+	 * @param x Translation for X axis
+	 * @param y Translation for Y axis
+	 * @return Translation matrix
+	 */
+	#else
 	/**
 	 * 平移
-	 * @param x 
-	 * @param y 
+	 * @param x X轴平移
+	 * @param y Y轴平移
+	 * @return 平移矩阵
 	 */
+	#end
 	@:vertexglsl public function translation(x:Float, y:Float):Mat4 {
 		return mat4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, x, y, 0, 0);
 	}
 
+	#if api_lang_en
+	/**
+	 * Vertex shader implementation
+	 */
+	#else
 	/**
 	 * 顶点着色器
 	 */
+	#end
 	override function vertex() {
 		super.vertex();
 		var mat:Mat4 = gl_openfl_Matrix;

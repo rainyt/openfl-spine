@@ -28,6 +28,17 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+#if api_lang_en
+/**
+ * Tilemap-based SkeletonAnimation for Spine animations
+ * Extends SkeletonSprite to add animation state management
+ */
+#else
+/**
+ * 基于瓦片的Spine动画播放器
+ * 扩展SkeletonSprite以添加动画状态管理
+ */
+#end
 package spine.tilemap;
 
 import spine.events.AnimationEvent;
@@ -42,14 +53,42 @@ import spine.AnimationStateData;
 
 class SkeletonAnimation extends SkeletonSprite {
 	#if zygame
+	#if api_lang_en
+	/**
+	 * Asset index
+	 */
+	#else
 	/**
 	 * 资源索引
 	 */
+	#end
 	public var assetsId:String = null;
 	#end
 
+	#if api_lang_en
+	/**
+	 * Animation state for managing animations
+	 */
+	#else
+	/**
+	 * 用于管理动画的动画状态
+	 */
+	#end
 	public var state:AnimationState;
 
+	#if api_lang_en
+	/**
+	 * Creates a new SkeletonAnimation
+	 * @param skeletonData Skeleton data
+	 * @param stateData Animation state data (optional)
+	 */
+	#else
+	/**
+	 * 创建一个新的SkeletonAnimation
+	 * @param skeletonData 骨骼数据
+	 * @param stateData 动画状态数据（可选）
+	 */
+	#end
 	public function new(skeletonData:SkeletonData, stateData:AnimationStateData = null) {
 		super(skeletonData);
 		#if (spine_hx <= "3.6.0")
@@ -65,12 +104,34 @@ class SkeletonAnimation extends SkeletonSprite {
 		_advanceTime(0);
 	}
 
+	#if api_lang_en
+	/**
+	 * Advances animation time
+	 * @param time Time to advance in seconds
+	 */
+	#else
+	/**
+	 * 推进动画时间
+	 * @param time 推进的时间（秒）
+	 */
+	#end
 	override public function advanceTime(time:Float):Void {
 		if (!this.visible || !isPlay)
 			return;
 		_advanceTime(time);
 	}
 
+	#if api_lang_en
+	/**
+	 * Internal method to advance time
+	 * @param time Time to advance in seconds
+	 */
+	#else
+	/**
+	 * 内部方法，用于推进时间
+	 * @param time 推进的时间（秒）
+	 */
+	#end
 	private function _advanceTime(time:Float) {
 		state.update(time / timeScale);
 		state.apply(skeleton);
@@ -80,9 +141,19 @@ class SkeletonAnimation extends SkeletonSprite {
 		super.advanceTime(time);
 	}
 
+	#if api_lang_en
+	/**
+	 * Plays an animation
+	 * @param action Animation name
+	 * @param loop Whether to loop the animation
+	 */
+	#else
 	/**
 	 * 播放
+	 * @param action 动画名称
+	 * @param loop 是否循环播放
 	 */
+	#end
 	override public function play(action:String = null, loop:Bool = true):Void {
 		if (action != null && action != "") {
 			this.state.setAnimationByName(0, action, loop);
@@ -91,8 +162,36 @@ class SkeletonAnimation extends SkeletonSprite {
 	}
 
 	#if zygame
+	#if api_lang_en
+	/**
+	 * Animation event handler
+	 */
+	#else
+	/**
+	 * 动画事件处理器
+	 */
+	#end
 	private var _event:AnimationEvent;
 
+	#if api_lang_en
+	/**
+	 * Adds an event listener
+	 * @param type Event type
+	 * @param listener Event listener
+	 * @param useCapture Use capture phase
+	 * @param priority Event priority
+	 * @param useWeakReference Use weak reference
+	 */
+	#else
+	/**
+	 * 添加事件监听器
+	 * @param type 事件类型
+	 * @param listener 事件监听器
+	 * @param useCapture 是否使用捕获阶段
+	 * @param priority 事件优先级
+	 * @param useWeakReference 是否使用弱引用
+	 */
+	#end
 	override function addEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false, priority:Int = 0,
 			useWeakReference:Bool = false) {
 		if (_event == null && state != null) {
@@ -114,6 +213,21 @@ class SkeletonAnimation extends SkeletonSprite {
 		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
 	}
 
+	#if api_lang_en
+	/**
+	 * Removes an event listener
+	 * @param type Event type
+	 * @param listener Event listener
+	 * @param useCapture Use capture phase
+	 */
+	#else
+	/**
+	 * 移除事件监听器
+	 * @param type 事件类型
+	 * @param listener 事件监听器
+	 * @param useCapture 是否使用捕获阶段
+	 */
+	#end
 	override function removeEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false) {
 		super.removeEventListener(type, listener, useCapture);
 		if (_event != null)

@@ -1,4 +1,15 @@
 #if !spine4_2
+#if api_lang_en
+/**
+ * Skeleton batch rendering handler
+ * Batches multiple SkeletonSprite objects for efficient rendering
+ */
+#else
+/**
+ * 骨骼批渲染处理
+ * 批量处理多个SkeletonSprite对象以提高渲染效率
+ */
+#end
 package spine.openfl;
 
 #if zygame
@@ -19,67 +30,153 @@ import zygame.utils.SpineManager;
 import spine.shader.SpineRenderBatchShader;
 import openfl.display3D.Context3DTextureFilter;
 
-/**
- * 骨骼批渲染处理
- */
 @:noCompletion
 class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements SpineBaseDisplay {
+	#if api_lang_en
+	/**
+	 * Shader for batch rendering
+	 */
+	#else
 	/**
 	 * 着色器
 	 */
+	#end
 	private var _shader:SpineRenderBatchShader;
 
+	#if api_lang_en
+	/**
+	 * Last draw time
+	 */
+	#else
 	/**
 	 * 最后绘制时间
 	 */
+	#end
 	public var lastDrawTime:Float = 0;
 
+	#if api_lang_en
+	/**
+	 * All vertices data
+	 */
+	#else
 	/**
 	 * 所有顶点数据
 	 */
+	#end
 	private var allVerticesArray:Vector<Float> = new Vector<Float>(0, false);
 
+	#if api_lang_en
+	/**
+	 * All triangles data
+	 */
+	#else
 	/**
 	 * 所有三角形数据
 	 */
+	#end
 	private var allTriangles:Vector<Int> = new Vector<Int>(0, false);
 
+	#if api_lang_en
+	/**
+	 * All triangles alpha properties
+	 */
+	#else
 	/**
 	 * 所有顶点透明属性
 	 */
+	#end
 	private var allTrianglesAlpha:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles blend mode properties
+	 */
+	#else
 	/**
 	 * 所有顶点BlendMode属性
 	 */
+	#end
 	private var allTrianglesBlendMode:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles color multiplication
+	 */
+	#else
 	/**
 	 * 所有顶点的颜色相乘
 	 */
+	#end
 	private var allTrianglesColor:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All position data
+	 */
+	#else
+	/**
+	 * 所有位置数据
+	 */
+	#end
 	private var allXy:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All scale and rotation data
+	 */
+	#else
+	/**
+	 * 所有缩放和旋转数据
+	 */
+	#end
 	private var allScale:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All UV data
+	 */
+	#else
 	/**
 	 * 所有UV数据
 	 */
+	#end
 	private var allUvs:Vector<Float> = new Vector<Float>(0, false);
 
+	#if api_lang_en
+	/**
+	 * Bitmap data for rendering
+	 */
+	#else
+	/**
+	 * 渲染用的位图数据
+	 */
+	#end
 	private var _bitmapData:BitmapData;
 	private var _setXBool:Bool = true;
 	private var _isClearTriangles:Bool = true;
 
+	#if api_lang_en
+	/**
+	 * Whether to run independently, not affected by SpineManager
+	 */
+	#else
 	/**
 	 * 是否为独立运行，不受SpineManager的影响
 	 */
+	#end
 	public var independent:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Creates a new SkeletonSpriteBatchs
+	 */
+	#else
+	/**
+	 * 创建一个新的SkeletonSpriteBatchs
+	 */
+	#end
 	public function new() {
 		super();
-		// _bitmapData = bitmapData;
 		#if zygame
 		SpineManager.addOnFrame(this, true);
 		#else
@@ -88,27 +185,86 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		_shader = new SpineRenderBatchShader();
 	}
 
+	#if api_lang_en
+	/**
+	 * Whether animation is playing
+	 */
+	#else
 	/**
 	 * 是否正在播放
 	 */
+	#end
 	public var isPlay(get, set):Bool;
 
+	#if api_lang_en
+	/**
+	 * Gets whether animation is playing
+	 * @return Always returns true
+	 */
+	#else
+	/**
+	 * 获取是否正在播放
+	 * @return 始终返回true
+	 */
+	#end
 	private function get_isPlay():Bool {
 		return true;
 	}
 
+	#if api_lang_en
+	/**
+	 * Sets whether animation is playing
+	 * @param bool Boolean value
+	 * @return The input boolean value
+	 */
+	#else
+	/**
+	 * 设置是否正在播放
+	 * @param bool 布尔值
+	 * @return 输入的布尔值
+	 */
+	#end
 	private function set_isPlay(bool:Bool):Bool {
 		return bool;
 	}
 
+	#if api_lang_en
+	/**
+	 * Updates the batch rendering
+	 * @param dt Delta time
+	 */
+	#else
+	/**
+	 * 更新批渲染
+	 * @param dt 时间增量
+	 */
+	#end
 	public function onSpineUpdate(dt:Float):Void {
 		endFill();
 	}
 
+	#if api_lang_en
+	/**
+	 * Clears the triangles data
+	 */
+	#else
+	/**
+	 * 清除三角形数据
+	 */
+	#end
 	public function clearTriangles():Void {
 		allTriangles.splice(0, allTriangles.length);
 	}
 
+	#if api_lang_en
+	/**
+	 * Map of uploaded buffer data for each SkeletonSprite
+	 */
+	#else
+	/**
+	 * 每个SkeletonSprite的上传缓冲区数据映射
+	 */
+	#end
 	private var _uploadBuffDataMaps:Map<SkeletonSprite, {
 		v:Vector<Float>,
 		i:Vector<Int>,
@@ -118,12 +274,29 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		alphas:Array<Float>
 	}> = [];
 
+	#if api_lang_en
+	/**
+	 * Uploads buffer data for rendering
+	 * @param sprite SkeletonSprite to upload data for
+	 * @param v Vertices data
+	 * @param i Triangles indices
+	 * @param uvs UV data
+	 * @param color Color data
+	 * @param blend Blend mode data
+	 * @param alphas Alpha data
+	 */
+	#else
 	/**
 	 * 上传数据渲染
-	 * @param v 
-	 * @param i 
-	 * @param m 
+	 * @param sprite 要上传数据的SkeletonSprite
+	 * @param v 顶点数据
+	 * @param i 三角形索引
+	 * @param uvs UV数据
+	 * @param color 颜色数据
+	 * @param blend 混合模式数据
+	 * @param alphas 透明度数据
 	 */
+	#end
 	public function uploadBuffData(sprite:SkeletonSprite, v:Vector<Float>, i:Vector<Int>, uvs:Vector<Float>, color:Array<Float>, blend:Array<Float>,
 			alphas:Array<Float>):Void {
 		if (sprite.visible == false) {
@@ -153,6 +326,17 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		});
 	}
 
+	#if api_lang_en
+	/**
+	 * Flushes the buffer data for a SkeletonSprite
+	 * @param sprite SkeletonSprite to flush data for
+	 */
+	#else
+	/**
+	 * 刷新SkeletonSprite的缓冲区数据
+	 * @param sprite 要刷新数据的SkeletonSprite
+	 */
+	#end
 	public function flushBuffData(sprite:SkeletonSprite):Void {
 		var buffer = _uploadBuffDataMaps.get(sprite);
 		if (buffer == null)
@@ -163,8 +347,6 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 			allTriangles.push(vi + t);
 			allXy.push(sprite.x);
 			allXy.push(sprite.y);
-			// allXy.push(0);
-			// allXy.push(0);
 			allScale.push(sprite.scaleX);
 			allScale.push(sprite.scaleY);
 			allScale.push(sprite.rotation);
@@ -186,9 +368,15 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		}
 	}
 
+	#if api_lang_en
+	/**
+	 * Final batch rendering
+	 */
+	#else
 	/**
 	 * 最终批渲染
 	 */
+	#end
 	private function endFill():Void {
 		allVerticesArray.splice(0, allVerticesArray.length);
 		allUvs.splice(0, allUvs.length);
@@ -226,7 +414,6 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 			this.stage.stageHeight * @:privateAccess this.__worldTransform.d
 		];
 		#end
-		// #end
 		_shader.data.bitmap.filter = false ? LINEAR : NEAREST;
 		_shader.a_texalpha.value = allTrianglesAlpha;
 		_shader.a_texblendmode.value = allTrianglesBlendMode;
@@ -240,12 +427,21 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		_isClearTriangles = false;
 	}
 
+	#if api_lang_en
+	/**
+	 * Overrides addChildAt method
+	 * @param child Child display object to add
+	 * @param index Index to add child at
+	 * @return Added display object
+	 */
+	#else
 	/**
 	 * 方法重写
-	 * @param child 
-	 * @param index 
-	 * @return DisplayObject
+	 * @param child 要添加的子显示对象
+	 * @param index 添加子对象的索引
+	 * @return 添加的显示对象
 	 */
+	#end
 	override public function addChildAt(child:DisplayObject, index:Int):DisplayObject {
 		if (!Std.isOfType(child, SkeletonSprite)) {
 			throw "请不要添加非spine.openfl.SkeletonSprite对象！";
@@ -256,21 +452,45 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 		return super.addChildAt(child, index);
 	}
 
+	#if api_lang_en
+	/**
+	 * Checks if the batch is hidden
+	 * @return Whether the batch is hidden
+	 */
+	#else
+	/**
+	 * 检查批处理是否隐藏
+	 * @return 批处理是否隐藏
+	 */
+	#end
 	public function isHidden():Bool {
 		return this.alpha == 0 || !this.visible;
 	}
 
 	#if !flash
+	#if api_lang_en
+	/**
+	 * Overrides hit test method to fix touch issues
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param shapeFlag Shape flag
+	 * @param stack Display object stack
+	 * @param interactiveOnly Interactive only flag
+	 * @param hitObject Hit object
+	 * @return Whether the point hits the object
+	 */
+	#else
 	/**
 	 * 重构触摸事件，无法触发触摸的问题
-	 * @param x
-	 * @param y
-	 * @param shapeFlag
-	 * @param stack
-	 * @param interactiveOnly
-	 * @param hitObject
-	 * @return Bool
+	 * @param x X坐标
+	 * @param y Y坐标
+	 * @param shapeFlag 形状标志
+	 * @param stack 显示对象栈
+	 * @param interactiveOnly 仅交互标志
+	 * @param hitObject 命中对象
+	 * @return 点是否命中对象
 	 */
+	#end
 	override private function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool {
 		if (this.mouseEnabled == false || this.visible == false)
 			return false;
