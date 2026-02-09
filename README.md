@@ -1,9 +1,15 @@
 # Openfl-Spine
-用于OpenFL引擎渲染的Spine渲染器
-### 版本支持
-最低运行时支持版本：3.6.0
-最新运行时版本支持：4.2.0
+Spine renderer for OpenFL engine rendering
 
-### 文档
+## State
+The current library has entered maintenance mode and no new features will be added, but bug fixes will be made. But it is already stable enough for release and use.
+
+## Api
+Support API documentation in both English and Chinese versions. If Chinese is required, please refer to the instructions in the Chinese documentation.
+
+### Spine Version
+Support Spine version: 3.6.0 ~ 4.2.0
+
+### Documentation
 [中文](README_zh.md)
 [English](README_en.md)

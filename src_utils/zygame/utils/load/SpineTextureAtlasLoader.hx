@@ -1,7 +1,6 @@
 package zygame.utils.load;
 
 import haxe.io.Bytes;
-import spine.SkeletonBinary;
 import haxe.crypto.Md5;
 import openfl.display.BitmapData;
 import openfl.Assets;
@@ -12,6 +11,7 @@ import spine.SkeletonData;
 import spine.support.graphics.TextureAtlas;
 import spine.SkeletonDataFileHandle;
 #elseif spine_haxe
+import spine.SkeletonBinary;
 import spine.atlas.TextureAtlas;
 import spine.SkeletonData;
 #end

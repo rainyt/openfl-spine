@@ -21,6 +21,7 @@
 -D zygame
 -D api
 -D openfl_swf
+-D spine4_2
 -lib KengSDK
 -cp src
 -cp openfl9-source

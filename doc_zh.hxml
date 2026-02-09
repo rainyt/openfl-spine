@@ -1,0 +1,22 @@
+--define doc-gen
+--class-path src
+--class-path src_utils
+--class-path test
+--library spine-haxe
+--library hxmaker-openfl
+--library openfl-glsl
+--library vector-math
+--library actuate
+--library openfl
+--library lime
+-D spine4_2
+-D lime
+-D openfl
+--main ApiDoc
+--xml bin/types.xml
+--interp
+
+--next
+
+# 生成api文档
+--cmd haxelib run dox -i bin -o api_docs_zh -in spine

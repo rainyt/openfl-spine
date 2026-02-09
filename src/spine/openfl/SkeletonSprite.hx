@@ -1,5 +1,16 @@
 package spine.openfl;
 
+#if !spine4_2
+#if api_lang_en
+/**
+ * Sprite renderer for Spine
+ * Each Sprite performs a single render
+ */
+#else
+/**
+ * Sprite渲染器，单个Sprite会进行单次渲染
+ */
+#end
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
@@ -24,174 +35,407 @@ import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import zygame.utils.SpineManager;
 
-/**
- * Sprite渲染器，单个Sprite会进行单次渲染
- */
 class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #end implements spine.base.SpineBaseDisplay {
+	#if api_lang_en
+	/**
+	 * Asset index
+	 */
+	#else
 	/**
 	 * 资源索引
 	 */
+	#end
 	public var assetsId:String = null;
 
+	#if api_lang_en
+	/**
+	 * Last draw time
+	 */
+	#else
 	/**
 	 * 最后绘制时间
 	 */
+	#end
 	public var lastDrawTime:Float = 0;
 
+	#if api_lang_en
+	/**
+	 * Cache ID
+	 */
+	#else
 	/**
 	 * 缓存ID
 	 */
+	#end
 	public var cacheId(get, never):String;
 
+	#if api_lang_en
+	/**
+	 * Gets the cache ID
+	 * @return Cache ID string
+	 */
+	#else
+	/**
+	 * 获取缓存ID
+	 * @return 缓存ID字符串
+	 */
+	#end
 	private function get_cacheId():String {
 		if (this.skeleton.skin != null)
 			return assetsId + ":" + this.skeleton.skin.name;
 		return assetsId;
 	}
 
+	#if api_lang_en
+	/**
+	 * Skeleton clipping instance
+	 */
+	#else
 	/**
 	 * 切割器
 	 */
+	#end
 	private static var clipper:SkeletonClipping = new SkeletonClipping();
 
+	#if api_lang_en
+	/**
+	 * Whether to run independently, not affected by SpineManager
+	 */
+	#else
 	/**
 	 * 是否为独立运行，不受SpineManager的影响
 	 */
+	#end
 	public var independent:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Skeleton object
+	 */
+	#else
 	/**
 	 * 骨架对象
 	 */
+	#end
 	public var skeleton:Skeleton;
 
+	#if api_lang_en
+	/**
+	 * Time scale
+	 */
+	#else
 	/**
 	 * 时间轴缩放
 	 */
+	#end
 	public var timeScale:Float = 1;
 
+	#if api_lang_en
+	/**
+	 * Smoothing support for SpriteSpine, default is false
+	 */
+	#else
 	/**
 	 * SpriteSpine的平滑支持，默认为false，可设置为true开启平滑支持
 	 */
+	#end
 	public var smoothing:Bool = #if !smoothing false #else true #end;
 
 	#if zygame
+	#if api_lang_en
+	/**
+	 * ZImage instance for zygame
+	 */
+	#else
+	/**
+	 * zygame的ZImage实例
+	 */
+	#end
 	private var _img:ZImage;
 	#end
 
+	#if api_lang_en
+	/**
+	 * Batch rendering object
+	 */
+	#else
 	/**
 	 * 批渲染对象
 	 */
+	#end
 	public var batchs:SkeletonSpriteBatchs;
 
+	#if api_lang_en
+	/**
+	 * Temporary vertices array
+	 */
+	#else
 	/**
 	 * 坐标数组
 	 */
+	#end
 	private var _tempVerticesArray:Array<Float>;
 
+	#if api_lang_en
+	/**
+	 * Quad triangles indices
+	 */
+	#else
 	/**
 	 * 矩形三角形
 	 */
+	#end
 	private var _quadTriangles:Array<Int>;
 
+	#if api_lang_en
+	/**
+	 * Colors array (not implemented)
+	 */
+	#else
 	/**
 	 * 颜色数组（未实现）
 	 */
+	#end
 	private var _colors:Array<Int>;
 
+	#if api_lang_en
+	/**
+	 * Whether animation is playing
+	 */
+	#else
 	/**
 	 * 是否正在播放
 	 */
+	#end
 	private var _isPlay:Bool = true;
 
+	#if api_lang_en
+	/**
+	 * Whether the object is disposed
+	 */
+	#else
+	/**
+	 * 是否已释放
+	 */
+	#end
 	private var _isDipose:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Current action name
+	 */
+	#else
 	/**
 	 * 当前播放的动作名
 	 */
+	#end
 	private var _actionName:String = "";
 
+	#if api_lang_en
+	/**
+	 * Triangles vector cache
+	 */
+	#else
 	/**
 	 * 顶点缓存
 	 */
+	#end
 	private var _trianglesVector:Map<AtlasRegion, Vector<Int>>;
 
+	#if api_lang_en
+	/**
+	 * Sprite pool
+	 */
+	#else
 	/**
 	 * 精灵表垃圾池
 	 */
+	#end
 	private var _spritePool:ObjectPool<Sprite> = new ObjectPool(() -> {
 		return new Sprite();
 	});
 
+	#if api_lang_en
+	/**
+	 * All vertices data
+	 */
+	#else
 	/**
 	 * 所有顶点数据
 	 */
+	#end
 	private var allVerticesArray:Vector<Float> = new Vector<Float>(0, false);
 
+	#if api_lang_en
+	/**
+	 * All triangles data
+	 */
+	#else
 	/**
 	 * 所有三角形数据
 	 */
+	#end
 	private var allTriangles:Vector<Int> = new Vector<Int>(0, false);
 
+	#if api_lang_en
+	/**
+	 * All triangles alpha properties
+	 */
+	#else
 	/**
 	 * 所有顶点透明属性
 	 */
+	#end
 	private var allTrianglesAlpha:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles blend mode properties
+	 */
+	#else
 	/**
 	 * 所有顶点BlendMode属性
 	 */
+	#end
 	private var allTrianglesBlendMode:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles color multiplication
+	 */
+	#else
 	/**
 	 * 所有顶点的颜色相乘
 	 */
+	#end
 	private var allTrianglesColor:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All triangles dark color
+	 */
+	#else
+	/**
+	 * 所有顶点的暗色
+	 */
+	#end
 	private var allTrianglesDarkColor:Array<Float> = [];
 
+	#if api_lang_en
+	/**
+	 * All UV data
+	 */
+	#else
 	/**
 	 * 所有UV数据
 	 */
+	#end
 	private var allUvs:Vector<Float> = new Vector<Float>(0, false);
 
+	#if api_lang_en
+	/**
+	 * Vertex data index
+	 */
+	#else
 	/**
 	 * 顶点数据索引
 	 */
+	#end
 	private var _buffdataPoint:Int = 0;
 
+	#if api_lang_en
+	/**
+	 * Rendered sprite object
+	 */
+	#else
 	/**
 	 * 渲染的精灵对象
 	 */
+	#end
 	private var _shape:Sprite;
 
+	#if api_lang_en
+	/**
+	 * Whether to use cache rendering
+	 * @deprecated No longer has significant performance optimization improvements
+	 */
+	#else
 	/**
 	 * 是否使用缓存渲染，如果使用缓存渲染，如果使用换成渲染，则无法正常使用过渡动画
 	 */
+	#end
 	@:deprecated("isCache is deprecated. Because it no longer has significant performance optimization improvements. Using it no longer produces any effect.")
 	public var isCache(get, set):Bool;
 
+	#if api_lang_en
+	/**
+	 * Cache mode
+	 * @deprecated No longer has significant performance optimization improvements
+	 */
+	#else
 	/**
 	 * 缓存模式：
 	 * - TRIANGLES：使用普通的三角形缓存，但每次重绘，仅减少了三角点参数的重新运算，但绘制的时候，仍然需要消耗一定的性能。
 	 * - SHAPE：将每个Sprite的形象进行缓存，使用时直接使用图形数据
 	 */
+	#end
 	@:deprecated("cacheMode is deprecated. Because it no longer has significant performance optimization improvements. Using it no longer produces any effect.")
 	public var cacheMode:CacheMode = TRIANGLES;
 
+	#if api_lang_en
+	/**
+	 * Sets cache mode
+	 * @param value Cache mode value
+	 * @return Cache mode value
+	 */
+	#else
+	/**
+	 * 设置缓存模式
+	 * @param value 缓存模式值
+	 * @return 缓存模式值
+	 */
+	#end
 	private function set_isCache(value:Bool):Bool {
 		return value;
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets cache mode
+	 * @return Cache mode value
+	 */
+	#else
+	/**
+	 * 获取缓存模式
+	 * @return 缓存模式值
+	 */
+	#end
 	private function get_isCache():Bool {
 		return false;
 	}
 
+	#if api_lang_en
+	/**
+	 * Cache bitmap data
+	 */
+	#else
+	/**
+	 * 缓存位图数据
+	 */
+	#end
 	private var _cacheBitmapData:BitmapData;
 
+	#if api_lang_en
+	/**
+	 * Creates a new Spine object
+	 * @param skeletonData Skeleton data
+	 */
+	#else
 	/**
 	 * 创建一个Spine对象
 	 * @param skeletonData 骨骼数据
 	 */
+	#end
 	public function new(skeletonData:SkeletonData) {
 		super();
 
@@ -309,18 +553,30 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return bool;
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets current playing action
+	 */
+	#else
 	/**
 	 * 获取当前播放的动作
 	 */
+	#end
 	public var actionName(get, never):String;
 
 	private function get_actionName():String {
 		return _actionName;
 	}
 
+	#if api_lang_en
+	/**
+	 * Stops animation
+	 */
+	#else
 	/**
 	 * 停止
 	 */
+	#end
 	public function stop():Void {
 		SpineManager.removeOnFrame(this);
 		_isPlay = false;
@@ -330,10 +586,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return -1;
 	}
 
+	#if api_lang_en
+	/**
+	 * Activates rendering
+	 * @param delta Time delta
+	 */
+	#else
 	/**
 	 * 激活渲染
-	 * @param delta
+	 * @param delta 时间增量
 	 */
+	#end
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
@@ -359,9 +622,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shape.graphics.clear();
 	}
 
+	#if api_lang_en
+	/**
+	 * Offscreen rendering mode
+	 */
+	#else
 	/**
 	 * 离屏渲染模式
 	 */
+	#end
 	public var offscreenRender:Bool = false;
 
 	/**
@@ -582,11 +851,26 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			drawSprite(null, bitmapData);
 	}
 
+	#if api_lang_en
+	/**
+	 * Called before rendering
+	 */
+	#else
+	/**
+	 * 渲染前调用
+	 */
+	#end
 	dynamic public function onRenderBefore():Void {}
 
+	#if api_lang_en
+	/**
+	 * Whether to enable color transition period
+	 */
+	#else
 	/**
 	 * 是否启动颜色过渡期
 	 */
+	#end
 	public var colorTransformEnable:Bool = false;
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
@@ -657,16 +941,29 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	#if !flash
+	#if api_lang_en
 	/**
-	 * 重构触摸事件，无法触发触摸的问题
-	 * @param x
-	 * @param y
-	 * @param shapeFlag
-	 * @param stack
-	 * @param interactiveOnly
-	 * @param hitObject
+	 * Override hit test to fix touch event issues
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param shapeFlag Shape flag
+	 * @param stack Display object stack
+	 * @param interactiveOnly Interactive only flag
+	 * @param hitObject Hit object
 	 * @return Bool
 	 */
+	#else
+	/**
+	 * 重构触摸事件，无法触发触摸的问题
+	 * @param x X坐标
+	 * @param y Y坐标
+	 * @param shapeFlag 形状标志
+	 * @param stack 显示对象堆栈
+	 * @param interactiveOnly 仅交互标志
+	 * @param hitObject 命中对象
+	 * @return Bool
+	 */
+	#end
 	override private function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool {
 		if (this.mouseEnabled == false || this.visible == false)
 			return false;
@@ -683,9 +980,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return 0;
 	}
 
+	#if api_lang_en
+	/**
+	 * Allow rendering in hidden state
+	 */
+	#else
 	/**
 	 * 允许隐藏状态下渲染
 	 */
+	#end
 	public var allowHiddenRender(default, set):Bool = false;
 
 	private function set_allowHiddenRender(bool:Bool):Bool {
@@ -713,3 +1016,4 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return _isHidden;
 	}
 }
+#end

@@ -8,7 +8,6 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.utils.Assets;
 import zygame.utils.load.SpineTextureAtlasLoader;
-import spine.openfl.SkeletonSpriteBatchs;
 
 /**
  * SpineDemo
@@ -22,24 +21,6 @@ class Main extends Sprite {
 	public function onInit(e:Event):Void {
 		stage.color = 0xbbbbbb;
 		SpineManager.init(stage);
-		// var jsonData:String = Assets.getText("assets/bonus.json");
-		// var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/bonus.atlas",["assets/bonus.png"]);
-		// spineTextureAtals.load(function(textureAtals:SpineTextureAtals):Void{
-		//     // Sprite格式
-		//     for(i in 0...60)
-		//     {
-		//         var openflSprite = textureAtals.buildSpriteSkeleton("bonus",jsonData);
-		//         this.addChild(openflSprite);
-		//         openflSprite.y = 300;
-		//         openflSprite.x = Math.random()*stage.stageWidth;
-		//         openflSprite.play("animation");
-		//         openflSprite.scaleX = 0.6;
-		//         openflSprite.scaleY = 0.6;
-		//         openflSprite.isNative = false;
-		//     }
-		// },function(error:String):Void{
-		//     trace("加载失败：",error);
-		// });
 
 		#if !(spine38 || spine4)
 		var jsonData:String = Assets.getText("assets/sxkCenter.json");
@@ -56,6 +37,7 @@ class Main extends Sprite {
 				tilemapSprite.play("run");
 				tilemapSprite.scaleX = 0.6;
 				tilemapSprite.scaleY = 0.6;
+				trace("clean")
 			}
 		}, function(error:String):Void {
 			trace("加载失败：", error);
@@ -83,36 +65,12 @@ class Main extends Sprite {
 			trace("加载失败：", error);
 		});
 		#else
-		// Sprite
-		// var jsonData:String = Assets.getText("assets/test1.json");
-		// var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/test1.atlas", ["assets/test1.png"]);
-		// spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
-		// 	// Sprite格式
-		// 	var batch = new SkeletonSpriteBatchs();
-		// 	this.addChild(batch);
-		// 	for (i in 0...100) {
-		// 		var spriteSpine = textureAtals.buildSpriteSkeleton("test1", jsonData);
-		// 		batch.addChild(spriteSpine);
-		// 		spriteSpine.isCache = true;
-		// 		trace("spriteSpine.isCache=", spriteSpine.isCache);
-		// 		spriteSpine.y = 400 * Math.random();
-		// 		spriteSpine.x = Math.random() * stage.stageWidth;
-		// 		spriteSpine.play("daiji");
-		// 		spriteSpine.scaleX = 0.6;
-		// 		spriteSpine.scaleY = 0.6;
-		// 	}
-		// }, function(error:String):Void {
-		// 	trace("加载失败：", error);
-		// });
-
 		var spineJsonData:String = Assets.getText("assets/unrote_cut/fx_saltCow2_skill.json");
 		var spineTextureAtals:SpineTextureAtlasLoader = new SpineTextureAtlasLoader("assets/unrote_cut/fx_saltCow2_skill.atlas", ["assets/unrote_cut/fx_saltCow2_skill.png"]);
 		spineTextureAtals.load(function(textureAtals:SpineTextureAtlas):Void {
 			// Sprite格式
 			for (i in 0...30) {
 				var spriteSpine = textureAtals.buildSpriteSkeleton("fx_saltCow2_skill", spineJsonData);
-				spriteSpine.isCache = true;
-				trace("spriteSpine.isCache=", spriteSpine.isCache);
 				spriteSpine.y = Std.random(stage.stageWidth);
 				spriteSpine.x = Std.random(stage.stageWidth);
 				spriteSpine.play("idle");
