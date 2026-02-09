@@ -2,6 +2,16 @@
 可在OpenFL引擎中渲染Spine动画的使用库，可通过Sprite、Tilemap实现渲染处理。
 - OpenFL：https://github.com/openfl/openfl
 
+# 中文API
+如果需要显示中文API，请定义：
+```haxe
+<haxedef name="api_lang_zh"/>
+```
+或者
+```haxe
+-D api_lang_zh
+```
+
 # 各版本的定义说明
 该版本兼容了3.8到4.2的Spine运行时版本，他们运行时关系请参考下述说明：
 | Spine版本 | Spine运行时库 | 支持情况 | 定义 |
