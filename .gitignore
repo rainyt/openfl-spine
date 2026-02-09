@@ -11,3 +11,6 @@ zygame-src/zygame/utils/load/.DS_Store
 src/spine/openfl/.DS_Store
 src/spine/.DS_Store
 samples/Assets/.DS_Store
+bin
+api_docs_en
+api_docs_zh

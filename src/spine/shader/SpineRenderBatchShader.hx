@@ -1,3 +1,5 @@
+package spine.shader;
+
 #if !spine4_2
 #if api_lang_en
 /**
@@ -9,8 +11,6 @@
  * 为批渲染对象实现XY/SCALE等支持
  */
 #end
-package spine.shader;
-
 import VectorMath;
 
 class SpineRenderBatchShader extends SpineRenderShader {

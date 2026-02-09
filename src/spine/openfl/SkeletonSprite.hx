@@ -1,3 +1,5 @@
+package spine.openfl;
+
 #if !spine4_2
 #if api_lang_en
 /**
@@ -9,8 +11,6 @@
  * Sprite渲染器，单个Sprite会进行单次渲染
  */
 #end
-package spine.openfl;
-
 import spine.utils.SkeletonClipping;
 import spine.attachments.ClippingAttachment;
 import lime.utils.ObjectPool;
@@ -553,18 +553,30 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return bool;
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets current playing action
+	 */
+	#else
 	/**
 	 * 获取当前播放的动作
 	 */
+	#end
 	public var actionName(get, never):String;
 
 	private function get_actionName():String {
 		return _actionName;
 	}
 
+	#if api_lang_en
+	/**
+	 * Stops animation
+	 */
+	#else
 	/**
 	 * 停止
 	 */
+	#end
 	public function stop():Void {
 		SpineManager.removeOnFrame(this);
 		_isPlay = false;
@@ -574,10 +586,17 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return -1;
 	}
 
+	#if api_lang_en
+	/**
+	 * Activates rendering
+	 * @param delta Time delta
+	 */
+	#else
 	/**
 	 * 激活渲染
-	 * @param delta
+	 * @param delta 时间增量
 	 */
+	#end
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
@@ -603,9 +622,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		_shape.graphics.clear();
 	}
 
+	#if api_lang_en
+	/**
+	 * Offscreen rendering mode
+	 */
+	#else
 	/**
 	 * 离屏渲染模式
 	 */
+	#end
 	public var offscreenRender:Bool = false;
 
 	/**
@@ -826,11 +851,26 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 			drawSprite(null, bitmapData);
 	}
 
+	#if api_lang_en
+	/**
+	 * Called before rendering
+	 */
+	#else
+	/**
+	 * 渲染前调用
+	 */
+	#end
 	dynamic public function onRenderBefore():Void {}
 
+	#if api_lang_en
+	/**
+	 * Whether to enable color transition period
+	 */
+	#else
 	/**
 	 * 是否启动颜色过渡期
 	 */
+	#end
 	public var colorTransformEnable:Bool = false;
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
@@ -901,16 +941,29 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 	}
 
 	#if !flash
+	#if api_lang_en
 	/**
-	 * 重构触摸事件，无法触发触摸的问题
-	 * @param x
-	 * @param y
-	 * @param shapeFlag
-	 * @param stack
-	 * @param interactiveOnly
-	 * @param hitObject
+	 * Override hit test to fix touch event issues
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param shapeFlag Shape flag
+	 * @param stack Display object stack
+	 * @param interactiveOnly Interactive only flag
+	 * @param hitObject Hit object
 	 * @return Bool
 	 */
+	#else
+	/**
+	 * 重构触摸事件，无法触发触摸的问题
+	 * @param x X坐标
+	 * @param y Y坐标
+	 * @param shapeFlag 形状标志
+	 * @param stack 显示对象堆栈
+	 * @param interactiveOnly 仅交互标志
+	 * @param hitObject 命中对象
+	 * @return Bool
+	 */
+	#end
 	override private function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool {
 		if (this.mouseEnabled == false || this.visible == false)
 			return false;
@@ -927,9 +980,15 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return 0;
 	}
 
+	#if api_lang_en
+	/**
+	 * Allow rendering in hidden state
+	 */
+	#else
 	/**
 	 * 允许隐藏状态下渲染
 	 */
+	#end
 	public var allowHiddenRender(default, set):Bool = false;
 
 	private function set_allowHiddenRender(bool:Bool):Bool {

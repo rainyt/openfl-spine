@@ -1,3 +1,5 @@
+package spine.openfl;
+
 #if !spine4_2
 #if api_lang_en
 /**
@@ -10,8 +12,6 @@
  * 批量处理多个SkeletonSprite对象以提高渲染效率
  */
 #end
-package spine.openfl;
-
 #if zygame
 import zygame.components.ZBox;
 #else

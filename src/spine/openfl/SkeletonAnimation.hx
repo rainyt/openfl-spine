@@ -398,22 +398,42 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		this.advanceTime(0);
 	}
 
+	#if api_lang_en
+	/**
+	 * Unified render entry point
+	 * @param dt Time delta
+	 */
+	#else
 	/**
 	 * 统一的渲染入口
+	 * @param dt 时间增量
 	 */
+	#end
 	public function onSpineUpdate(dt:Float):Void {
 		advanceTime(dt);
 	}
 
+	#if api_lang_en
+	/**
+	 * Auto start frame event update
+	 */
+	#else
 	/**
 	 * 自动启动帧事件更新
 	 */
+	#end
 	public var autoOnFrame = true;
 
 	#if zygame
+	#if api_lang_en
+	/**
+	 * When removed from stage
+	 */
+	#else
 	/**
 	 * 当从舞台移除时
 	 */
+	#end
 	override public function onRemoveToStage():Void {
 		if (!allowHiddenRender)
 			SpineManager.removeOnFrame(this);
@@ -423,28 +443,62 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		#end
 	}
 
+	#if api_lang_en
+	/**
+	 * When added to stage
+	 */
+	#else
+	/**
+	 * 当添加到舞台时
+	 */
+	#end
 	override public function onAddToStage():Void {
 		if (autoOnFrame)
 			SpineManager.addOnFrame(this);
 	}
 	#else
 
+	#if api_lang_en
+	/**
+	 * When removed from stage
+	 * @param _ Event object
+	 */
+	#else
 	/**
 	 * 当从舞台移除时
+	 * @param _ 事件对象
 	 */
+	#end
 	public function onRemoveToStage(_):Void {
 		SpineManager.removeOnFrame(this);
 	}
 
+	#if api_lang_en
+	/**
+	 * When added to stage
+	 * @param _ Event object
+	 */
+	#else
+	/**
+	 * 当添加到舞台时
+	 * @param _ 事件对象
+	 */
+	#end
 	public function onAddToStage(_):Void {
 		if (autoOnFrame)
 			SpineManager.addOnFrame(this);
 	}
 	#end
 
+	#if api_lang_en
+	/**
+	 * Dispose resources
+	 */
+	#else
 	/**
 	 * 丢弃
 	 */
+	#end
 	#if zygame override #end public function destroy():Void {
 		SpineManager.removeOnFrame(this);
 		if (_spritePool != null)
@@ -455,9 +509,19 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		_isDipose = true;
 	}
 
+	#if api_lang_en
+	/**
+	 * Plays animation
+	 * @param action Action name
+	 * @param loop Whether to loop
+	 */
+	#else
 	/**
 	 * 播放
+	 * @param action 动作名
+	 * @param loop 是否循环
 	 */
+	#end
 	public function play(action:String = null, loop:Bool = true):Void {
 		if (action != this.actionName) {
 			if (action != null && action != "") {
@@ -473,11 +537,19 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		this.advanceTime(0);
 	}
 
+	#if api_lang_en
+	/**
+	 * Forces animation switch
+	 * @param action Action name
+	 * @param loop Whether to loop
+	 */
+	#else
 	/**
 	 * 强制播放切换
 	 * @param action 动作名
 	 * @param loop 是否循环
 	 */
+	#end
 	public function playForce(action:String, loop:Bool = true):Void {
 		isPlay = true;
 		if (action != null && action != "") {
@@ -487,21 +559,36 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		this.play(action);
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets maximum duration
+	 * @return Float
+	 */
+	#else
 	/**
 	 * 获取最大持续时间
 	 * @return Float
 	 */
+	#end
 	public function getMaxTime():Float {
 		if (_currentAnimation != null)
 			return _currentAnimation.duration;
 		return 0;
 	}
 
+	#if api_lang_en
 	/**
-	 * 获得动画对象数据
-	 * @param name 
+	 * Gets animation object data
+	 * @param name Animation name
 	 * @return Animation
 	 */
+	#else
+	/**
+	 * 获得动画对象数据
+	 * @param name 动画名称
+	 * @return Animation
+	 */
+	#end
 	public function getAnimation(name:String):Animation {
 		for (animation in this.state.data.skeletonData.animations) {
 			if (animation.name == name)
@@ -510,9 +597,15 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		return null;
 	}
 
+	#if api_lang_en
+	/**
+	 * Whether animation is playing
+	 */
+	#else
 	/**
 	 * 是否正在播放
 	 */
+	#end
 	public var isPlay(get, set):Bool;
 
 	private function get_isPlay():Bool {
@@ -526,37 +619,68 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		return bool;
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets current playing action
+	 */
+	#else
 	/**
 	 * 获取当前播放的动作
 	 */
+	#end
 	public var actionName(get, never):String;
 
 	private function get_actionName():String {
 		return _actionName;
 	}
 
+	#if api_lang_en
+	/**
+	 * Stops animation
+	 */
+	#else
 	/**
 	 * 停止
 	 */
+	#end
 	public function stop():Void {
 		SpineManager.removeOnFrame(this);
 		_isPlay = false;
 	}
 
+	#if api_lang_en
+	/**
+	 * Occurs before updateWorldTransform is called
+	 */
+	#else
 	/**
 	 * 在updateWorldTransform调用之前发生
 	 */
+	#end
 	dynamic public function onUpdateWorldTransformBefore():Void {}
 
+	#if api_lang_en
+	/**
+	 * Occurs after updateWorldTransform is called
+	 */
+	#else
 	/**
 	 * 在updateWorldTransform调用之后发生
 	 */
+	#end
 	dynamic public function onUpdateWorldTransformAfter():Void {}
 
+	#if api_lang_en
+	/**
+	 * Activates rendering
+	 * @param delta Time delta
+	 */
+	#else
 	/**
 	 * 激活渲染
-	 * @param delta
+	 * @param delta 时间增量
 	 */
+	#end
 	public function advanceTime(delta:Float):Void {
 		if (_isPlay == false || _isDipose)
 			return;
@@ -594,15 +718,28 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 		_shape.graphics.clear();
 	}
 
+	#if api_lang_en
+	/**
+	 * Offscreen rendering mode
+	 */
+	#else
 	/**
 	 * 离屏渲染模式
 	 */
+	#end
 	public var offscreenRender:Bool = false;
 
+	#if api_lang_en
+	/**
+	 * Applies root bone animation
+	 * @return Bool If returns `false`, root bone animation will not be applied
+	 */
+	#else
 	/**
 	 * 应用根骨骼动画
 	 * @return Bool 如果返回`false`，则不再应用根骨骼动画
 	 */
+	#end
 	public var onRootBoneAnimateChange:Float->Bool;
 
 	/**
@@ -823,11 +960,26 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 			drawSprite(null, bitmapData);
 	}
 
+	#if api_lang_en
+	/**
+	 * Called before rendering
+	 */
+	#else
+	/**
+	 * 渲染前调用
+	 */
+	#end
 	dynamic public function onRenderBefore():Void {}
 
+	#if api_lang_en
+	/**
+	 * Whether to enable color transition period
+	 */
+	#else
 	/**
 	 * 是否启动颜色过渡期
 	 */
+	#end
 	public var colorTransformEnable:Bool = false;
 
 	private function drawSprite(slot:Slot, bitmapData:BitmapData, isBlendMode:Bool = false):Void {
@@ -899,16 +1051,29 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 	private var __lastApplyRootY:Float = 0.;
 
 	#if !flash
+	#if api_lang_en
 	/**
-	 * 重构触摸事件，无法触发触摸的问题
-	 * @param x
-	 * @param y
-	 * @param shapeFlag
-	 * @param stack
-	 * @param interactiveOnly
-	 * @param hitObject
+	 * Override hit test to fix touch event issues
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param shapeFlag Shape flag
+	 * @param stack Display object stack
+	 * @param interactiveOnly Interactive only flag
+	 * @param hitObject Hit object
 	 * @return Bool
 	 */
+	#else
+	/**
+	 * 重构触摸事件，无法触发触摸的问题
+	 * @param x X坐标
+	 * @param y Y坐标
+	 * @param shapeFlag 形状标志
+	 * @param stack 显示对象堆栈
+	 * @param interactiveOnly 仅交互标志
+	 * @param hitObject 命中对象
+	 * @return Bool
+	 */
+	#end
 	override private function __hitTest(x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool, hitObject:DisplayObject):Bool {
 		if (this.mouseEnabled == false || this.visible == false)
 			return false;
@@ -921,9 +1086,15 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 	}
 	#end
 
+	#if api_lang_en
+	/**
+	 * Allow rendering in hidden state
+	 */
+	#else
 	/**
 	 * 允许隐藏状态下渲染
 	 */
+	#end
 	public var allowHiddenRender(default, set):Bool = false;
 
 	private function set_allowHiddenRender(bool:Bool):Bool {
@@ -983,18 +1154,41 @@ import spine.AnimationState;
 import spine.AnimationStateData;
 
 class SkeletonAnimation extends SkeletonSprite {
+	#if api_lang_en
+	/**
+	 * Animation state for managing animations
+	 */
+	#else
+	/**
+	 * 用于管理动画的动画状态
+	 */
+	#end
 	public var state:AnimationState;
 
+	#if api_lang_en
+	/**
+	 * Current animation data
+	 */
+	#else
 	/**
 	 * 当前动画数据
 	 */
+	#end
 	private var _currentAnimation:Animation;
 
+	#if api_lang_en
+	/**
+	 * Creates a new SkeletonAnimation
+	 * @param skeletonData Skeleton data
+	 * @param stateData Animation state data (optional)
+	 */
+	#else
 	/**
 	 * 构造一个SkeletonAnimation
-	 * @param skeletonData 
-	 * @param stateData 
+	 * @param skeletonData 骨骼数据
+	 * @param stateData 动画状态数据（可选）
 	 */
+	#end
 	public function new(skeletonData:SkeletonData, stateData:AnimationState = null) {
 		super(skeletonData);
 		#if (spine_hx <= "3.6.0")
@@ -1007,10 +1201,17 @@ class SkeletonAnimation extends SkeletonSprite {
 		setSkeletonData(skeletonData);
 	}
 
+	#if api_lang_en
+	/**
+	 * Sets new skeleton data, can be used for skeleton skin changing
+	 * @param skeletonData Skeleton data
+	 */
+	#else
 	/**
 	 * 设置新的骨架数据，实现骨骼换肤可使用这个。
-	 * @param skeletonData 
+	 * @param skeletonData 骨骼数据
 	 */
+	#end
 	public function setSkeletonData(skeletonData:SkeletonData):Void {
 		if (skeleton.getData() == skeletonData)
 			return;
@@ -1032,9 +1233,15 @@ class SkeletonAnimation extends SkeletonSprite {
 		_advanceTime(time);
 	}
 
+	#if api_lang_en
+	/**
+	 * Occurs before updateWorldTransform is called
+	 */
+	#else
 	/**
 	 * 在updateWorldTransform调用之前发生
 	 */
+	#end
 	dynamic public function onUpdateWorldTransformBefore():Void {}
 
 	private function _advanceTime(time:Float):Void {
@@ -1050,11 +1257,19 @@ class SkeletonAnimation extends SkeletonSprite {
 		super.advanceTime(time);
 	}
 
+	#if api_lang_en
+	/**
+	 * Plays animation
+	 * @param action Action name
+	 * @param loop Whether to loop
+	 */
+	#else
 	/**
 	 * 播放动画
 	 * @param action 动作名
 	 * @param loop 是否循环
 	 */
+	#end
 	override public function play(action:String = null, loop:Bool = true):Void {
 		if (action != this.actionName) {
 			if (action != null && action != "") {
@@ -1069,6 +1284,19 @@ class SkeletonAnimation extends SkeletonSprite {
 		return false;
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets animation by name
+	 * @param name Animation name
+	 * @return Animation
+	 */
+	#else
+	/**
+	 * 根据名称获取动画
+	 * @param name 动画名称
+	 * @return 动画
+	 */
+	#end
 	public function getAnimation(name:String):Animation {
 		for (animation in this.state.getData().getSkeletonData().animations) {
 			if (animation.name == name)
@@ -1077,11 +1305,19 @@ class SkeletonAnimation extends SkeletonSprite {
 		return null;
 	}
 
+	#if api_lang_en
+	/**
+	 * Forces animation switch
+	 * @param action Action name
+	 * @param loop Whether to loop
+	 */
+	#else
 	/**
 	 * 强制播放切换
 	 * @param action 动作名
 	 * @param loop 是否循环
 	 */
+	#end
 	public function playForce(action:String, loop:Bool = true):Void {
 		isPlay = true;
 		if (action != null && action != "") {
@@ -1092,10 +1328,17 @@ class SkeletonAnimation extends SkeletonSprite {
 		// _advanceTime(0);
 	}
 
+	#if api_lang_en
+	/**
+	 * Gets maximum duration
+	 * @return Float
+	 */
+	#else
 	/**
 	 * 获取最大持续时间
 	 * @return Float
 	 */
+	#end
 	override function getMaxTime():Float {
 		if (_currentAnimation != null)
 			return _currentAnimation.getDuration();
