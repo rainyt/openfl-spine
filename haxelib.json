@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["spine","tilemap","openfl"],
   "description": "Spine render",
-  "version": "4.2.0",
-  "releasenote": "Improve darkColor.",
+  "version": "4.3.0",
+  "releasenote": "Add support for Chinese and English API documentation",
   "contributors": ["rainy"],
   "classPath": "src",
   "dependencies": {
