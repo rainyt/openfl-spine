@@ -1,3 +1,4 @@
+#if !spine4_2
 package spine.openfl;
 
 import spine.utils.SkeletonClipping;
@@ -713,3 +714,4 @@ class SkeletonSprite extends #if !zygame Sprite #else DisplayObjectContainer #en
 		return _isHidden;
 	}
 }
+#end

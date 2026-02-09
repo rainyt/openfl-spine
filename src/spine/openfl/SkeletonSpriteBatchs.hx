@@ -1,3 +1,4 @@
+#if !spine4_2
 package spine.openfl;
 
 #if zygame
@@ -282,3 +283,4 @@ class SkeletonSpriteBatchs extends #if zygame ZBox #else Sprite #end implements 
 	}
 	#end
 }
+#end

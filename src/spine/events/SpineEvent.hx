@@ -1,6 +1,11 @@
 package spine.events;
 
+#if spine4_2
 import spine.animation.TrackEntry;
+#else
+import spine.AnimationState.AnimationStateListener;
+import spine.AnimationState.TrackEntry;
+#end
 import spine.Event;
 import openfl.events.EventDispatcher;
 import openfl.events.Event in OpenFLEvent;

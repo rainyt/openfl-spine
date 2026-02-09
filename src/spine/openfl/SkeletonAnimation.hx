@@ -1,5 +1,6 @@
 package spine.openfl;
 
+#if spine4_2
 import spine.attachments.Attachment;
 import spine.events.AnimationEvent;
 import spine.animation.Animation;
@@ -772,3 +773,158 @@ class SkeletonAnimation extends #if !zygame Sprite #else DisplayObjectContainer 
 			_event.removeEventListener(type, listener);
 	}
 }
+#else
+import spine.events.SpineEvent;
+import spine.events.AnimationEvent;
+import spine.SkeletonData;
+import spine.AnimationState;
+import spine.AnimationStateData;
+
+class SkeletonAnimation extends SkeletonSprite {
+	public var state:AnimationState;
+
+	/**
+	 * 当前动画数据
+	 */
+	private var _currentAnimation:Animation;
+
+	/**
+	 * 构造一个SkeletonAnimation
+	 * @param skeletonData 
+	 * @param stateData 
+	 */
+	public function new(skeletonData:SkeletonData, stateData:AnimationState = null) {
+		super(skeletonData);
+		#if (spine_hx <= "3.6.0")
+		skeleton.setFlipY(true);
+		#else
+		skeleton.setScaleY(-1);
+		#end
+		state = stateData != null ? stateData : new AnimationState(new AnimationStateData(skeletonData));
+		_advanceTime(0);
+		setSkeletonData(skeletonData);
+	}
+
+	/**
+	 * 设置新的骨架数据，实现骨骼换肤可使用这个。
+	 * @param skeletonData 
+	 */
+	public function setSkeletonData(skeletonData:SkeletonData):Void {
+		if (skeleton.getData() == skeletonData)
+			return;
+		skeleton = new Skeleton(skeletonData);
+		#if (spine_hx <= "3.6.0")
+		skeleton.setFlipY(true);
+		#else
+		skeleton.setScaleY(-1);
+		#end
+		state.getData().skeletonData = skeletonData;
+		skeleton.updateWorldTransform();
+	}
+
+	override public function advanceTime(time:Float):Void {
+		if (!allowHiddenRender) {
+			if (!this.visible || !isPlay)
+				return;
+		}
+		_advanceTime(time);
+	}
+
+	/**
+	 * 在updateWorldTransform调用之前发生
+	 */
+	dynamic public function onUpdateWorldTransformBefore():Void {}
+
+	private function _advanceTime(time:Float):Void {
+		time = time / timeScale;
+		if (time > 0) {
+			state.update(time);
+		}
+		// 避免没有事件回调
+		// @:privateAccess state.queue.drainDisabled = false;
+		state.apply(skeleton);
+		this.onUpdateWorldTransformBefore();
+		skeleton.updateWorldTransform();
+		super.advanceTime(time);
+	}
+
+	/**
+	 * 播放动画
+	 * @param action 动作名
+	 * @param loop 是否循环
+	 */
+	override public function play(action:String = null, loop:Bool = true):Void {
+		if (action != this.actionName) {
+			if (action != null && action != "") {
+				this.state.setAnimationByName(0, action, loop);
+			}
+			this._currentAnimation = getAnimation(action);
+		}
+		super.play(action);
+	}
+
+	override function get_isCache():Bool {
+		return false;
+	}
+
+	public function getAnimation(name:String):Animation {
+		for (animation in this.state.getData().getSkeletonData().animations) {
+			if (animation.name == name)
+				return animation;
+		}
+		return null;
+	}
+
+	/**
+	 * 强制播放切换
+	 * @param action 动作名
+	 * @param loop 是否循环
+	 */
+	public function playForce(action:String, loop:Bool = true):Void {
+		isPlay = true;
+		if (action != null && action != "") {
+			this.state.setAnimationByName(0, action, loop);
+		}
+		this._currentAnimation = getAnimation(action);
+		super.play(action);
+		// _advanceTime(0);
+	}
+
+	/**
+	 * 获取最大持续时间
+	 * @return Float
+	 */
+	override function getMaxTime():Float {
+		if (_currentAnimation != null)
+			return _currentAnimation.getDuration();
+		return super.getMaxTime();
+	}
+
+	private var _event:AnimationEvent;
+
+	override function addEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false, priority:Int = 0,
+			useWeakReference:Bool = false) {
+		if (_event == null && state != null) {
+			_event = new AnimationEvent();
+			this.state.addListener(_event);
+		}
+		if (_event != null)
+			_event.addEventListener(type, listener);
+		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+	}
+
+	override function removeEventListener<T>(type:openfl.events.EventType<T>, listener:T->Void, useCapture:Bool = false) {
+		super.removeEventListener(type, listener, useCapture);
+		if (_event != null)
+			_event.removeEventListener(type, listener);
+	}
+
+	override function __getCurrentFrameId():Int {
+		var current = state.getCurrent(0);
+		if (current == null || state.tracks.length > 1)
+			return -1;
+		// 缓存仅保留12帧
+		return Std.int(current.trackTime % _currentAnimation.duration / _currentAnimation.duration * Std.int(_currentAnimation.duration * 12));
+	}
+}
+#end

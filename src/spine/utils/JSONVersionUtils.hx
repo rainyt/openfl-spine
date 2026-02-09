@@ -1,3 +1,4 @@
+#if !spine4_2
 package spine.utils;
 
 /**
@@ -49,3 +50,4 @@ class JSONVersionUtils {
 		return data;
 	}
 }
+#end

@@ -32,8 +32,13 @@ package spine.tilemap;
 
 import spine.events.AnimationEvent;
 import spine.SkeletonData;
+#if spine4_2
 import spine.animation.AnimationState;
 import spine.animation.AnimationStateData;
+#else
+import spine.AnimationState;
+import spine.AnimationStateData;
+#end
 
 class SkeletonAnimation extends SkeletonSprite {
 	#if zygame
@@ -50,7 +55,11 @@ class SkeletonAnimation extends SkeletonSprite {
 		#if (spine_hx <= "3.6.0")
 		skeleton.setFlipY(true);
 		#else
+		#if spine4_2
 		skeleton.scaleY = -1;
+		#else
+		skeleton.setScaleY(-1);
+		#end
 		#end
 		state = new AnimationState(stateData == null ? new AnimationStateData(skeletonData) : stateData);
 		_advanceTime(0);
@@ -65,6 +74,9 @@ class SkeletonAnimation extends SkeletonSprite {
 	private function _advanceTime(time:Float) {
 		state.update(time / timeScale);
 		state.apply(skeleton);
+		#if !spine4_2
+		skeleton.updateWorldTransform();
+		#end
 		super.advanceTime(time);
 	}
 
@@ -85,6 +97,7 @@ class SkeletonAnimation extends SkeletonSprite {
 			useWeakReference:Bool = false) {
 		if (_event == null && state != null) {
 			_event = new AnimationEvent();
+			#if spine4_2
 			// 添加事件侦听处理
 			this.state.onStart.add(_event.start);
 			this.state.onComplete.add(_event.complete);
@@ -92,6 +105,9 @@ class SkeletonAnimation extends SkeletonSprite {
 			this.state.onEnd.add(_event.end);
 			this.state.onInterrupt.add(_event.interrupt);
 			this.state.onEvent.add(_event.event);
+			#else
+			this.state.addListener(_event);
+			#end
 		}
 		if (_event != null)
 			_event.addEventListener(type, listener);

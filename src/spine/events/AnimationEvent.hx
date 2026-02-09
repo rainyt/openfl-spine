@@ -1,6 +1,11 @@
 package spine.events;
 
+#if spine4_2
 import spine.animation.TrackEntry;
+#else
+import spine.AnimationState.AnimationStateListener;
+import spine.AnimationState.TrackEntry;
+#end
 import spine.Event;
 import openfl.events.EventDispatcher;
 import openfl.events.Event in OpenFLEvent;
@@ -8,7 +13,7 @@ import openfl.events.Event in OpenFLEvent;
 /**
  * 动画事件实现
  */
-class AnimationEvent extends EventDispatcher {
+class AnimationEvent extends EventDispatcher #if !spine4_2 implements AnimationStateListener #end {
 
     /** Invoked when this entry has been set as the current entry. */
     public function start(entry:TrackEntry):Void

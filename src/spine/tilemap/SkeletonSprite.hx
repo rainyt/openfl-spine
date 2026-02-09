@@ -61,7 +61,11 @@ class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 
 	public function new(skeletonData:SkeletonData) {
 		super(new Skeleton(skeletonData));
+		#if spine4_2
 		this.skeleton.updateWorldTransform(Physics.update);
+		#else
+		this.skeleton.updateWorldTransform();
+		#end
 		#if zygame
 		this.mouseChildren = false;
 		#end
@@ -122,7 +126,11 @@ class SkeletonSprite extends BaseSkeletonDraw implements SpineBaseDisplay {
 		if (!_isPlay)
 			return;
 		skeleton.update(delta * timeScale);
+		#if spine4_2
 		skeleton.updateWorldTransform(Physics.update);
+		#else
+		skeleton.updateWorldTransform();
+		#end
 		renderTriangles();
 	}
 

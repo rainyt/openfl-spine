@@ -1,3 +1,4 @@
+#if !spine4_2
 package spine.shader;
 
 import VectorMath;
@@ -101,3 +102,4 @@ class SpineRenderBatchShader extends SpineRenderShader {
 		this.gl_Position = mat * smat4 * rmat4 * gl_openfl_Position;
 	}
 }
+#end

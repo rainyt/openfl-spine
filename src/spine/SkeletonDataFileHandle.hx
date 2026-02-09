@@ -1,3 +1,4 @@
+#if !spine4_2
 package spine;
 
 class SkeletonDataFileHandle implements spine.support.files.FileHandle {
@@ -20,3 +21,4 @@ class SkeletonDataFileHandle implements spine.support.files.FileHandle {
 	}
 
 }
+#end

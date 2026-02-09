@@ -1,3 +1,4 @@
+#if !spine4_2
 package spine;
 
 import spine.support.utils.JsonValue;
@@ -30,4 +31,5 @@ class SkeletonDataFileJsonHandle implements spine.support.files.JsonFileHandle {
 		return new JsonDynamic(_data);
 	}
 }
+#end
 #end
